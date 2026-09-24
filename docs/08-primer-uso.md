@@ -14,8 +14,8 @@ Authentication → Dominios autorizados.
 
 ## 2. Revisa que no falte nada
 
-**Ajustes → Sistema** dice qué variables tiene el servidor y cuáles faltan, y enlaza la guía de
-instalación. Todo en verde antes de seguir.
+**Primeros pasos** (arriba en la barra lateral) dice qué le falta a cada sección, y **Ajustes →
+Sistema** qué variables tiene el servidor. Todo en verde antes de seguir.
 
 **Ajustes → Instagram → Datos para el panel de Meta** te da, listas para copiar, la URL del
 webhook y la de redireccionamiento **exactas** que espera tu despliegue. Compáralas con las que
@@ -65,7 +65,15 @@ Abre tu `APP_URL` en el teléfono: te lleva a la app de celular (`/m`). En iPhon
 o más nuevo). Después, en **Ajustes → Notificaciones**, activa los avisos en ese dispositivo y
 manda una prueba. Detalle: [app del celular y avisos](modulos/app-movil-y-avisos.md).
 
-## 6. El asistente (opcional)
+## 6. Tus estadísticas
+
+En **Estadísticas** ves cómo va tu cuenta: seguidores día por día, alcance, vistas, likes, tus
+publicaciones y qué te funciona. El cron las va juntando cada hora; el primer día hay poco y se
+llena solo. Para alcance, vistas y audiencia hace falta el permiso
+`instagram_business_manage_insights`: si tu cuenta se conectó sin él, el tablero te ofrece
+reconectar. Detalle: [estadísticas](modulos/estadisticas-instagram.md).
+
+## 7. El asistente (opcional)
 
 Con `CLAUDE_API_KEY` configurada, en **Asistente** le pides en español lo que quieres —«cuando
 comenten GUÍA en mi último post, mándales este link, solo si me siguen»— y lo crea de verdad.

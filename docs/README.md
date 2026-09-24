@@ -1,9 +1,9 @@
 # Documentación de Chatty
 
 > **Lo más rápido:** `cd web && npm install && npm run dev` y abre
-> [localhost:3000](http://localhost:3000). Mientras no esté conectado a Firebase, el panel abre
-> su propia guía de instalación (`/instalar`), con una lista en vivo de lo que ya tienes y lo
-> que falta. Estos archivos son la versión larga de cada paso.
+> [localhost:3000](http://localhost:3000). Se abre el sistema mismo, sin login: cada sección
+> enseña cómo se ve funcionando y los pasos que le faltan, y **Primeros pasos** junta el checklist
+> de todo. Estos archivos son la versión larga de cada paso.
 
 ## Instalación, en orden
 
@@ -23,6 +23,7 @@ La primera vez, síguelos de arriba abajo. Cada uno termina con una lista de «l
 | Guía | Qué es |
 |---|---|
 | [Bandeja, automatizaciones y flujos](modulos/bandeja-y-automatizaciones.md) | Los DMs, las palabras clave y el constructor visual |
+| [Estadísticas de Instagram](modulos/estadisticas-instagram.md) | Cómo va tu cuenta, día por día |
 | [Asistente](modulos/asistente.md) | Claude arma y edita automatizaciones por ti |
 | [La app del celular y los avisos](modulos/app-movil-y-avisos.md) | Instalarla y los avisos push |
 

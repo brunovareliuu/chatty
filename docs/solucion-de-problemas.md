@@ -3,8 +3,8 @@
 Ordenado por dónde se ve el síntoma. Casi todo sale de una URL mal copiada, una variable que
 falta o un permiso de Meta.
 
-**Antes que nada:** si el panel te enseña la guía de instalación en vez del login, le falta
-alguna de las seis variables de Firebase (la guía dice cuáles). Ya adentro, Ajustes → **Sistema**
+**Antes que nada:** abre **Primeros pasos**. Si el panel está en *modo guía* (sin login), le
+falta alguna de las seis variables de Firebase, y cada sección dice qué más le falta. Ya adentro, Ajustes → **Sistema**
 dice qué variables faltan y Ajustes → **Instagram** te da las URLs exactas que espera tu
 despliegue. Los errores del servidor salen en la consola
 de Firebase → App Hosting → tu backend → Registros (o `npm run dev` en local).

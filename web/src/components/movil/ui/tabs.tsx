@@ -31,6 +31,7 @@ const DE_QUIEN_ES: { prefijo: string; raiz: string }[] = [
   { prefijo: '/m/automatizaciones', raiz: '/m/automatizaciones' },
   { prefijo: '/m/contactos', raiz: '/m/contactos' },
   { prefijo: '/m/asistente', raiz: '/m/mas' },
+  { prefijo: '/m/instagram', raiz: '/m/mas' },
   { prefijo: '/m/mas', raiz: '/m/mas' },
   { prefijo: '/m/ajustes', raiz: '/m/mas' },
 ];

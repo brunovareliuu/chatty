@@ -49,8 +49,9 @@ Cada tutorial usa algo del anterior. Síguelos en orden la primera vez:
 Luego, cada módulo tiene su guía en [`docs/modulos/`](README.md#módulos).
 
 > **Para ver por dónde vas:** corre el panel (`cd web && npm install && npm run dev`) y abre
-> [localhost:3000](http://localhost:3000). Mientras no tenga las llaves de Firebase, te enseña la
-> guía de instalación con una lista de las variables que ya tienes y las que faltan.
+> [localhost:3000](http://localhost:3000). Se abre el sistema en *modo guía*: cada sección con
+> cómo se ve funcionando y sus pasos, y **Primeros pasos** con el checklist de todo. Lo que el panel
+> puede revisar se marca solo; lo demás lo palomeas tú.
 
 > **Un consejo que ahorra horas:** despliega primero (paso 6) aunque sea con lo mínimo.
 > Meta no acepta `localhost` como redirect ni como webhook, así que para conectar Instagram

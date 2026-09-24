@@ -12,7 +12,7 @@ cp .env.example .env.local
 
 Llena `.env.local` con lo que juntaste en los pasos anteriores
 ([qué va en cada variable](04-variables-de-entorno.md)). Si todavía no tienes nada, no pasa
-nada: `npm run dev` abre igual y te enseña la guía de instalación con lo que falta. Para empezar basta con Firebase,
+nada: `npm run dev` abre igual, en *modo guía*, con los pasos que faltan. Para empezar basta con Firebase,
 `APP_URL=http://localhost:3000`, tu correo en `ALLOWED_EMAILS` y las dos llaves propias
 (`openssl rand -hex 32`, una para `TOKEN_ENCRYPTION_KEY` y otra para `CRON_SECRET`).
 
@@ -55,7 +55,8 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000):
 
-- **Sin las seis variables de Firebase**, ves la guía de instalación (`/instalar`), sin login.
+- **Sin las seis variables de Firebase**, ves el sistema en *modo guía*, sin login: cada sección
+  con cómo se ve funcionando y sus pasos, y **Primeros pasos** con el checklist de todo.
 - **Con ellas**, ves el login. Entra con Google o con un usuario de correo que hayas creado en
   Firebase. Si tu correo está en `ALLOWED_EMAILS` (o eres el primero en entrar), llegas a la
   Bandeja.

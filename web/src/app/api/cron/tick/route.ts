@@ -4,6 +4,8 @@ import { accountRef, listAccounts, runsCol, getAccountToken } from '@/lib/accoun
 import { resumeSleeping, timeoutRun } from '@/lib/engine/runner';
 import { getSelfProfile } from '@/lib/instagram';
 import { guardarEstado, leerEstado, limpiarHistorial, revisarHito } from '@/lib/push/servidor';
+import { sistemaRef } from '@/lib/guia/estado';
+import { recolectarSiToca } from '@/lib/estadisticas/servidor';
 import type { FlowRun } from '@/lib/types';
 
 export const runtime = 'nodejs';
@@ -11,11 +13,12 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
 
 /**
- * Latido del sistema. Lo llama Cloud Scheduler cada minuto y hace cuatro cosas:
+ * Latido del sistema. Lo llama Cloud Scheduler cada minuto y hace cinco cosas:
  *   1. despierta los flujos dormidos en un nodo `wait`
  *   2. saca por la rama 'timeout' a los que llevan demasiado esperando respuesta
  *   3. renueva tokens de Instagram próximos a vencer
  *   4. una vez por hora, refresca seguidores para los checkpoints y poda el historial de avisos
+ *   5. guarda las estadísticas de Instagram del tablero de /instagram (cuando toca)
  */
 export async function GET(req: NextRequest) {
   const secret = process.env.CRON_SECRET;
@@ -36,12 +39,18 @@ export async function GET(req: NextRequest) {
   }
 
   const now = Date.now();
+  // El latido: con él, «Primeros pasos» sabe que el cron ya corre.
+  await sistemaRef()
+    .set({ ultimoTickEn: now }, { merge: true })
+    .catch((err) => console.error('[tick] latido', err));
+
   const summary = {
     accounts: 0,
     resumed: 0,
     timedOut: 0,
     tokensChecked: 0,
     seguidoresRevisados: 0,
+    estadisticas: [] as string[],
     errors: [] as string[],
   };
 
@@ -118,6 +127,21 @@ export async function GET(req: NextRequest) {
     }
   } catch (err) {
     summary.errors.push(`hitos: ${err instanceof Error ? err.message : String(err)}`);
+  }
+
+  // 5. Estadísticas de Instagram. Casi siempre es una lectura y ya: el
+  //    recolector anota cuándo le vuelve a tocar (perfil cada hora, días y
+  //    posts cada 6 h, audiencia a diario, el historial en tandas).
+  for (const account of cuentas) {
+    try {
+      const r = await recolectarSiToca(account);
+      if (r?.hecho.length) summary.estadisticas.push(`${account.username}: ${r.hecho.join(', ')}`);
+      if (r?.error) summary.errors.push(`estadísticas ${account.username}: ${r.error}`);
+    } catch (err) {
+      summary.errors.push(
+        `estadísticas ${account.username}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
   }
 
   return NextResponse.json({ ok: true, ...summary });

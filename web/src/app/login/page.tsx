@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function LoginPage() {
   // El formulario usa el SDK de Firebase del navegador: sin sus llaves truena.
-  if (!firebaseListo()) redirect('/instalar');
+  if (!firebaseListo()) redirect('/primeros-pasos');
   if (await getCurrentUser()) redirect('/inbox');
   return <LoginForm />;
 }

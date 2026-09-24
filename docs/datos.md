@@ -35,6 +35,10 @@ accounts/{igUserId}                  la cuenta: usuario, foto, seguidores, venci
   runs/{id}                          una ejecución en curso de un flujo (dónde va, qué espera)
   tags/{id}                          etiquetas con su color
   assistantChats/{id}/messages/{n}   conversaciones con el asistente
+  estadisticas/estado · /audiencia   el recolector del tablero de estadísticas
+  estadisticasDias/{fecha}           un día de Instagram (se cortan en hora del Pacífico, como Meta)
+  estadisticasPosts/{mediaId}        cada publicación con sus métricas y su foto diaria de likes
+  estadisticasHistorias/{id}         historias (Meta borra sus números a las 24 h; aquí se quedan)
 ```
 
 | Parte | Escribe | Lee | Tipo |
@@ -47,6 +51,7 @@ accounts/{igUserId}                  la cuenta: usuario, foto, seguidores, venci
 | `automations`, `flows`, `tags` | Panel (se editan en vivo) y el asistente | Panel | `Automation`, `Flow`, `Tag` |
 | `runs` | Servidor (el motor) | Panel, para depurar | `FlowRun` |
 | `assistantChats` | Servidor | Solo el servidor (el panel lo pide por `/api/asistente/chats`) | `lib/asistente/historial.ts` |
+| `estadisticas*` | Servidor (el paso 5 del cron) | Solo el servidor (el panel lo pide por `/api/instagram/estadisticas`) | `lib/estadisticas/tipos.ts` |
 
 Un contacto que llega por un anuncio de Meta (Click to DM) queda marcado con el campo `anuncio`
 y la etiqueta `anuncio`, así un flujo puede tratarlo distinto.
@@ -58,6 +63,7 @@ y la etiqueta `anuncio`, así un flujo puede tratarlo distinto.
 | `config/notificaciones` | De qué te avisa el celular (Ajustes › Notificaciones) |
 | `config/notificacionesEstado` | Contadores y las marcas redondas ya avisadas |
 | `config/push/private/claves` | El par de llaves VAPID de Web Push (la privada, cifrada) |
+| `config/sistema` | El último latido del cron (lo lee «Primeros pasos») |
 | `pushSubscriptions/{sha256(endpoint)}` | Los dispositivos suscritos a avisos |
 | `notificacionesEnviadas` | El historial de avisos (se poda a 200) |
 

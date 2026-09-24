@@ -40,7 +40,7 @@ Agrega estos cuatro (Chatty los pide al conectar la cuenta; están en `IG_SCOPES
 | `instagram_business_basic` | Perfil, publicaciones, seguidores |
 | `instagram_business_manage_messages` | Leer y mandar DMs |
 | `instagram_business_manage_comments` | Leer comentarios, contestarlos y mandar la respuesta privada |
-| `instagram_business_manage_insights` | Datos de la cuenta, como sus seguidores (para los avisos de cifras redondas) |
+| `instagram_business_manage_insights` | Alcance, vistas y audiencia del tablero de [estadísticas](modulos/estadisticas-instagram.md) |
 
 ### El ID y la clave secreta
 

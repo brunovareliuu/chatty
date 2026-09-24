@@ -1,4 +1,7 @@
 import { SettingsScreen } from '@/components/settings/settings-screen';
+import { firebaseListo } from '@/lib/instalacion';
+import { PantallaModulo } from '@/components/guia/pantalla-modulo';
+import { AvisoModulo } from '@/components/guia/aviso-modulo';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +14,7 @@ export default async function SettingsPage({
 }: {
   searchParams: Promise<{ ig_connected?: string; ig_error?: string; tab?: string }>;
 }) {
+  if (!firebaseListo()) return <PantallaModulo id="ajustes" />;
   const params = await searchParams;
 
   const setup = {
@@ -23,11 +27,14 @@ export default async function SettingsPage({
   };
 
   return (
-    <SettingsScreen
-      setup={setup}
-      connected={params.ig_connected ?? null}
-      error={params.ig_error ?? null}
-      tabInicial={params.tab ?? null}
-    />
+    <>
+      <AvisoModulo id="ajustes" />
+      <SettingsScreen
+        setup={setup}
+        connected={params.ig_connected ?? null}
+        error={params.ig_error ?? null}
+        tabInicial={params.tab ?? null}
+      />
+    </>
   );
 }

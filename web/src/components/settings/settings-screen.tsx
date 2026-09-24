@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Bell, Check, Copy, ExternalLink, Plug, Server, TriangleAlert, X } from 'lucide-react';
+import Link from 'next/link';
+import { Bell, Check, Copy, ExternalLink, ListChecks, Plug, Server, TriangleAlert, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAccounts } from '@/lib/client/accounts-context';
 import { Avatar } from '@/components/ui/avatar';
@@ -293,13 +294,13 @@ export function SettingsScreen({
             </div>
           </div>
 
-          <a
-            href="/instalar"
+          <Link
+            href="/primeros-pasos"
             className="inline-flex h-10 items-center gap-2 rounded-xl bg-surface-2 px-4 text-[14px] font-semibold transition-colors hover:bg-border"
           >
-            <ExternalLink className="h-4 w-4" />
-            Ver la guía de instalación
-          </a>
+            <ListChecks className="h-4 w-4" />
+            Ver los primeros pasos
+          </Link>
         </section>
         )}
       </div>

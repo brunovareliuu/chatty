@@ -19,8 +19,8 @@
   ficción (`tumarca.com`, `example.com`).
 - **Nada atado a un proyecto**: lo que dependa del despliegue va en una variable de entorno,
   documentada en `web/.env.example`, `web/apphosting.yaml`,
-  [docs/04-variables-de-entorno.md](docs/04-variables-de-entorno.md) y, si es obligatoria, en la
-  lista de `web/src/lib/instalacion.ts` (la que enseña la guía de instalación).
+  [docs/04-variables-de-entorno.md](docs/04-variables-de-entorno.md) y, si algún paso depende de
+  ella, en el catálogo de `web/src/lib/guia/` (lo que enseña «Primeros pasos»).
 - Si tocas el modelo de datos, actualiza [docs/datos.md](docs/datos.md) y, si hace falta,
   `firestore.rules` y `firestore.indexes.json`.
 

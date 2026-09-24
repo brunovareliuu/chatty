@@ -9,8 +9,10 @@ Cloud Scheduler la llama cada minuto con tu `CRON_SECRET` en una cabecera.
 2. Las preguntas con tiempo límite no salen por su rama de «sin respuesta».
 3. Los tokens de Instagram **no se renuevan**: a los 60 días la cuenta se desconecta.
 4. No se refrescan los seguidores (los avisos de «checkpoint») ni se poda el historial de avisos.
+5. El tablero de **estadísticas** no junta datos (y Meta borra los de historias a las 24 h).
 
-Casi siempre es una lectura y ya: el tick solo hace trabajo cuando hay algo pendiente.
+Casi siempre es una lectura y ya: el tick solo hace trabajo cuando hay algo pendiente. Cada vez
+que corre deja su latido en `config/sistema`, y así **Primeros pasos** marca solo el paso del cron.
 
 ## Crearlo
 
@@ -52,7 +54,7 @@ curl -H "x-cron-secret: EL_VALOR_DE_CRON_SECRET" https://TU-URL/api/cron/tick
 ```
 
 Responde un JSON con lo que hizo (`resumed`, `timedOut`, `tokensChecked`,
-`seguidoresRevisados`, `errors`). Si `errors` trae algo, ahí dice qué y de qué cuenta.
+`seguidoresRevisados`, `estadisticas`, `errors`). Si `errors` trae algo, ahí dice qué y de qué cuenta.
 
 | Respuesta | Qué significa |
 |---|---|

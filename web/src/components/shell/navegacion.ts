@@ -1,4 +1,4 @@
-import { MessageCircle, Settings, Sparkles, Users, Zap, type LucideIcon } from 'lucide-react';
+import { MessageCircle, Settings, Sparkles, TrendingUp, Users, Zap, type LucideIcon } from 'lucide-react';
 
 export type Destino = { href: string; label: string; icon: LucideIcon };
 
@@ -10,6 +10,7 @@ export const NAV: { titulo: string; items: Destino[] }[] = [
       { href: '/inbox', label: 'Bandeja', icon: MessageCircle },
       { href: '/automations', label: 'Automatizaciones', icon: Zap },
       { href: '/contacts', label: 'Contactos', icon: Users },
+      { href: '/instagram', label: 'Estadísticas', icon: TrendingUp },
       { href: '/asistente', label: 'Asistente', icon: Sparkles },
     ],
   },

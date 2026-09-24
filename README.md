@@ -1,7 +1,8 @@
 # Chatty
 
 **Tu propio ManyChat para Instagram**, corriendo en **tu** Firebase, con **tus** datos: una
-bandeja para tus DMs, automatizaciones por palabra clave y un constructor visual de flujos.
+bandeja para tus DMs, automatizaciones por palabra clave, un constructor visual de flujos y las
+estadísticas de tu cuenta.
 
 Cada quien despliega su propia copia: su proyecto de Firebase, su app de Meta, su base de
 datos. Nadie comparte información con nadie. El repo no trae ningún proyecto configurado.
@@ -17,9 +18,12 @@ npm run dev
 ```
 
 Abre [localhost:3000](http://localhost:3000). Como todavía no está conectado a nada, no te pide
-cuenta: te enseña la **guía de instalación**, paso por paso, con una lista en vivo de lo que ya
-tienes y lo que falta. Cuando pones las llaves de tu Firebase, la guía se aparta y aparece el
-login.
+cuenta: se abre **el sistema en modo guía**. Tiene sus mismas secciones (Bandeja,
+Automatizaciones, Contactos, Estadísticas, Asistente, Ajustes); cada una enseña cómo se ve ya
+funcionando y el checklist de lo que le falta, y **Primeros pasos** junta todo con su avance. Lo
+que el panel puede revisar se palomea solo (las variables, tu cuenta conectada, tu primer DM, el
+cron); lo demás lo palomeas tú. Cuando pones las llaves de tu Firebase, aparece el login y el
+checklist sigue a la mano en la barra lateral.
 
 ---
 
@@ -33,6 +37,8 @@ login.
   que guardan datos, «pedir que te siga», esperas, condiciones, etiquetas, pasar a humano y
   llamadas a tu propia API.
 - **Contactos** — quién te escribió, sus etiquetas, sus notas y lo que capturaste.
+- **Estadísticas** — seguidores día por día, alcance, vistas, likes, tus publicaciones, tu
+  audiencia y qué te funciona. El cron las va juntando, porque Meta no guarda la historia.
 - **Asistente con Claude** (opcional) — *«cuando comenten GUÍA en mi último post, mándales este
   link, solo si me siguen»* y lo arma.
 - **App de celular** instalable, con **avisos push** propios: automatizaciones, comentarios,
@@ -53,7 +59,7 @@ Instagram ──webhook──▶ /api/webhooks/instagram ──▶ Firestore
                                 ▼
                        API de Instagram
 
-Cloud Scheduler ──cada minuto──▶ /api/cron/tick   (esperas, timeouts, tokens, seguidores)
+Cloud Scheduler ──cada minuto──▶ /api/cron/tick   (esperas, timeouts, tokens, estadísticas)
 ```
 
 - **Next.js 16** (App Router) — pantallas y endpoints en una sola app, desplegada en
@@ -84,8 +90,8 @@ cuenta de Instagram profesional. Para tu propia cuenta no hace falta revisión d
 
 ## Seguridad
 
-- Sin Firebase configurado, el panel solo enseña la guía de instalación: no hay datos que
-  proteger. Ya configurado, todo pide sesión.
+- Sin Firebase configurado, el panel solo enseña el modo guía: no hay datos que proteger. Ya
+  configurado, todo pide sesión.
 - Solo entran los correos de `ALLOWED_EMAILS`, y las reglas piden además que el servidor te haya
   dado de alta: una cuenta de Firebase creada por fuera no ve nada. `scripts/probar-reglas.sh`
   lo comprueba contra el emulador.
@@ -120,7 +126,7 @@ Si encuentras una vulnerabilidad, repórtala en privado (ver
 ```bash
 cd web
 npm run dev         # servidor local
-npm run test        # motor de flujos y matcher
+npm run test        # motor de flujos, matcher y estadísticas
 npm run typecheck
 npm run lint
 npm run build

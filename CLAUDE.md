@@ -1,8 +1,10 @@
 # Chatty — contexto para programar
 
 Chatty es un ManyChat propio para Instagram que cada quien despliega en su Firebase: una bandeja
-para los DMs, automatizaciones por palabra clave, un constructor visual de flujos, contactos, un
-asistente con Claude que arma automatizaciones y una app de celular con avisos push.
+para los DMs, automatizaciones por palabra clave, un constructor visual de flujos, contactos,
+estadísticas de la cuenta, un asistente con Claude que arma automatizaciones y una app de celular
+con avisos push. Sin Firebase se abre en *modo guía*: el sistema con sus secciones y, en cada una,
+el checklist de lo que le falta.
 
 Escribe en español: código, comentarios, UI, commits y respuestas. Tono directo, sin groserías.
 
@@ -23,9 +25,8 @@ La app vive en `web/` (Next.js 16, App Router). Las reglas de Firestore, en la r
 
 | Carpeta | Qué es |
 |---|---|
-| `web/src/app/(app)/…` | El panel de escritorio: bandeja, automatizaciones, flujos, contactos, asistente y ajustes, con barra lateral. |
+| `web/src/app/(app)/…` | El panel de escritorio: bandeja, automatizaciones, flujos, contactos, estadísticas, asistente, ajustes y primeros pasos, con barra lateral. |
 | `web/src/app/m/…` | La app del celular (hermana de `(app)`, no cuelga de ella). |
-| `web/src/app/instalar` | La guía de instalación. Sin Firebase configurado es lo único que se abre, y sin sesión. |
 | `web/src/app/api/…` | Endpoints: webhook de Meta, cron, conexión de Instagram, asistente, mensajes, push y sesión. |
 | `web/src/app/privacidad` | La política de privacidad pública (la pide Meta). |
 | `web/src/lib/` | Lógica: el motor de flujos, Meta, sesión, avisos y el asistente. |
@@ -52,11 +53,23 @@ No hay carpeta `functions/` **a propósito**: el motor, el cron y el asistente v
 despliegue de Next, y el cron es un endpoint protegido por secreto. Un solo despliegue es lo que
 hace viable que cualquiera lo hospede. No lo partas en dos sin un motivo fuerte.
 
-**Modo instalación.** `web/src/lib/instalacion.ts` dice si están las seis variables
-`NEXT_PUBLIC_FIREBASE_*`. Si falta alguna, `/`, `(app)`, `/m` y `/login` mandan a `/instalar`:
-sin ellas el SDK de Firebase del navegador truena y no hay login posible. `/instalar` enseña los
-pasos y una lista en vivo de las variables (solo si existen, nunca su valor). Ya configurado,
-`/instalar` pide sesión. Si agregas una variable obligatoria, súmala a esa lista.
+**Modo guía y Primeros pasos.** `web/src/lib/instalacion.ts` dice si están las seis variables
+`NEXT_PUBLIC_FIREBASE_*`. Si falta alguna, el SDK de Firebase del navegador truena, así que
+`(app)/layout.tsx` no pinta el panel real: pinta `ShellGuia` (la misma barra, sin Firebase) y cada
+página de sección devuelve `<PantallaModulo id=… />` (qué es, una vista previa con datos de ficción
+y su checklist) en vez de su pantalla. `/`, `/m` y `/login` mandan a `/primeros-pasos`.
+
+- El catálogo vive en `web/src/lib/guia/pasos.ts` (puro): cada paso con cómo se hace, comandos,
+  enlaces y cómo se revisa (`variables`, `datos` o `manual`), y qué pasos necesita cada sección.
+- `web/src/lib/guia/estado.ts` (servidor) decide qué ya está: las variables (solo si existen) y,
+  con Firebase, Firestore (una cuenta, una conversación, una automatización, una ejecución, el
+  permiso de estadísticas, una suscripción push y el latido del cron en `config/sistema`). Guarda
+  un minuto de memoria para no leer en cada navegación.
+- Lo `manual` lo palomea la persona; se guarda en `localStorage` (`components/guia/hechos.ts`) y
+  todas las listas y contadores leen de ahí.
+- Ya conectado, la barra lateral enseña «Primeros pasos» con su avance, cada sección pone arriba
+  `AvisoModulo` si le falta algo, y `/primeros-pasos/<sección>` enseña su checklist.
+- Si agregas un paso o una sección, va en `pasos.ts` (y su regla de estado en `estado.ts`).
 
 **Sesión.** El navegador entra con Firebase Auth (Google o correo y contraseña). El servidor
 (`/api/auth/session`) cambia el ID token por la cookie `__session` y, si el correo está en
@@ -77,11 +90,12 @@ aunque lo saquen de la lista: para quitarle el acceso hay que borrarlo.
 | `web/src/lib/accounts.ts` | Cuentas conectadas + renovación y descifrado de tokens. |
 | `web/src/lib/messaging.ts` | Persistencia de mensajes y envío con registro. |
 | `web/src/lib/session.ts` | Sesión y `ALLOWED_EMAILS`. |
-| `web/src/lib/instalacion.ts` | Si el despliegue ya tiene Firebase y qué variables faltan. |
+| `web/src/lib/instalacion.ts` | Si el despliegue ya tiene Firebase (si no, modo guía). |
+| `web/src/lib/guia/` | El catálogo de pasos por sección y qué ya está hecho. |
 | `web/src/lib/marca.ts` | La marca de quien usa el panel (`MARCA`, `SITE_URL`, `SITE_DOMINIO`, `ZONA_HORARIA`). Puro. |
 | `web/src/lib/env.ts` | `requireEnv()` y `appUrl()`. |
 | `web/src/components/flow/node-config.tsx` | Metadata de nodos: iconos, puertos, resúmenes. |
-| `web/src/app/api/cron/tick/route.ts` | El latido: esperas, timeouts, tokens y seguidores. |
+| `web/src/app/api/cron/tick/route.ts` | El latido: esperas, timeouts, tokens, seguidores y estadísticas. |
 
 ## Asistente (`/asistente`)
 
@@ -103,11 +117,31 @@ Instagram en cuanto se crea).
 - **El asistente trabaja para el dueño de la cuenta.** Las respuestas automáticas con IA a los
   seguidores están descartadas: el motor de flujos no llama a Claude.
 
+## Estadísticas (`/instagram`, `/m/instagram`)
+
+**La pantalla no habla con Meta: lee lo que el cron fue guardando.** Meta no guarda la historia
+de seguidores, no da 90 días de golpe y borra los números de las historias a las 24 h, así que
+el paso 5 del tick (`recolectarSiToca`) junta todo en `accounts/{id}/estadisticas*`.
+
+- `web/src/lib/estadisticas/`: `tipos.ts`, `calculos.ts` (días en hora del Pacífico como corta
+  Meta; `ZONA_LOCAL` para las horas de publicación), `meta.ts` (qué se pide y cómo se lee; una
+  métrica que Meta rechaza en un día reciente se veta), `cifras.ts` + `lecturas.ts` (los comparten
+  escritorio y celular), `servidor.ts` (el recolector, con candado y presupuesto de tiempo) y
+  `cliente.ts` (`useTableroIg`). Todo lo puro tiene pruebas (`scripts/estadisticas-test.ts`).
+- Casi todo pide `instagram_business_manage_insights` (ya está en `IG_SCOPES`); sin él solo hay
+  perfil, likes y comentarios, y el tablero ofrece reconectar (`/api/ig/connect?volver=/instagram`).
+- Decisiones: los periodos de Meta terminan ayer; alcance y cuentas únicas se piden por periodo,
+  no se suman por día; «típico» es la mediana; likes y comentarios por día sin permiso salen de
+  restar las fotos horarias de cada post (`diario` en `estadisticasPosts`).
+- `calculos.ts` y compañía leen `process.env` directo (no `@/lib/marca`): las pruebas los corren
+  con Node, sin los alias de la app.
+
 ## La app del celular (`/m`) y los avisos push
 
 Guía para programar pantallas: `docs/desarrollo/app-movil.md`. Lo imprescindible:
 
-- Cinco pestañas: Hoy · Bandeja · Automatizar · Contactos · Más. `raizDe()` en
+- Cinco pestañas: Hoy · Bandeja · Automatizar · Contactos · Más (Estadísticas y el asistente
+  cuelgan de Más). `raizDe()` en
   `components/movil/ui/tabs.tsx` dice cuál se enciende con cada ruta: **una ruta nueva se apunta
   ahí**, si no la barra se apaga al entrar.
 - `app/m/movil.css` redefine **los mismos tokens** de `globals.css` con valores de iOS, así
@@ -136,7 +170,8 @@ El modelo completo está en `docs/datos.md`:
   /runs/{id}                          ejecuciones en curso
   /tags/{id}
   /assistantChats/{id}/messages/{n}   conversaciones del asistente — solo servidor
-/config/…, /pushSubscriptions, /notificacionesEnviadas   avisos push — solo servidor
+  /estadisticas*                      el tablero de /instagram — solo servidor
+/config/…, /pushSubscriptions, /notificacionesEnviadas   avisos push y latido del cron — solo servidor
 ```
 
 Si agregas una colección: su regla en `firestore.rules` (o nada, si es solo del servidor: la
@@ -223,8 +258,8 @@ un efecto, llama a `setState` dentro del `.then`.
 
 ```bash
 cd web
-npm run dev         # servidor local (sin .env.local abre /instalar)
-npm run test        # motor de flujos y matcher
+npm run dev         # servidor local (sin .env.local abre en modo guía)
+npm run test        # motor de flujos, matcher y estadísticas
 npm run typecheck   # si faltan tipos de Next: npx next typegen
 npm run lint
 npm run build

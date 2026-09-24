@@ -43,6 +43,7 @@ const EN_LA_APP = [
   [/^\/automations(?=$|[/?])/, '/m/automatizaciones'],
   [/^\/asistente(?=$|[/?])/, '/m/asistente'],
   [/^\/settings(?=$|[/?])/, '/m/ajustes'],
+  [/^\/instagram(?=$|[/?])/, '/m/instagram'],
 ];
 
 const ES_CELULAR = /iPhone|iPod|Android.*Mobile|Windows Phone/i.test(self.navigator.userAgent);

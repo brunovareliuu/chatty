@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { signOut } from 'firebase/auth';
-import { Moon, Sun, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Check, ListChecks, Moon, Sun, LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { cn } from '@/lib/utils';
 import { Avatar } from '@/components/ui/avatar';
 import { AccountSwitcher } from './account-switcher';
 import { NAV, estaActivo } from './navegacion';
+import { cuenta, useHechos, type Resumen } from '@/components/guia/hechos';
 import type { AppUser } from '@/lib/types';
 
 
@@ -45,8 +46,11 @@ function suscribe(avisa: () => void) {
   };
 }
 
-export function Sidebar({ user }: { user: AppUser }) {
+export function Sidebar({ user, pasos = [] }: { user: AppUser; pasos?: Resumen[] }) {
   const pathname = usePathname();
+  const hechos = useHechos();
+  const avance = cuenta(pasos, hechos);
+  const guiaActiva = estaActivo(pathname, '/primeros-pasos');
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
   // En el servidor siempre visible; el navegador aplica lo guardado al hidratar.
@@ -105,6 +109,25 @@ export function Sidebar({ user }: { user: AppUser }) {
       </div>
 
       <nav className="flex-1 space-y-5 overflow-y-auto px-3 pb-3">
+        {/* El checklist sigue a la mano: con su avance mientras falte algo. */}
+        <Link
+          href="/primeros-pasos"
+          className={cn(
+            'flex items-center gap-2.5 rounded-xl px-3 py-2 text-[14px] font-medium transition-colors',
+            guiaActiva ? 'bg-surface-2 text-txt' : 'text-muted hover:bg-surface-2/60 hover:text-txt',
+          )}
+        >
+          <ListChecks className="h-4.5 w-4.5" strokeWidth={guiaActiva ? 2.2 : 1.9} />
+          <span className="flex-1">Primeros pasos</span>
+          {avance.total > 0 && avance.listos === avance.total ? (
+            <Check className="h-3.5 w-3.5 text-pos" strokeWidth={3} />
+          ) : (
+            <span className="text-[11.5px] font-semibold tabular-nums text-faint">
+              {avance.listos}/{avance.total}
+            </span>
+          )}
+        </Link>
+
         {NAV.map(({ titulo, items }) => (
           <div key={titulo}>
             <p className="mb-1 px-3 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-faint">

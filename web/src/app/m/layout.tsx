@@ -42,7 +42,8 @@ export const viewport: Viewport = {
 };
 
 export default async function LayoutMovil({ children }: { children: React.ReactNode }) {
-  if (!firebaseListo()) redirect('/instalar');
+  // Sin Firebase, el modo guía (que también se ve bien en el teléfono).
+  if (!firebaseListo()) redirect('/primeros-pasos');
   const user = await getCurrentUser();
   if (!user) redirect('/login');
 

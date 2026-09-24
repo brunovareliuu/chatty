@@ -13,10 +13,10 @@ export const dynamic = 'force-dynamic';
  * Desde el celular se puede entrar igual al panel completo: Más › Ver el panel
  * de escritorio. Esa dirección ya no pasa por aquí.
  *
- * Sin Firebase configurado no hay a dónde entrar: se abre la guía de instalación.
+ * Sin Firebase configurado el panel se abre en modo guía, en Primeros pasos.
  */
 export default async function Home() {
-  if (!firebaseListo()) redirect('/instalar');
+  if (!firebaseListo()) redirect('/primeros-pasos');
   const ua = (await headers()).get('user-agent') ?? '';
   const esCelular = /iPhone|iPod|Android.*Mobile|Windows Phone/i.test(ua);
   redirect(esCelular ? '/m' : '/inbox');

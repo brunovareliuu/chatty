@@ -69,8 +69,8 @@ Te enseña un bloque `firebaseConfig`. Esos seis valores son los `NEXT_PUBLIC_FI
 [paso 4](04-variables-de-entorno.md). No son secretos: llegan al navegador de todos modos, y lo
 que protege tus datos son las reglas.
 
-En cuanto los pongas en `web/.env.local`, el panel deja de enseñar la guía de instalación y
-aparece el login.
+En cuanto los pongas en `web/.env.local` (y reinicies `npm run dev`), el panel sale del modo
+guía y aparece el login.
 
 ```bash
 firebase apps:create web "Chatty" --project mi-chatty

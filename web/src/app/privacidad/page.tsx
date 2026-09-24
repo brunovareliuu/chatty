@@ -67,8 +67,9 @@ export default function PrivacidadPage() {
               pone para atenderla.
             </li>
             <li>
-              El número de seguidores de la cuenta conectada, para avisarle al negocio cuando cruza
-              una cifra redonda.
+              Las estadísticas que Instagram da de la cuenta conectada: seguidores, alcance, vistas,
+              las cifras de cada publicación y datos agregados de su audiencia (edades, países), sin
+              identificar a nadie.
             </li>
             <li>
               El token de acceso de Instagram, cifrado, que permite responder en nombre de la cuenta.
@@ -79,8 +80,8 @@ export default function PrivacidadPage() {
         <Section title="Para qué se usan">
           <p>
             Únicamente para mostrar la bandeja de entrada, contestar mensajes, correr las
-            respuestas automáticas que configura el negocio y avisarle en su celular cuando llega
-            algo. No se venden ni se comparten con terceros
+            respuestas automáticas que configura el negocio, enseñarle cómo va su cuenta y avisarle
+            en su celular cuando llega algo. No se venden ni se comparten con terceros
             para su publicidad.
           </p>
         </Section>

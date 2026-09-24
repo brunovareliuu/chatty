@@ -25,9 +25,9 @@ de escritorio) y esa dirección ya no pasa por el reparto.
 | Bandeja | `/m/bandeja` | `/m/bandeja/[id]` |
 | Automatizar | `/m/automatizaciones` | `/m/automatizaciones/[id]` |
 | Contactos | `/m/contactos` | — |
-| Más | `/m/mas` | `/m/asistente`, `/m/ajustes` y el enlace al panel grande |
+| Más | `/m/mas` | `/m/instagram` (estadísticas), `/m/asistente`, `/m/ajustes`, Primeros pasos y el enlace al panel grande |
 
-Son 9 rutas. Lo que **no** tiene pantalla de celular y se abre en el panel
+Son 10 rutas. Lo que **no** tiene pantalla de celular y se abre en el panel
 grande es el lienzo de nodos de un flujo: su fila lo dice, con el icono de
 monitor.
 

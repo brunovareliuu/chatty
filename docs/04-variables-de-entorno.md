@@ -12,8 +12,9 @@ Las que empiezan con `NEXT_PUBLIC_` llegan al navegador: nunca pongas un secreto
 esas. Next las incrusta **al construir**, por eso en `apphosting.yaml` llevan
 `availability: [BUILD, RUNTIME]`.
 
-Mientras falte alguna de las seis de Firebase, el panel no enseña el login: abre la guía de
-instalación (`/instalar`), que marca cuáles variables ya tiene y cuáles no (nunca su valor).
+Mientras falte alguna de las seis de Firebase, el panel no enseña el login: se abre en *modo
+guía*, y cada paso de **Primeros pasos** marca qué variables ya tiene y cuáles no (nunca su
+valor).
 
 ## Obligatorias
 

@@ -23,7 +23,7 @@ Desde la app, **Más › Ver el panel de escritorio** abre el panel completo.
 | **Bandeja** | Tus DMs, para leer y contestar |
 | **Automatizar** | Tus automatizaciones: prenderlas, apagarlas, crear una nueva |
 | **Contactos** | Quién te escribió, con sus etiquetas y datos |
-| **Más** | El asistente, Ajustes, la apariencia y el panel de escritorio |
+| **Más** | Estadísticas, el asistente, Primeros pasos, Ajustes, la apariencia y el panel de escritorio |
 
 El constructor visual de flujos pide pantalla grande: desde el celular te lleva al panel de
 escritorio. La app nunca es un callejón sin salida.
