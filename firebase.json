@@ -1,0 +1,20 @@
+{
+  "//": "Reglas e índices de Firestore. La app corre en Firebase App Hosting (web/apphosting.yaml), así que aquí no hay sección hosting. El proyecto se elige con `firebase use --add` (docs/02-firebase.md).",
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    },
+    "singleProjectMode": true
+  }
+}

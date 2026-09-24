@@ -1,0 +1,171 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Capa 1 — VALORES CRUDOS.
+  Único lugar del proyecto con hex literales. Paleta de Chatty: naranja,
+  negro y blanco, con el acento en #fa4c03.
+*/
+:root {
+  --bg: #ffffff;
+  --surface: #f1f1f4;
+  --surface-2: #e8e8ec;
+  --border: #e2e2e8;
+  --txt: #0a0a0b;
+  --muted: #8a8a8e;
+  --faint: #b0b0b5;
+
+  --pos: #22c55e;
+  --neg: #ff453a;
+  --warn: #f59e0b;
+
+  /* El naranja del acento. Mismo valor en claro y oscuro: contra el negro da
+     5.7:1, así que no hace falta una versión más clara para el modo oscuro. */
+  --accent: #fa4c03;
+  --accent-fg: #ffffff;
+  --accent-soft: #ffe9df;
+
+  --radius-card: 16px;
+  --radius-panel: 22px;
+  --radius-float: 28px;
+}
+
+.dark {
+  --bg: #0a0a0b;
+  --surface: #161618;
+  --surface-2: #222226;
+  --border: #2a2a2e;
+  --txt: #ffffff;
+  --muted: #8a8a8e;
+  --faint: #5b5b60;
+
+  --pos: #32d74b;
+  --neg: #ff453a;
+  --warn: #fbbf24;
+
+  --accent: #fa4c03;
+  --accent-fg: #ffffff;
+  --accent-soft: #2b1206;
+}
+
+/* Capa 2 — NOMBRES SEMÁNTICOS. Las pantallas solo usan estos. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-txt: var(--txt);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-pos: var(--pos);
+  --color-neg: var(--neg);
+  --color-warn: var(--warn);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+
+  --radius-card: var(--radius-card);
+  --radius-panel: var(--radius-panel);
+  --radius-float: var(--radius-float);
+}
+
+/*
+ * El borde por omisión, como el preflight de Tailwind.
+ *
+ * Va DENTRO de `@layer base` a propósito: sin capa, esta regla `*` le gana a
+ * todas las utilidades `border-*` de Tailwind (lo sin capa vence a lo que está
+ * en una), y entonces `border-accent`, `border-neg` y compañía salen grises sin
+ * que nadie se entere. Hay más de 200 en el proyecto.
+ */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Anillo de foco: siempre el acento, nunca el azul del navegador. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Scrollbars discretas — la bandeja es una pantalla de listas largas. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted) 35%, transparent);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--muted) 60%, transparent);
+  background-clip: content-box;
+}
+
+/* Números que se alinean en columnas (contadores, métricas). */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+  Movimiento §10: entrada en cascada, lenta y honesta.
+  Se anula por completo si el sistema pide menos movimiento.
+*/
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise {
+  animation: rise 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* React Flow hereda los tokens en vez de traer su propio tema claro. */
+.react-flow {
+  --xy-background-color: var(--bg);
+  --xy-edge-stroke: var(--muted);
+  --xy-edge-stroke-selected: var(--accent);
+  --xy-handle-background-color: var(--accent);
+  --xy-handle-border-color: var(--bg);
+}
+.react-flow__attribution {
+  display: none;
+}

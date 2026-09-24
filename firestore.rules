@@ -1,0 +1,86 @@
+rules_version = '2';
+
+// Reglas de Firestore de Chatty. Se despliegan desde la raíz del repo con
+//   firebase deploy --only firestore
+// Tutorial: docs/02-firebase.md. Modelo de datos: docs/datos.md.
+// Prueba contra el emulador: scripts/probar-reglas.sh
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Al iniciar sesión, el servidor del panel revisa ALLOWED_EMAILS y, si el
+    // correo está, crea /users/{uid} con el Admin SDK. Estar autenticado en
+    // Firebase no basta: hay que estar dado de alta ahí.
+    function isMember() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    match /users/{uid} {
+      allow read: if isMember();
+      allow write: if false;
+    }
+
+    match /accounts/{accountId} {
+      allow read: if isMember();
+      // Conectar o desconectar cuentas pasa siempre por el servidor.
+      allow write: if false;
+
+      // Tokens de Meta, cifrados. Nadie, nunca, desde el cliente.
+      match /private/{document=**} {
+        allow read, write: if false;
+      }
+
+      match /contacts/{contactId} {
+        allow read: if isMember();
+        // Desde la UI solo se editan etiquetas, notas y campos manuales.
+        allow update: if isMember()
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['tags', 'notes', 'fields', 'subscribed']);
+        allow create, delete: if false;
+      }
+
+      match /conversations/{conversationId} {
+        allow read: if isMember();
+        allow update: if isMember()
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['status', 'assignedTo', 'tags', 'unreadCount']);
+        allow create, delete: if false;
+
+        // Los mensajes los escribe el servidor: enviar implica llamar a Meta.
+        match /messages/{messageId} {
+          allow read: if isMember();
+          allow write: if false;
+        }
+      }
+
+      // Automatizaciones y flujos se editan en vivo desde el panel.
+      match /automations/{automationId} {
+        allow read, write: if isMember();
+      }
+
+      match /flows/{flowId} {
+        allow read, write: if isMember();
+      }
+
+      match /tags/{tagId} {
+        allow read, write: if isMember();
+      }
+
+      // Las ejecuciones son del motor; la UI solo las lee para depurar.
+      match /runs/{runId} {
+        allow read: if isMember();
+        allow write: if false;
+      }
+
+      // assistantChats no aparece a propósito: la regla final lo niega y la
+      // pantalla lo lee por /api/asistente/chats.
+    }
+
+    // Todo lo demás es del servidor: config (llaves de push, preferencias),
+    // pushSubscriptions, notificacionesEnviadas…
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

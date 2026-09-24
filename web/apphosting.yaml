@@ -1,0 +1,108 @@
+# Firebase App Hosting — cómo corre Chatty en producción.
+#
+# Este archivo NO trae ningún proyecto configurado. Antes de desplegar:
+#   1. Cambia cada valor que dice REEMPLAZA (docs/06-desplegar.md te dice de dónde sale cada uno).
+#   2. Crea los secretos marcados con `secret:` en Secret Manager:
+#        firebase apphosting:secrets:set NOMBRE --project TU-PROYECTO
+#      App Hosting los inyecta al arrancar; nunca se escriben aquí.
+#
+# Lo mismo, para correr en tu máquina, va en .env.local (ver .env.example).
+
+runConfig:
+  # Uso interno: con cero instancias dormidas no pagas nada mientras nadie lo usa.
+  minInstances: 0
+  maxInstances: 4
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  # --- Firebase: Configuración del proyecto → Tus apps → Web ----------------
+  # Son públicas (llegan al navegador); por eso van en BUILD y RUNTIME.
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: REEMPLAZA
+    availability: [BUILD, RUNTIME]
+
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: REEMPLAZA.firebaseapp.com
+    availability: [BUILD, RUNTIME]
+
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: REEMPLAZA
+    availability: [BUILD, RUNTIME]
+
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: REEMPLAZA.firebasestorage.app
+    availability: [BUILD, RUNTIME]
+
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "REEMPLAZA"
+    availability: [BUILD, RUNTIME]
+
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: REEMPLAZA
+    availability: [BUILD, RUNTIME]
+
+  # --- Tu marca (la política de privacidad y el asistente) --------------------
+  - variable: NEXT_PUBLIC_BRAND_NAME
+    value: Tu marca
+    availability: [BUILD, RUNTIME]
+
+  # Opcional: tu sitio, sin slash final. El asistente lo menciona en los DMs
+  # que arma. Descoméntalo si tienes sitio.
+  # - variable: NEXT_PUBLIC_SITE_URL
+  #   value: https://mimarca.com
+  #   availability: [BUILD, RUNTIME]
+
+  # Opcional: tu zona horaria (nombre IANA). Por defecto, America/Mexico_City.
+  # - variable: NEXT_PUBLIC_TIMEZONE
+  #   value: America/Bogota
+  #   availability: [BUILD, RUNTIME]
+
+  # --- Servidor ---------------------------------------------------------------
+  # La URL pública del panel, sin slash final. Tiene que coincidir con el
+  # redirect URI y el webhook que registras en Meta.
+  - variable: APP_URL
+    value: https://REEMPLAZA.hosted.app
+    availability: [RUNTIME]
+
+  # Correos que pueden entrar al panel, separados por coma.
+  - variable: ALLOWED_EMAILS
+    value: REEMPLAZA@correo.com
+    availability: [RUNTIME]
+
+  - variable: META_APP_ID
+    value: "REEMPLAZA"
+    availability: [RUNTIME]
+
+  # --- Secretos (Secret Manager) ----------------------------------------------
+  - variable: META_APP_SECRET
+    secret: META_APP_SECRET
+    availability: [RUNTIME]
+
+  - variable: META_WEBHOOK_VERIFY_TOKEN
+    secret: META_WEBHOOK_VERIFY_TOKEN
+    availability: [RUNTIME]
+
+  # Cifra los tokens de Meta en Firestore. Si la cambias, hay que volver a
+  # conectar Instagram: los tokens guardados ya no se descifran.
+  - variable: TOKEN_ENCRYPTION_KEY
+    secret: TOKEN_ENCRYPTION_KEY
+    availability: [RUNTIME]
+
+  - variable: CRON_SECRET
+    secret: CRON_SECRET
+    availability: [RUNTIME]
+
+  # Claude: el asistente que arma automatizaciones. Si no lo vas a usar, borra
+  # este bloque (si el secreto no existe, el despliegue falla); lo demás
+  # funciona igual.
+  - variable: CLAUDE_API_KEY
+    secret: CLAUDE_API_KEY
+    availability: [RUNTIME]
+
+  # Solo si tu llave de Claude no pertenece a un workspace (la API responde 400
+  # pidiendo anthropic-workspace-id). No es secreto: es el id wrkspc_… de la consola.
+  # - variable: CLAUDE_WORKSPACE_ID
+  #   value: wrkspc_...
+  #   availability: [RUNTIME]

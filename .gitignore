@@ -1,0 +1,22 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Entornos y credenciales — nunca al repositorio.
+.env
+.env.local
+.env*.local
+*-service-account*.json
+serviceAccountKey.json
+
+.DS_Store
+*.log
+npm-debug.log*
+.firebase/
+# Cada quien elige su proyecto con `firebase use --add`; ese archivo es de tu copia.
+.firebaserc
+.vercel/
+next-env.d.ts
+tsconfig.tsbuildinfo

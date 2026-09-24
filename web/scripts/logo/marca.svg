@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- La marca de Chatty: una burbuja de chat escribiendo. Un solo color
+       (currentColor); los tres puntos son huecos, así el logo se puede teñir. -->
+  <defs>
+    <mask id="puntos">
+      <rect width="100" height="100" fill="#fff"/>
+      <circle cx="32" cy="45" r="6.5" fill="#000"/>
+      <circle cx="50" cy="45" r="6.5" fill="#000"/>
+      <circle cx="68" cy="45" r="6.5" fill="#000"/>
+    </mask>
+  </defs>
+  <g fill="currentColor" mask="url(#puntos)">
+    <rect x="8" y="12" width="84" height="66" rx="24"/>
+    <path d="M22 64 C22 80 19 88 12 94 C27 92 38 86 48 76 Z"/>
+  </g>
+</svg>
