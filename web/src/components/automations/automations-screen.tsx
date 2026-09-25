@@ -380,7 +380,7 @@ export function AutomationsScreen() {
         {/* ESTADOS DE CARGA Y VACÍO                                                  */}
         {/* ========================================================================= */}
         {loading && (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
@@ -876,26 +876,26 @@ function DirectTriggerHeader({ triggerType }: { triggerType: Automation['trigger
 
   const config: Record<string, { gradient: string; iconColor: string; badge: string; desc: string }> = {
     dm_keyword: {
-      gradient: 'from-blue-500/15 via-surface-2 to-surface',
-      iconColor: 'text-blue-500',
+      gradient: 'from-accent/15 via-surface-2 to-surface',
+      iconColor: 'text-accent',
       badge: 'Mensajes Directos (DM)',
       desc: 'Responde cuando un usuario envía un mensaje privado con la palabra clave.',
     },
     story_reply: {
-      gradient: 'from-purple-500/15 via-surface-2 to-surface',
-      iconColor: 'text-purple-500',
+      gradient: 'from-accent/10 via-surface-2 to-surface',
+      iconColor: 'text-accent',
       badge: 'Respuesta a Historia',
       desc: 'Responde automáticamente a interacciones en tus historias activas.',
     },
     first_message: {
-      gradient: 'from-emerald-500/15 via-surface-2 to-surface',
-      iconColor: 'text-emerald-500',
+      gradient: 'from-accent/15 via-surface-2 to-surface',
+      iconColor: 'text-accent',
       badge: 'Primer Mensaje',
       desc: 'Saluda y guía al usuario la primera vez que abre conversación contigo.',
     },
     default_reply: {
-      gradient: 'from-amber-500/15 via-surface-2 to-surface',
-      iconColor: 'text-amber-500',
+      gradient: 'from-surface-2 via-surface-2 to-surface',
+      iconColor: 'text-muted',
       badge: 'Respuesta por Defecto',
       desc: 'Contesta cuando ningún otro disparador o palabra clave coincide.',
     },

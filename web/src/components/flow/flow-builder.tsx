@@ -321,7 +321,7 @@ function Canvas({
           >
             <Background variant={BackgroundVariant.Dots} gap={18} size={1} color="var(--border)" />
             <Controls
-              className="!rounded-xl !border !border-border !bg-surface !shadow-none [&>button]:!border-border [&>button]:!bg-surface [&>button]:!fill-[var(--muted)]"
+              className="!overflow-hidden !rounded-xl !border !border-border !bg-surface !shadow-none [&>button]:!border-border [&>button]:!bg-surface [&>button]:!fill-[var(--muted)]"
               showInteractive={false}
             />
           </ReactFlow>

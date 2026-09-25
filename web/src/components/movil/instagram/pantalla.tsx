@@ -649,16 +649,9 @@ function AudienciaMovil({ t }: { t: TableroIg }) {
 function BandejaMovil({ t, r }: { t: TableroIg; r: Resumen }) {
   const b = bandejaDelPeriodo(t, r.enVivo);
   return (
-    <Seccion titulo={`Bandeja y leads ${textoRango(r.rango)}`}>
+    <Seccion titulo={`Bandeja ${textoRango(r.rango)}`}>
       <FilaEnlace href="/m/contactos" titulo="Te escribieron por primera vez" valor={entero(b.personasNuevas)} />
-      <FilaEnlace href="/m/automatizaciones" titulo="Respuestas automáticas" valor={entero(b.disparos)} />
-      <FilaEnlace
-        href="/m/leads"
-        titulo="Leads del cotizador"
-        subtitulo={b.leads ? `${entero(b.leadsIg)} llegaron desde Instagram` : undefined}
-        valor={entero(b.leads)}
-        ultima
-      />
+      <FilaEnlace href="/m/automatizaciones" titulo="Respuestas automáticas" valor={entero(b.disparos)} ultima />
     </Seccion>
   );
 }

@@ -98,7 +98,9 @@ export function BarraMovil({ user }: { user: AppUser }) {
                   className="grid h-9 w-9 place-items-center rounded-xl text-muted transition-colors hover:bg-surface-2 hover:text-txt"
                   aria-label="Cambiar tema"
                 >
-                  {resolvedTheme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  {/* El tema lo sabe el CSS desde el primer pintado; el servidor no. Así no hay desajuste al hidratar. */}
+                  <Sun className="hidden h-4 w-4 dark:block" />
+                  <Moon className="h-4 w-4 dark:hidden" />
                 </button>
                 <button
                   onClick={salir}

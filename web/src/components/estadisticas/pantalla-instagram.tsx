@@ -269,7 +269,7 @@ function Tablero({ tablero: t, rango, className }: { tablero: TableroIg; rango: 
         {esUnDia(rango)
           ? `Se ve el ${fechaCorta(r.actual.desde)}${rango === 'ayer' ? `, contra el ${fechaCorta(r.anterior.desde)}` : ''}.`
           : `Del ${fechaCorta(r.actual.desde)} al ${fechaCorta(r.actual.hasta)}, contra el ${fechaCorta(r.anterior.desde)} al ${fechaCorta(r.anterior.hasta)}.`}{' '}
-        Publicaciones, DMs y leads se cuentan en vivo.
+        Publicaciones y DMs se cuentan en vivo.
       </p>
     </div>
   );

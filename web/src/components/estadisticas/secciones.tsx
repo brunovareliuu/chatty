@@ -396,27 +396,20 @@ function Par({ label, valor }: { label: string; valor: number | undefined }) {
   );
 }
 
-/** `periodo` incluye hoy: los DMs y los leads se cuentan en vivo. `texto`: «hoy», «en 28 días». */
+/** `periodo` incluye hoy: los DMs se cuentan en vivo. `texto`: «hoy», «en 28 días». */
 export function Bandeja({ tablero, periodo, texto }: { tablero: TableroIg; periodo: Periodo; texto: string }) {
   const b = bandejaDelPeriodo(tablero, periodo);
   const mini: { label: string; valor: number; detalle?: string; href: string }[] = [
     { label: 'Te escribieron por primera vez', valor: b.personasNuevas, href: '/contacts' },
     { label: 'Respuestas automáticas', valor: b.disparos, href: '/automations' },
-    { label: 'Leads del cotizador', valor: b.leads, href: '/leads' },
-    {
-      label: 'Leads desde Instagram',
-      valor: b.leadsIg,
-      detalle: b.leads ? `${Math.round((b.leadsIg / b.leads) * 100)}% del total` : undefined,
-      href: '/leads',
-    },
   ];
   return (
     <Tarjeta
-      titulo="Tu bandeja y tus leads"
-      detalle={`Lo que pasó en tus DMs y en el cotizador ${texto}.`}
+      titulo="Tu bandeja"
+      detalle={`Lo que pasó en tus DMs ${texto}.`}
     >
       <div className="grid items-start gap-6 lg:grid-cols-[3fr_2fr]">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3">
           {mini.map((m) => (
             <Link
               key={m.label}

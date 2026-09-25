@@ -16,12 +16,12 @@ export function aFecha(ts: unknown): Date | null {
 /** «ahora», «hace 5 min», «ayer», «12 mar» — el estilo corto de iOS. */
 export function hace(d: Date | null): string {
   if (!d) return '';
-  const min = Math.round((Date.now() - d.getTime()) / 60000);
+  const min = Math.floor((Date.now() - d.getTime()) / 60000);
   if (min < 1) return 'ahora';
   if (min < 60) return `hace ${min} min`;
-  const h = Math.round(min / 60);
+  const h = Math.floor(min / 60);
   if (h < 24) return `hace ${h} h`;
-  const dias = Math.round(h / 24);
+  const dias = Math.floor(h / 24);
   if (dias === 1) return 'ayer';
   if (dias < 7) return `hace ${dias} d`;
   return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });

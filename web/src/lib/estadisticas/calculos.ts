@@ -127,7 +127,7 @@ export function periodo(hoy: string, rango: Rango, anterior = false): Periodo {
 }
 
 /**
- * Para lo que se cuenta en vivo (publicaciones, DMs, leads): los mismos días
+ * Para lo que se cuenta en vivo (publicaciones y DMs): los mismos días
  * pero incluyendo hoy. Un post de hoy es de «estos 28 días» aunque Meta
  * todavía no cierre sus números.
  */
@@ -311,7 +311,7 @@ export type Resumen = {
   /** Días completos (terminan ayer): lo que cuenta Meta. */
   actual: Periodo;
   anterior: Periodo;
-  /** Los mismos días hasta hoy: publicaciones, DMs y leads. */
+  /** Los mismos días hasta hoy: publicaciones y DMs. */
   enVivo: Periodo;
   enVivoAnterior: Periodo;
   seguidores: {

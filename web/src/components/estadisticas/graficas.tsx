@@ -81,7 +81,7 @@ export function GraficaDia({
               tick={EJE}
               tickLine={false}
               axisLine={false}
-              width={48}
+              width={58}
               allowDecimals={false}
               tickFormatter={(v: number) => compacto(v)}
             />
@@ -105,7 +105,7 @@ export function GraficaDia({
               tick={EJE}
               tickLine={false}
               axisLine={false}
-              width={48}
+              width={58}
               allowDecimals={false}
               domain={['auto', 'auto']}
               tickFormatter={(v: number) => compacto(v)}

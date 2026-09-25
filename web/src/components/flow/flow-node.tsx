@@ -63,7 +63,7 @@ function FlowNodeCard({ id, type, data, selected }: NodeProps<ChattyNode>) {
             return (
               <div key={out.id} className="min-w-0 flex-1">
                 {!single && (
-                  <div className="truncate rounded-md bg-surface-2 px-1.5 py-1 text-center text-[10px] font-semibold text-muted">
+                  <div className="line-clamp-2 rounded-md bg-surface-2 px-1.5 py-1 text-center text-[10px] leading-tight font-semibold break-words text-muted">
                     {out.label}
                   </div>
                 )}

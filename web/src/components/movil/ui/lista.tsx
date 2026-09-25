@@ -182,7 +182,7 @@ export function FilaBoton({
  */
 export function IconoFila({
   icon: Icon,
-  tono = 'bg-accent',
+  tono = 'bg-accent text-accent-fg',
 }: {
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   tono?: string;

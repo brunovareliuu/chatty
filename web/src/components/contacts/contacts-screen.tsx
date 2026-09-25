@@ -224,7 +224,7 @@ function ContactDialog({
               {fields.map(([k, v]) => (
                 <div key={k} className="flex items-baseline justify-between gap-3 px-3 py-2">
                   <span className="text-[13px] text-muted">{k}</span>
-                  <span className="min-w-0 truncate text-[13px] font-medium">{String(v)}</span>
+                  <span className="min-w-0 truncate text-[13px] font-medium">{typeof v === 'boolean' ? (v ? 'Sí' : 'No') : String(v)}</span>
                 </div>
               ))}
             </div>

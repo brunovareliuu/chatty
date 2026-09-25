@@ -193,7 +193,7 @@ function HojaContacto({
                 titulo={<span className="block truncate text-[17px] text-muted">{k}</span>}
                 valor={
                   <span className="max-w-[55%] truncate text-[17px] font-medium text-txt">
-                    {String(v)}
+                    {typeof v === 'boolean' ? (v ? 'Sí' : 'No') : String(v)}
                   </span>
                 }
                 ultima={i === campos.length - 1}

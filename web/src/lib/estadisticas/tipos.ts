@@ -225,10 +225,6 @@ export type BandejaDia = {
   personasNuevas?: number;
   /** Automatizaciones que arrancaron un flujo. */
   disparos?: number;
-  /** Leads del cotizador… */
-  leads?: number;
-  /** …y cuántos de ellos llegaron desde Instagram. */
-  leadsIg?: number;
 };
 
 /** Todo lo que pinta la pantalla, en una sola respuesta. */

@@ -260,13 +260,11 @@ export function desgloseInteracciones(r: Resumen): RenglonDesglose[] {
 export type BandejaPeriodo = Required<BandejaDia>;
 
 export function bandejaDelPeriodo(t: TableroIg, p: Periodo): BandejaPeriodo {
-  const total: BandejaPeriodo = { personasNuevas: 0, disparos: 0, leads: 0, leadsIg: 0 };
+  const total: BandejaPeriodo = { personasNuevas: 0, disparos: 0 };
   for (const [fecha, d] of Object.entries(t.bandeja)) {
     if (!enPeriodo(fecha, p)) continue;
     total.personasNuevas += d.personasNuevas ?? 0;
     total.disparos += d.disparos ?? 0;
-    total.leads += d.leads ?? 0;
-    total.leadsIg += d.leadsIg ?? 0;
   }
   return total;
 }

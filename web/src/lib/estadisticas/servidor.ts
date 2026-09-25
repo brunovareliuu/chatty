@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { Timestamp, type WriteBatch } from 'firebase-admin/firestore';
+import type { WriteBatch } from 'firebase-admin/firestore';
 import { adminDb } from '@/lib/firebase-admin';
 import {
   accountRef,
@@ -845,17 +845,12 @@ export async function leerTablero(account: IgAccount): Promise<TableroIg> {
   };
 }
 
-/** Lo que pasó en la bandeja y en el cotizador, por día de Instagram. */
+/** Lo que pasó en la bandeja, por día de Instagram. */
 async function leerBandeja(accountId: string, desde: string): Promise<Record<string, BandejaDia>> {
   const desdeMs = inicioDiaIg(desde);
-  const [contactos, corridas, leads] = await Promise.all([
+  const [contactos, corridas] = await Promise.all([
     contactsCol(accountId).where('firstSeenAt', '>=', desdeMs).select('firstSeenAt').get(),
     runsCol(accountId).where('startedAt', '>=', desdeMs).select('startedAt').get(),
-    adminDb
-      .collection('solicitudesCotizacion')
-      .where('createdAt', '>=', Timestamp.fromMillis(desdeMs))
-      .select('createdAt', 'source')
-      .get(),
   ]);
 
   const dias: Record<string, BandejaDia> = {};
@@ -871,12 +866,6 @@ async function leerBandeja(accountId: string, desde: string): Promise<Record<str
   for (const d of corridas.docs) {
     const t = d.get('startedAt');
     if (typeof t === 'number') suma(t, 'disparos');
-  }
-  for (const d of leads.docs) {
-    const t = d.get('createdAt') as Timestamp | undefined;
-    if (!t?.toMillis) continue;
-    suma(t.toMillis(), 'leads');
-    if (d.get('source') === 'instagram') suma(t.toMillis(), 'leadsIg');
   }
   return dias;
 }

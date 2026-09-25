@@ -20,7 +20,7 @@ export function Switch({
       onCheckedChange={onCheckedChange}
       disabled={disabled}
       className={cn(
-        'relative h-6 w-10 shrink-0 rounded-full transition-colors disabled:opacity-40',
+        'relative inline-flex h-6 w-10 shrink-0 items-center rounded-full transition-colors disabled:opacity-40',
         checked ? 'bg-accent' : 'bg-surface-2',
         className,
       )}

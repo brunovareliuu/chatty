@@ -11,7 +11,8 @@ import {
 let pass = 0, fail = 0;
 const check = (name: string, actual: unknown, expected: unknown) => {
   const ok = JSON.stringify(actual) === JSON.stringify(expected);
-  ok ? pass++ : fail++;
+  if (ok) pass++;
+  else fail++;
   if (!ok) console.log(`  ✗ ${name}\n      esperado: ${JSON.stringify(expected)}\n      obtenido: ${JSON.stringify(actual)}`);
 };
 

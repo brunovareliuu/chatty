@@ -109,7 +109,7 @@ export function PantallaHoy() {
           <FilaEnlace
             key={c.id}
             href={`/m/bandeja/${c.id}`}
-            izquierda={<Avatar src={c.contactPic} name={c.contactUsername ?? c.contactName ?? '?'} size={29} />}
+            izquierda={<Avatar src={c.contactPic} name={c.contactName ?? c.contactUsername ?? '?'} size={29} />}
             titulo={c.contactName || (c.contactUsername ? `@${c.contactUsername}` : 'Alguien')}
             subtitulo={c.lastMessagePreview}
             derecha={(c.unreadCount ?? 0) > 0 ? <Globo n={c.unreadCount ?? 0} /> : undefined}

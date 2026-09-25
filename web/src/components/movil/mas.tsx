@@ -5,10 +5,21 @@ import { useTheme } from 'next-themes';
 import { signOut } from 'firebase/auth';
 import { Bell, ListChecks, Monitor, MessageCircle, Moon, Palette, Settings, Sparkles, Sun, TrendingUp, Users, Zap } from 'lucide-react';
 import { auth } from '@/lib/firebase';
+import { cn } from '@/lib/utils';
 import { useAccounts } from '@/lib/client/accounts-context';
 import { Avatar } from '@/components/ui/avatar';
 import { Pantalla } from '@/components/movil/ui/pantalla';
 import { Seccion, Fila, FilaBoton, FilaEnlace, IconoFila } from '@/components/movil/ui/lista';
+
+/** Sol en oscuro, luna en claro: lo decide el CSS desde el primer pintado. */
+function IconoTema({ className, strokeWidth }: { className?: string; strokeWidth?: number }) {
+  return (
+    <>
+      <Sun className={cn(className, 'hidden dark:block')} strokeWidth={strokeWidth} />
+      <Moon className={cn(className, 'dark:hidden')} strokeWidth={strokeWidth} />
+    </>
+  );
+}
 
 /**
  * Más — el cajón con lo que no cabe en las cuatro pestañas. La regla es que
@@ -59,9 +70,15 @@ export function PantallaMas() {
         />
         <FilaBoton
           onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-          izquierda={<IconoFila icon={resolvedTheme === 'dark' ? Sun : Moon} tono="bg-txt text-bg" />}
+          izquierda={<IconoFila icon={IconoTema} tono="bg-txt text-bg" />}
           titulo="Apariencia"
-          valor={resolvedTheme === 'dark' ? 'Oscuro' : 'Claro'}
+          valor={
+            // Con clases `dark:`, no con `resolvedTheme`: el servidor no sabe el tema.
+            <>
+              <span className="dark:hidden">Claro</span>
+              <span className="hidden dark:inline">Oscuro</span>
+            </>
+          }
           ultima
         />
       </Seccion>
