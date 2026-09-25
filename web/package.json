@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node --experimental-strip-types --no-warnings scripts/engine-test.ts && node --experimental-strip-types --no-warnings scripts/estadisticas-test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "plantilla": "node --experimental-strip-types --no-warnings scripts/cargar-plantilla.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",

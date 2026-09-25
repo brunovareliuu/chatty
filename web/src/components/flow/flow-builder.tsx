@@ -312,6 +312,8 @@ function Canvas({
             onSelectionChange={onSelectionChange}
             nodeTypes={nodeTypes}
             fitView
+            // El mínimo de React Flow (0.5) no deja ver entero un flujo de más de ~20 nodos.
+            minZoom={0.1}
             proOptions={{ hideAttribution: true }}
             defaultEdgeOptions={{ animated: true }}
             deleteKeyCode={['Backspace', 'Delete']}

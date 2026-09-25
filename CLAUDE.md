@@ -94,7 +94,9 @@ aunque lo saquen de la lista: para quitarle el acceso hay que borrarlo.
 | `web/src/lib/guia/` | El catálogo de pasos por sección y qué ya está hecho. |
 | `web/src/lib/marca.ts` | La marca de quien usa el panel (`MARCA`, `SITE_URL`, `SITE_DOMINIO`, `ZONA_HORARIA`). Puro. |
 | `web/src/lib/env.ts` | `requireEnv()` y `appUrl()`. |
-| `web/src/components/flow/node-config.tsx` | Metadata de nodos: iconos, puertos, resúmenes. |
+| `web/src/components/flow/node-config.tsx` | Metadata de nodos: iconos y resúmenes. |
+| `web/src/lib/engine/puertos.ts` | `outputHandles()`: los puertos de salida de cada nodo (puro; lo usan el lienzo y las pruebas). |
+| `web/src/lib/engine/plantilla-lanzamiento.ts` | La plantilla «Lanzamiento de un repo» (55 nodos); se carga con `npm run plantilla`. |
 | `web/src/app/api/cron/tick/route.ts` | El latido: esperas, timeouts, tokens, seguidores y estadísticas. |
 
 ## Asistente (`/asistente`)
@@ -182,7 +184,7 @@ prueba en `scripts/probar-reglas.sh` si la toca el navegador.
 
 ## Reglas que no se rompen
 
-**Los IDs de puerto son un contrato.** `outputHandles()` en `node-config.tsx` y el `case` en
+**Los IDs de puerto son un contrato.** `outputHandles()` en `lib/engine/puertos.ts` y el `case` en
 `runner.ts` tienen que devolver los mismos identificadores (`'true'`/`'false'`,
 `'answered'`/`'timeout'`, `'follows'`/`'timeout'`, el id del botón, `'next'`). Si no coinciden,
 las aristas dejan de enrutar **en silencio**: sin error, el flujo simplemente se corta.
@@ -278,8 +280,8 @@ Producción despliega sola con cada push a la rama conectada en App Hosting
 1. `web/src/lib/types.ts` — nombre en `NodeType`, campos en `FlowNodeData`.
 2. `web/src/lib/engine/runner.ts` — un `case` en `runNode` que devuelva `continue`, `sleep`,
    `wait_reply` o `stop`. Si manda mensajes, súmalo a `SENDING_NODES`.
-3. `web/src/components/flow/node-config.tsx` — entrada en `NODE_META`, puertos en
-   `outputHandles` y resumen en `nodeSummary`.
+3. `web/src/components/flow/node-config.tsx` — entrada en `NODE_META` y resumen en
+   `nodeSummary`; sus puertos, en `outputHandles` de `web/src/lib/engine/puertos.ts`.
 4. `web/src/components/flow/node-inspector.tsx` — el formulario para editarlo.
 
 `outputHandles` y el `case` del runner tienen que usar los mismos identificadores de puerto.

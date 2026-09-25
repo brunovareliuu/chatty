@@ -109,6 +109,42 @@ Los flujos dormidos (Esperar, preguntas con tiempo) dependen del [cron](../07-cr
   CRM → etiqueta `lead`.
 - *Fuera de horario*: respuesta por defecto → mensaje con tu horario → «Pasar a humano».
 
+## Plantilla: «Lanzamiento de un repo»
+
+Un flujo grande, listo para cargar, que usa los 16 tipos de nodo. Sirve para repartir un
+proyecto de GitHub desde un reel: comentan una palabra y el flujo hace lo demás.
+
+```
+comentario → respuesta privada → pedir que te siga → ¿qué te describe?
+  ├─ Creo contenido  → pregunta sus seguidores → con +10k ofrece una llamada → pasa a humano
+  ├─ Tengo negocio   → nombre y DMs al día → con +30 ofrece instalarlo → pasa a humano
+  ├─ Programo        → estrellas en vivo de la API de GitHub → enlace e imagen del repo
+  └─ Solo curioseo   → qué es en corto → enlace
+→ a las 18 h: «¿pudiste probarlo?» → listo / me atoré (pasa a humano) / aún no
+```
+
+Se carga en tu cuenta conectada con las mismas credenciales que el servidor en local
+(`FIREBASE_SERVICE_ACCOUNT` en `.env.local`, o `gcloud auth application-default login`):
+
+```bash
+cd web
+npm run plantilla -- --repo tu-usuario/tu-repo --palabra CHATTY
+```
+
+| Opción | Qué hace |
+|---|---|
+| `--repo usuario/repo` | Obligatoria. El repo tiene que ser público: el flujo lee sus estrellas y su imagen. |
+| `--palabra CHATTY` | La palabra que comentan. Por omisión, el nombre del repo. |
+| `--nombre Chatty` | Cómo se llama el proyecto en los mensajes. |
+| `--descripcion "…"` | Lo que lee quien «solo curiosea». |
+| `--firebase mi-chatty` | El proyecto de Firebase. Por omisión, el de `.env.local`. |
+| `--cuenta 1784…` | El id de Instagram, si tienes más de una cuenta conectada. |
+| `--activar` | La deja prendida. Sin esto nace apagada, para que la revises en el lienzo. |
+
+Si ya existe una automatización con el mismo nombre, le cambia el flujo y el disparador y
+conserva sus números: se puede correr las veces que haga falta. Con `FIRESTORE_EMULATOR_HOST`
+escribe al emulador.
+
 ## Para programadores
 
 - El modelo completo está en `web/src/lib/types.ts`. Empieza ahí.
