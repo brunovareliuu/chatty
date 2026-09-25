@@ -64,8 +64,10 @@ export function buildLanzamientoRepo(opts: OpcionesLanzamiento): Plantilla {
   const nodes: FlowNode[] = [];
   const edges: FlowEdge[] = [];
 
-  const nodo = (id: string, type: NodeType, col: number, fila: number, data: FlowNodeData = {}) => {
-    nodes.push({ id, type, position: { x: col * COL, y: fila * FILA }, data });
+  // `ancho`: el lienzo ensancha los nodos con muchas salidas (78 px cada una, 240 como mínimo;
+  // `flow-node.tsx`). Se recorren a la izquierda la mitad de lo que crecen, para seguir centrados.
+  const nodo = (id: string, type: NodeType, col: number, fila: number, data: FlowNodeData = {}, ancho = 240) => {
+    nodes.push({ id, type, position: { x: col * COL - (ancho - 240) / 2, y: fila * FILA }, data });
   };
   /**
    * Si la persona escribe en vez de tocar un botón y el texto no coincide con
@@ -104,7 +106,7 @@ export function buildLanzamientoRepo(opts: OpcionesLanzamiento): Plantilla {
       { id: 'dev', title: '💻 Programo' },
       { id: 'curioso', title: '👀 Solo curioseo' },
     ],
-  });
+  }, 312);
 
   arista('trigger', 'next', 'privada');
   arista('privada', 'next', 'comento');

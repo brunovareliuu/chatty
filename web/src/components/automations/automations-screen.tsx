@@ -380,7 +380,7 @@ export function AutomationsScreen() {
         {/* ESTADOS DE CARGA Y VACÍO                                                  */}
         {/* ========================================================================= */}
         {loading && (
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <div className={REJILLA}>
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
@@ -430,7 +430,7 @@ export function AutomationsScreen() {
         {/* VISTA EN CUADRÍCULA ("CUADRADOS" GRANDES HORIZONTALES)                    */}
         {/* ========================================================================= */}
         {!loading && viewMode === 'grid' && filteredAutomations.length > 0 && (
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <div className={REJILLA}>
             {filteredAutomations.map((a) => {
               const flow = flows.find((f) => f.id === a.flowId);
               const postIds = a.trigger.type === 'comment_keyword' ? a.trigger.postIds : [];
@@ -502,6 +502,12 @@ export function AutomationsScreen() {
 // =============================================================================
 // COMPONENTE TARJETA ("CUADRADO") DE AUTOMATIZACIÓN
 // =============================================================================
+/**
+ * Con la portada al lado del cuerpo, una tarjeta necesita ~620 px para que no se
+ * corte nada. Por eso van dos columnas solo en pantallas muy anchas.
+ */
+const REJILLA = 'grid grid-cols-1 gap-5 min-[1600px]:grid-cols-2';
+
 function AutomationCard({
   automation,
   flow,
@@ -531,7 +537,7 @@ function AutomationCard({
       {/* --------------------------------------------------------------------- */}
       {/* CABECERA VISUAL: EL POST / POSTS ATACADOS EN LA IZQUIERDA             */}
       {/* --------------------------------------------------------------------- */}
-      <div className="w-full sm:w-[200px] shrink-0 border-b border-border sm:border-b-0 sm:border-r">
+      <div className="w-full sm:w-[220px] xl:w-[260px] shrink-0 border-b border-border sm:border-b-0 sm:border-r">
         {isCommentTrigger ? (
           <CommentPostHeader posts={posts} totalSelectedIds={postIdsCount} />
         ) : (
@@ -778,12 +784,12 @@ function CommentPostHeader({
             {p?.timestamp && <span>{dateFmt.format(new Date(p.timestamp))}</span>}
             <span className="flex items-center gap-1">
               <MessageCircle className="h-3.5 w-3.5" />
-              {p?.comments_count ?? 0} comentarios
+              {(p?.comments_count ?? 0).toLocaleString('es-MX')} comentarios
             </span>
             {p?.like_count !== undefined && (
               <span className="flex items-center gap-1">
                 <Heart className="h-3.5 w-3.5" />
-                {p.like_count}
+                {p.like_count.toLocaleString('es-MX')}
               </span>
             )}
           </div>
@@ -818,7 +824,7 @@ function CommentPostHeader({
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 text-[10px] text-white">
             <span className="flex items-center gap-1 font-medium">
               <MessageCircle className="h-3 w-3" />
-              {first?.comments_count ?? 0}
+              {(first?.comments_count ?? 0).toLocaleString('es-MX')}
             </span>
           </div>
         </div>
@@ -848,7 +854,7 @@ function CommentPostHeader({
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 text-[10px] text-white">
             <span className="flex items-center gap-1 font-medium">
               <MessageCircle className="h-3 w-3" />
-              {second?.comments_count ?? 0}
+              {(second?.comments_count ?? 0).toLocaleString('es-MX')}
             </span>
           </div>
         </div>
