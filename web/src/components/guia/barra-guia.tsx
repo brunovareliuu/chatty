@@ -19,8 +19,7 @@ import {
 import type { ModuloId } from '@/lib/guia/pasos';
 import { cn } from '@/lib/utils';
 import { cuenta, useHechos, type Resumen } from './hechos';
-import { LogoMarca } from '@/components/identidad/logo';
-import { useIdentidad } from '@/components/identidad/proveedor';
+import { LogoConNombre } from '@/components/identidad/logo';
 
 /**
  * La barra del modo guía: la misma del panel, con sus mismas secciones, pero
@@ -42,7 +41,6 @@ export function BarraGuia({ entradas, todos }: { entradas: EntradaGuia[]; todos:
   const pathname = usePathname();
   const hechos = useHechos();
   const { resolvedTheme, setTheme } = useTheme();
-  const { nombre } = useIdentidad();
   const global = cuenta(todos, hechos);
   const instagram = entradas.filter((e) => e.id !== 'ajustes');
   const panel = entradas.filter((e) => e.id === 'ajustes');
@@ -77,8 +75,7 @@ export function BarraGuia({ entradas, todos }: { entradas: EntradaGuia[]; todos:
       {/* Escritorio */}
       <aside className="hidden w-[248px] shrink-0 flex-col border-r border-border bg-surface md:flex">
         <div className="flex items-center gap-2.5 pt-4 pr-3 pb-4 pl-4">
-          <LogoMarca tam={26} />
-          <span className="min-w-0 truncate text-[17px] font-bold tracking-[-0.3px]">{nombre}</span>
+          <LogoConNombre tam={26} claseNombre="min-w-0 truncate text-[17px] font-bold tracking-[-0.3px]" />
           <span className="shrink-0 rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent">Modo guía</span>
         </div>
 
@@ -117,8 +114,7 @@ export function BarraGuia({ entradas, todos }: { entradas: EntradaGuia[]; todos:
       {/* Celular: la misma navegación, en una tira que se desliza */}
       <div className="border-b border-border bg-surface pt-[env(safe-area-inset-top)] md:hidden">
         <div className="flex items-center gap-2.5 px-4 pt-3 pb-2">
-          <LogoMarca tam={24} />
-          <span className="min-w-0 truncate text-[17px] font-bold tracking-[-0.3px]">{nombre}</span>
+          <LogoConNombre tam={24} claseNombre="min-w-0 truncate text-[17px] font-bold tracking-[-0.3px]" />
           <span className="shrink-0 rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent">Modo guía</span>
           <span className="ml-auto shrink-0 text-[12px] font-semibold tabular-nums text-muted">
             {global.listos}/{global.total} pasos

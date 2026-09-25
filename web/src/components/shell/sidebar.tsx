@@ -12,8 +12,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { AccountSwitcher } from './account-switcher';
 import { NAV, estaActivo } from './navegacion';
 import { cuenta, useHechos, type Resumen } from '@/components/guia/hechos';
-import { LogoMarca } from '@/components/identidad/logo';
-import { useIdentidad } from '@/components/identidad/proveedor';
+import { LogoConNombre } from '@/components/identidad/logo';
 import type { AppUser } from '@/lib/types';
 
 
@@ -55,7 +54,6 @@ export function Sidebar({ user, pasos = [] }: { user: AppUser; pasos?: Resumen[]
   const guiaActiva = estaActivo(pathname, '/primeros-pasos');
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
-  const { nombre } = useIdentidad();
   // En el servidor siempre visible; el navegador aplica lo guardado al hidratar.
   const oculta = useSyncExternalStore(suscribe, leeOculta, () => false);
 
@@ -97,8 +95,7 @@ export function Sidebar({ user, pasos = [] }: { user: AppUser; pasos?: Resumen[]
     <aside className="hidden w-[248px] shrink-0 flex-col border-r border-border bg-surface md:flex">
       <div className="flex items-center justify-between gap-2 pt-4 pr-3 pb-3 pl-4">
         <div className="flex min-w-0 items-center gap-2.5">
-          <LogoMarca tam={26} />
-          <span className="truncate text-[17px] font-bold tracking-[-0.3px]">{nombre}</span>
+          <LogoConNombre tam={26} claseNombre="truncate text-[17px] font-bold tracking-[-0.3px]" />
         </div>
         <button
           onClick={() => ponOculta(true)}

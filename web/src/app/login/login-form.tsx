@@ -11,8 +11,9 @@ import {
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
-import { LogoMarca } from '@/components/identidad/logo';
+import { Letrero, LogoMarca } from '@/components/identidad/logo';
 import { useIdentidad } from '@/components/identidad/proveedor';
+import { usaLetrero } from '@/lib/identidad/tipos';
 
 /**
  * Dos formas de entrar: correo y contraseña (la cuenta del admin) o Google.
@@ -25,7 +26,8 @@ export function LoginForm() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState<'correo' | 'google' | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { nombre } = useIdentidad();
+  const identidad = useIdentidad();
+  const letrero = usaLetrero(identidad);
 
   async function completa(credential: UserCredential) {
     const idToken = await credential.user.getIdToken();
@@ -92,9 +94,11 @@ export function LoginForm() {
     <main className="flex min-h-dvh items-center justify-center bg-bg px-5">
       <div className="w-full max-w-[380px] animate-rise">
         <div className="mb-8 flex flex-col items-center gap-4 text-center">
-          <LogoMarca tam={56} />
+          {!letrero && <LogoMarca tam={56} />}
           <div className="space-y-1.5">
-            <h1 className="text-[32px] font-bold tracking-[-0.8px]">{nombre}</h1>
+            <h1 className="text-[32px] font-bold tracking-[-0.8px]">
+              {letrero ? <Letrero alto={56} className="mx-auto mb-3" /> : identidad.nombre}
+            </h1>
             <p className="text-[15px] text-muted">Tu bandeja y tus automatizaciones de Instagram.</p>
           </div>
         </div>

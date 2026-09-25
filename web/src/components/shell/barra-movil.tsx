@@ -12,8 +12,7 @@ import { Avatar } from '@/components/ui/avatar';
 import type { AppUser } from '@/lib/types';
 import { AccountSwitcher } from './account-switcher';
 import { NAV, NAV_MOVIL, estaActivo } from './navegacion';
-import { LogoMarca } from '@/components/identidad/logo';
-import { useIdentidad } from '@/components/identidad/proveedor';
+import { LogoConNombre } from '@/components/identidad/logo';
 
 /**
  * La navegación del celular: cuatro destinos fijos abajo y «Más» con el menú
@@ -25,7 +24,6 @@ export function BarraMovil({ user }: { user: AppUser }) {
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
   const [abierta, setAbierta] = useState(false);
-  const { nombre } = useIdentidad();
 
   const enFijos = NAV_MOVIL.some((d) => estaActivo(pathname, d.href));
 
@@ -89,8 +87,7 @@ export function BarraMovil({ user }: { user: AppUser }) {
           <div className="absolute inset-x-0 bottom-[calc(60px+env(safe-area-inset-bottom))] max-h-[calc(100dvh-60px-env(safe-area-inset-bottom)-24px)] overflow-y-auto rounded-t-[28px] border-t border-border bg-surface shadow-2xl shadow-black/30 animate-rise">
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-surface px-5 pt-4 pb-3">
               <div className="flex min-w-0 items-center gap-2.5">
-                <LogoMarca tam={26} />
-                <span className="truncate text-[17px] font-bold tracking-[-0.3px]">{nombre}</span>
+                <LogoConNombre tam={26} claseNombre="truncate text-[17px] font-bold tracking-[-0.3px]" />
               </div>
               <div className="flex items-center gap-1">
                 <button

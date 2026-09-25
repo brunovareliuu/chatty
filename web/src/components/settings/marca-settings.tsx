@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { LogoMarca } from '@/components/identidad/logo';
+import { LogoConNombre, LogoMarca } from '@/components/identidad/logo';
 import { borrarLocal, guardarLocal, useEditorIdentidad, useIdentidadLocal } from '@/components/identidad/proveedor';
 import { marcar } from '@/components/guia/hechos';
 import {
@@ -384,11 +384,12 @@ function Muestra({ modo, borrador }: { modo: 'claro' | 'oscuro'; borrador: Borra
       )}
     >
       <div className="flex items-center gap-2 border-b border-border bg-surface px-3.5 py-2.5">
-        <LogoMarca tam={22} identidad={borrador} />
-        <span className="min-w-0 flex-1 truncate text-[14px] font-bold tracking-[-0.2px]">
-          {borrador.nombre.trim() || DE_FABRICA.nombre}
-        </span>
-        <span className="text-[11px] font-semibold text-muted">{modo === 'claro' ? 'Claro' : 'Oscuro'}</span>
+        <LogoConNombre
+          tam={22}
+          identidad={{ ...borrador, nombre: borrador.nombre.trim() || DE_FABRICA.nombre }}
+          claseNombre="min-w-0 truncate text-[14px] font-bold tracking-[-0.2px]"
+        />
+        <span className="ml-auto text-[11px] font-semibold text-muted">{modo === 'claro' ? 'Claro' : 'Oscuro'}</span>
       </div>
       <div className="space-y-3 p-3.5">
         <div className="flex items-center gap-2.5 rounded-xl bg-surface-2 px-3 py-2 text-[13px] font-medium">
