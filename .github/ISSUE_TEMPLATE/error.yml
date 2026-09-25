@@ -1,0 +1,62 @@
+name: Algo no funciona
+description: Un error de Chatty (no un límite de Meta: esos están en el README).
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por reportarlo. Antes, revisa [Solución de problemas](https://github.com/brunovareliuu/chatty/blob/main/docs/solucion-de-problemas.md) y los [límites de Meta](https://github.com/brunovareliuu/chatty#límites-que-impone-meta-no-son-bugs).
+        **No pegues tokens, llaves ni datos de tus seguidores.**
+  - type: dropdown
+    id: donde
+    attributes:
+      label: ¿Dónde pasa?
+      options:
+        - Instalación o despliegue
+        - Modo guía / Primeros pasos
+        - Bandeja
+        - Automatizaciones o flujos
+        - Contactos
+        - Estadísticas
+        - Asistente
+        - App del celular o avisos
+        - Ajustes / Marca
+        - Otro
+    validations:
+      required: true
+  - type: textarea
+    id: que-pasa
+    attributes:
+      label: Qué pasa
+      description: Lo que ves, y lo que esperabas ver.
+    validations:
+      required: true
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Cómo reproducirlo
+      placeholder: |
+        1. Voy a…
+        2. Toco…
+        3. Aparece…
+    validations:
+      required: true
+  - type: textarea
+    id: registros
+    attributes:
+      label: Registros
+      description: Lo que diga la consola del navegador o los registros de App Hosting (sin tokens).
+      render: shell
+  - type: input
+    id: version
+    attributes:
+      label: Versión
+      description: El tag o el commit que tienes desplegado.
+      placeholder: v0.1.0
+  - type: checkboxes
+    id: datos
+    attributes:
+      label: Antes de mandarlo
+      options:
+        - label: Quité tokens, llaves y datos personales de lo que pegué.
+          required: true

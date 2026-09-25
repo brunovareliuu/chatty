@@ -1,0 +1,21 @@
+name: Tengo una idea
+description: Algo que le falta a Chatty.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Qué te gustaría poder hacer
+      description: El problema que resuelve, más que la solución.
+    validations:
+      required: true
+  - type: textarea
+    id: como
+    attributes:
+      label: Cómo te lo imaginas
+  - type: checkboxes
+    id: meta
+    attributes:
+      label: Límites de Meta
+      options:
+        - label: Revisé que Instagram permita hacerlo (ventana de 24 h, un DM por comentario…).

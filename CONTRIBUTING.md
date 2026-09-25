@@ -7,7 +7,17 @@
 - Lee [CLAUDE.md](CLAUDE.md): la arquitectura, el mapa de archivos y las reglas que no se rompen
   (los IDs de puerto del motor, los tokens que nunca tocan el cliente, la cookie `__session`…).
 - Para algo grande, abre primero un issue contando qué quieres hacer. Nos ahorra a todos un PR
-  que no encaja.
+  que no encaja. Para dudas, [Discussions](https://github.com/brunovareliuu/chatty/discussions).
+
+## Cómo mandar un cambio
+
+1. Haz fork del repo y crea una rama desde `main` (`git switch -c arregla-la-bandeja`).
+2. Corre el panel en local: `cd web && npm install && npm run dev` (abre en modo guía, sin
+  configurar nada). Las pruebas piden **Node 22** o más nuevo (`web/.nvmrc`).
+3. Haz tus cambios con commits chicos y en español.
+4. Abre el pull request contra `main`. La plantilla te pide qué cambia, por qué y cómo lo
+  probaste; el [CI](.github/workflows/ci.yml) corre tipos, lint, pruebas, el build y las reglas
+  de Firestore.
 
 ## El código
 

@@ -6,8 +6,17 @@ Instagram, el cron y el asistente viven en la misma app.
 
 ## 1. Tu copia en GitHub
 
-Haz fork de este repo o súbelo a un repositorio tuyo (puede ser privado). App Hosting lo lee
-desde ahí.
+App Hosting lee el código de un repositorio de GitHub que sea tuyo. Dos formas de tenerlo:
+
+- **[Usa esta plantilla](https://github.com/brunovareliuu/chatty/generate)**: crea un repo tuyo,
+  que puede ser **privado**, con todo el código. Es lo recomendado: ahí van a vivir tu
+  `apphosting.yaml` y tu configuración.
+- **Fork**: tu copia queda pública, pero puedes jalar las actualizaciones de aquí con
+  **Sync fork**.
+
+Si usaste la plantilla y luego quieres traer una versión nueva, agrega este repo como remoto
+(`git remote add chatty https://github.com/brunovareliuu/chatty.git`), haz `git fetch chatty` y
+une `chatty/main` a tu rama.
 
 ## 2. Llena `web/apphosting.yaml`
 

@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  panel:
+    name: Tipos, lint, pruebas y build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          # Las pruebas corren con el type-stripping nativo de Node (22.6 o más nuevo).
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      # Los tipos de las rutas de Next se generan; un clon recién hecho no los trae.
+      - run: npx next typegen
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
+      # Sin variables de entorno: se construye en modo guía, como lo abre quien lo clona.
+      - run: npm run build
+
+  reglas:
+    name: Reglas de Firestore
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # El emulador de Firestore corre en la JVM.
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - run: npx --yes firebase-tools@15 emulators:exec --only firestore --project demo-chatty ./scripts/probar-reglas.sh
