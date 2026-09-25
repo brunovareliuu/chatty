@@ -1,7 +1,7 @@
 'use client';
 
 import { useId } from 'react';
-import { BURBUJA, type Identidad } from '@/lib/identidad/tipos';
+import { BURBUJA, DE_FABRICA, LETRERO, usaLetrero, type Identidad } from '@/lib/identidad/tipos';
 import { cn } from '@/lib/utils';
 import { useIdentidad } from './proveedor';
 
@@ -43,6 +43,51 @@ export function LogoMarca({
         <Burbuja className="h-[72%] w-[72%]" />
       )}
     </span>
+  );
+}
+
+/**
+ * El logo con el nombre, como va arriba de la barra. Con la identidad de
+ * fábrica es el letrero de Chatty; con tu logo o tu nombre, el cuadro y el
+ * nombre con `claseNombre`.
+ */
+export function LogoConNombre({
+  tam,
+  claseNombre,
+  identidad,
+}: {
+  tam: number;
+  claseNombre: string;
+  /** Para pintar otra que no es la actual (la vista previa). */
+  identidad?: Pick<Identidad, 'nombre' | 'logo' | 'logoCompleto'>;
+}) {
+  const actual = useIdentidad();
+  const i = identidad ?? actual;
+  if (usaLetrero(i)) return <Letrero alto={tam} />;
+  return (
+    <>
+      <LogoMarca tam={tam} identidad={i} />
+      <span className={claseNombre}>{i.nombre}</span>
+    </>
+  );
+}
+
+/**
+ * El letrero de Chatty: las letras en el color del texto y la cola de la «y»
+ * en el de la marca. Se mide por el alto; el ancho sale de la proporción.
+ */
+export function Letrero({ alto, className }: { alto: number; className?: string }) {
+  return (
+    <svg
+      viewBox={`0 0 ${LETRERO.ancho} ${LETRERO.alto}`}
+      role="img"
+      aria-label={DE_FABRICA.nombre}
+      className={cn('block shrink-0', className)}
+      style={{ width: Math.round((alto * LETRERO.ancho) / LETRERO.alto), height: alto }}
+    >
+      <path d={LETRERO.letras} fill="currentColor" fillRule="evenodd" />
+      <path d={LETRERO.cola} className="fill-accent" />
+    </svg>
   );
 }
 

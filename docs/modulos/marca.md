@@ -15,12 +15,17 @@ navegador, la app del celular y su ícono.
 | | |
 |---|---|
 | **Nombre del panel** | Hasta 30 letras. De fábrica: Chatty. |
-| **Logo** | PNG, JPG, WebP o SVG. Se guarda como un PNG cuadrado y ligero. Sin logo va la burbuja de Chatty. |
+| **Logo** | PNG, JPG, WebP o SVG. Se guarda como un PNG cuadrado y ligero. Sin logo va la burbuja de Chatty en el ícono y la pestaña. |
 | **Color** | Seis de un toque (naranja, rosa, morado, azul, turquesa y grafito) u **Otro**: cualquier color, con el selector o escrito en hex. |
 
 Mientras eliges, todo el panel se pinta con tu marca, y abajo ves cómo queda en claro y en
 oscuro. Nada se guarda hasta que le das **Guardar**; **Descartar**, o salir de la pantalla, lo
 deja como estaba. **Volver a la de fábrica** regresa a Chatty en naranja.
+
+**El letrero de Chatty.** Mientras el panel se llame Chatty y no tenga logo propio, la barra y el
+login enseñan el letrero «chatty» en vez del cuadro con el nombre. La cola de la «y» va en tu
+color: si cambias el color, cambia con él. En cuanto le pones otro nombre o subes tu logo, vuelven
+el cuadro y tu nombre.
 
 **El logo.** Cuadrado y con fondo transparente queda mejor: va sobre tu color. Si tu logo ya trae
 su propio fondo (sus esquinas no son transparentes, como una foto o un JPG), ocupa el cuadro

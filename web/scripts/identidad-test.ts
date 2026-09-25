@@ -18,6 +18,7 @@ import {
   sePierdeEnClaro,
   svgBurbuja,
   textoSobre,
+  usaLetrero,
 } from '../src/lib/identidad/tipos.ts';
 
 let pass = 0, fail = 0;
@@ -113,6 +114,11 @@ check('un logo raro en el navegador se ignora', leeLocal(JSON.stringify({ nombre
 const svg = svgBurbuja('#ffffff');
 check('la burbuja se tiñe del color que le pidas', svg.includes('fill="#ffffff"'), true);
 check('y trae sus tres puntos huecos', (svg.match(/<circle/g) ?? []).length, 3);
+
+// --- El letrero ---
+check('con la de fábrica va el letrero', usaLetrero(DE_FABRICA), true);
+check('con otro nombre, el cuadro y el nombre', usaLetrero({ ...DE_FABRICA, nombre: 'Café Norte' }), false);
+check('con logo propio, el cuadro aunque se llame Chatty', usaLetrero({ ...DE_FABRICA, logo: 'data:image/png;base64,AAAA' }), false);
 
 console.log(fail ? `✗ ${fail} de ${pass + fail} fallaron` : `✓ ${pass} pruebas pasaron, 0 fallaron`);
 if (fail) process.exit(1);

@@ -77,7 +77,9 @@ la barra, el login, la pestaña, la app del celular y su ícono. Guía completa 
 `docs/modulos/marca.md`.
 
 - `lib/identidad/tipos.ts` (puro, con pruebas en `scripts/identidad-test.ts`): el color, lo que
-  se acepta guardar y la burbuja de fábrica. De un solo color salen cuatro variables (`--marca`,
+  se acepta guardar, la burbuja de fábrica (el ícono) y el letrero «chatty» (`LETRERO`, con la
+  cola de la «y» en `fill-accent`; `usaLetrero()` dice cuándo va en vez del cuadro con el
+  nombre, y `LogoConNombre` lo pinta en la barra). De un solo color salen cuatro variables (`--marca`,
   `--marca-fg`, `--marca-oscuro`, `--marca-fg-oscuro`): el texto que se lee encima y la versión
   para el modo oscuro (se aclara si no se ve sobre negro; los grises pasan a casi blanco).
 - `globals.css` y `m/movil.css` derivan de ahí `--accent`, `--accent-fg` y `--accent-soft`.
