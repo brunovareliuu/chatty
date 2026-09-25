@@ -8,7 +8,7 @@ el checklist de lo que le falta.
 
 Escribe en español: código, comentarios, UI, commits y respuestas. Tono directo, sin groserías.
 
-Lee también `README.md` (qué es y límites de Meta), `docs/` (instalación y uso),
+Lee también `README.es.md` (qué es y límites de Meta; `README.md` es lo mismo en inglés), `docs/` (instalación y uso),
 `web/AGENTS.md` (Next.js 16 no es el Next que conoces: lee su guía en
 `web/node_modules/next/dist/docs/` antes de escribir código de Next) y `CONTRIBUTING.md`.
 
