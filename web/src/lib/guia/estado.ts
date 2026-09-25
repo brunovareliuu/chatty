@@ -8,7 +8,8 @@ import { PASOS, type Paso, type PasoId } from './pasos';
 /**
  * Qué pasos de la guía ya están. Las variables se leen del entorno (solo si
  * existen, nunca su valor) y, si ya hay Firebase, se mira Firestore: una
- * cuenta conectada, una conversación, una automatización, el latido del cron.
+ * cuenta conectada, una conversación, una automatización, el latido del cron,
+ * la marca guardada.
  *
  *   hecho      ya está, lo supimos solos
  *   pendiente  falta, y se va a marcar solo en cuanto esté
@@ -71,6 +72,7 @@ type Senales = {
   ejecuciones: boolean;
   cronEn: number | null;
   avisos: boolean;
+  marca: boolean;
 };
 
 const SIN_DATOS: Senales = {
@@ -82,6 +84,7 @@ const SIN_DATOS: Senales = {
   ejecuciones: false,
   cronEn: null,
   avisos: false,
+  marca: false,
 };
 
 /** El cron escribe su latido aquí cada vez que corre (`api/cron/tick`). */
@@ -101,12 +104,14 @@ async function senales(): Promise<Senales> {
     const primero = async (consultas: Promise<FirebaseFirestore.QuerySnapshot>[]) =>
       (await Promise.all(consultas)).some((q) => !q.empty);
 
-    const [conversaciones, automatizaciones, ejecuciones, avisos, sistema] = await Promise.all([
+    const [conversaciones, automatizaciones, ejecuciones, avisos, sistema, marca] = await Promise.all([
       primero(ids.map((id) => conversationsCol(id).limit(1).get())),
       primero(ids.map((id) => automationsCol(id).limit(1).get())),
       primero(ids.map((id) => runsCol(id).limit(1).get())),
       adminDb.collection('pushSubscriptions').limit(1).get().then((q) => !q.empty),
       sistemaRef().get(),
+      // Ajustes › Marca la guarda aquí (lib/identidad/servidor.ts).
+      adminDb.doc('config/marca').get().then((d) => d.exists),
     ]);
 
     const s: Senales = {
@@ -120,6 +125,7 @@ async function senales(): Promise<Senales> {
       ejecuciones,
       cronEn: (sistema.get('ultimoTickEn') as number | undefined) ?? null,
       avisos,
+      marca,
     };
     memoria = { en: Date.now(), senales: s };
     return s;
@@ -172,6 +178,9 @@ function estadoDe(id: PasoId, v: Record<string, boolean>, s: Senales): EstadoPas
       return si(v.CLAUDE_API_KEY);
     case 'celular':
       return si(s.avisos);
+    case 'marca':
+      // Sin Firebase vive en el navegador: la palomea la pantalla de Ajustes al guardarla.
+      return s.marca ? 'hecho' : 'manual';
   }
 }
 

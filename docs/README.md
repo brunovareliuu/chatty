@@ -26,6 +26,7 @@ La primera vez, síguelos de arriba abajo. Cada uno termina con una lista de «l
 | [Estadísticas de Instagram](modulos/estadisticas-instagram.md) | Cómo va tu cuenta, día por día |
 | [Asistente](modulos/asistente.md) | Claude arma y edita automatizaciones por ti |
 | [La app del celular y los avisos](modulos/app-movil-y-avisos.md) | Instalarla y los avisos push |
+| [Tu marca](modulos/marca.md) | El nombre, el logo y el color del panel y de su ícono |
 
 ## Referencia
 

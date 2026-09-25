@@ -64,6 +64,8 @@ y la etiqueta `anuncio`, así un flujo puede tratarlo distinto.
 | `config/notificacionesEstado` | Contadores y las marcas redondas ya avisadas |
 | `config/push/private/claves` | El par de llaves VAPID de Web Push (la privada, cifrada) |
 | `config/sistema` | El último latido del cron (lo lee «Primeros pasos») |
+| `config/marca` | La identidad del panel: nombre, color, si hay logo y si trae su fondo (Ajustes › Marca) |
+| `config/marcaLogo` | El logo, como PNG en data URL (aparte, para que cada página lea solo lo chico) |
 | `pushSubscriptions/{sha256(endpoint)}` | Los dispositivos suscritos a avisos |
 | `notificacionesEnviadas` | El historial de avisos (se poda a 200) |
 

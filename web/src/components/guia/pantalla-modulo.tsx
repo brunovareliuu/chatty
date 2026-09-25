@@ -10,8 +10,19 @@ import { VistaPrevia } from './vistas';
  * Una sección del panel en modo guía: qué es, cómo se ve ya funcionando y la
  * lista de lo que le falta. En el modo guía es la pantalla de la sección misma
  * (`/inbox`, `/automations`…); ya conectado, vive en `/primeros-pasos/<id>`.
+ *
+ * `children`: lo de la sección que ya funciona sin Firebase (en Ajustes, la
+ * marca). Va arriba de la vista previa y los pasos.
  */
-export async function PantallaModulo({ id, volver }: { id: ModuloId; volver?: boolean }) {
+export async function PantallaModulo({
+  id,
+  volver,
+  children,
+}: {
+  id: ModuloId;
+  volver?: boolean;
+  children?: React.ReactNode;
+}) {
   const guia = await leerGuia();
   const modulo = moduloPorId(id);
   const pasos = modulo.pasos.map((p) => guia.pasos[p]);
@@ -41,6 +52,7 @@ export async function PantallaModulo({ id, volver }: { id: ModuloId; volver?: bo
             solos; los demás los palomeas tú.
           </p>
         )}
+        {children}
         <VistaPrevia modulo={id} />
         <Checklist pasos={pasos} appUrl={guia.appUrl} titulo={`Para que ${modulo.titulo} funcione`} />
       </div>

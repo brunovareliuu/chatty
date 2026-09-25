@@ -11,6 +11,8 @@ import {
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
+import { LogoMarca } from '@/components/identidad/logo';
+import { useIdentidad } from '@/components/identidad/proveedor';
 
 /**
  * Dos formas de entrar: correo y contraseña (la cuenta del admin) o Google.
@@ -23,6 +25,7 @@ export function LoginForm() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState<'correo' | 'google' | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { nombre } = useIdentidad();
 
   async function completa(credential: UserCredential) {
     const idToken = await credential.user.getIdToken();
@@ -89,11 +92,9 @@ export function LoginForm() {
     <main className="flex min-h-dvh items-center justify-center bg-bg px-5">
       <div className="w-full max-w-[380px] animate-rise">
         <div className="mb-8 flex flex-col items-center gap-4 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-[18px] bg-accent">
-            <span className="text-[26px] font-black tracking-tight text-white">C</span>
-          </div>
+          <LogoMarca tam={56} />
           <div className="space-y-1.5">
-            <h1 className="text-[32px] font-bold tracking-[-0.8px]">Chatty</h1>
+            <h1 className="text-[32px] font-bold tracking-[-0.8px]">{nombre}</h1>
             <p className="text-[15px] text-muted">Tu bandeja y tus automatizaciones de Instagram.</p>
           </div>
         </div>

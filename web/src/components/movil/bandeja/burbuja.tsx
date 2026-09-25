@@ -5,7 +5,7 @@ import type { Message } from '@/lib/types';
 import { cn, formatClock } from '@/lib/utils';
 
 /**
- * Una burbuja de Mensajes: las tuyas a la derecha en naranja, las de ella a la
+ * Una burbuja de Mensajes: las tuyas a la derecha en el acento, las de ella a la
  * izquierda en gris, nunca más anchas que el 78 % de la pantalla. Debajo, la
  * hora y — solo en las tuyas — si ya se entregó y quién la mandó.
  */

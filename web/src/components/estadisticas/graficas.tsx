@@ -27,7 +27,7 @@ import type { PostIg } from '@/lib/estadisticas/tipos';
 import { ChipTipo, GloboGrafica, Miniatura, type EntradaTooltip } from './piezas';
 
 /**
- * Las gráficas del tablero. Reglas: una sola tinta de datos (el naranja),
+ * Las gráficas del tablero. Reglas: una sola tinta de datos (el acento),
  * líneas de 2 px, relleno al 10 %, barras de 24 px como máximo con la punta
  * redondeada y la base recta, rejilla de un pelo y sin punteado. Los colores
  * salen de los tokens, así el modo oscuro no necesita nada aparte.
@@ -127,7 +127,7 @@ export function GraficaDia({
   );
 }
 
-/** Te siguieron (arriba, naranja) y dejaron de seguirte (abajo, gris), por día. */
+/** Te siguieron (arriba, en el acento) y dejaron de seguirte (abajo, gris), por día. */
 export function GraficaAltasBajas({
   datos,
   alto = 180,

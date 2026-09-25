@@ -11,7 +11,8 @@ const CORREO_PRIVACIDAD = 'privacidad@example.com';
 const ULTIMA_ACTUALIZACION = '24 de septiembre de 2026';
 
 export const metadata: Metadata = {
-  title: `Política de privacidad · ${MARCA.nombre}`,
+  // `absolute`: es la página de tu negocio, no lleva el nombre del panel detrás.
+  title: { absolute: `Política de privacidad · ${MARCA.nombre}` },
   description: `Qué datos guarda el panel de ${MARCA.nombre}, para qué y cómo borrarlos.`,
 };
 

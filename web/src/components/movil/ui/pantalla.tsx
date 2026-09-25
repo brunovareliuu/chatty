@@ -194,7 +194,7 @@ export function PantallaPlana({
   );
 }
 
-/** El botón de texto de la barra: azul en iOS, naranja aquí. */
+/** El botón de texto de la barra: azul en iOS, el acento de la marca aquí. */
 export function AccionBarra({
   children,
   onClick,

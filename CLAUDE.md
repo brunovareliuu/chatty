@@ -14,8 +14,9 @@ Lee también `README.md` (qué es y límites de Meta), `docs/` (instalación y u
 
 **Nada atado a un despliegue.** El repo no trae ningún proyecto de Firebase, app de Meta,
 dominio ni marca: todo sale de variables de entorno (`web/.env.example`, `web/apphosting.yaml`,
-`docs/04-variables-de-entorno.md`) y la marca de quien lo usa, de `web/src/lib/marca.ts`. Nunca
-metas en el código un correo, un dominio, un id de proyecto o datos de una persona real.
+`docs/04-variables-de-entorno.md`), la marca de quien lo usa de `web/src/lib/marca.ts` y la
+identidad del panel (nombre, logo y color) de Ajustes › Marca. Nunca metas en el código un correo,
+un dominio, un id de proyecto o datos de una persona real.
 
 ---
 
@@ -71,6 +72,28 @@ y su checklist) en vez de su pantalla. `/`, `/m` y `/login` mandan a `/primeros-
   `AvisoModulo` si le falta algo, y `/primeros-pasos/<sección>` enseña su checklist.
 - Si agregas un paso o una sección, va en `pasos.ts` (y su regla de estado en `estado.ts`).
 
+**La identidad del panel (Ajustes › Marca).** Nombre, logo y color: la ve todo el que entra, en
+la barra, el login, la pestaña, la app del celular y su ícono. Guía completa en
+`docs/modulos/marca.md`.
+
+- `lib/identidad/tipos.ts` (puro, con pruebas en `scripts/identidad-test.ts`): el color, lo que
+  se acepta guardar y la burbuja de fábrica. De un solo color salen cuatro variables (`--marca`,
+  `--marca-fg`, `--marca-oscuro`, `--marca-fg-oscuro`): el texto que se lee encima y la versión
+  para el modo oscuro (se aclara si no se ve sobre negro; los grises pasan a casi blanco).
+- `globals.css` y `m/movil.css` derivan de ahí `--accent`, `--accent-fg` y `--accent-soft`.
+  Ninguna pantalla sabe cuál es el color.
+- Ya conectado vive en `config/marca` (y el logo, PNG en data URL, aparte en `config/marcaLogo`).
+  El layout raíz lo lee con `leerIdentidad()` (`lib/identidad/servidor.ts`, un minuto de memoria)
+  y pinta el color en `<style id="marca">`, sin parpadeo. Se guarda por `PUT /api/identidad`.
+- En el modo guía vive en `localStorage` (`chatty:marca`): `SCRIPT_LOCAL` pone el color en el
+  `<head>` antes de pintar.
+- En el navegador, `useIdentidad()` (`components/identidad/proveedor.tsx`) da nombre y logo, y
+  `<LogoMarca />` los pinta. La pantalla de Ajustes tiñe todo el panel mientras eliges
+  (`vistaPrevia`).
+- Los iconos (favicon, la app del celular, los avisos) los pinta
+  `app/iconos/[archivo]/route.tsx` con `next/og`. Tienen los mismos nombres que tenían cuando
+  eran archivos de `public/iconos`, con `?v=` de la última vez que se guardó.
+
 **Sesión.** El navegador entra con Firebase Auth (Google o correo y contraseña). El servidor
 (`/api/auth/session`) cambia el ID token por la cookie `__session` y, si el correo está en
 `ALLOWED_EMAILS` (o es el primer usuario, cuando la lista está vacía), crea `users/{uid}`. Las
@@ -93,6 +116,8 @@ aunque lo saquen de la lista: para quitarle el acceso hay que borrarlo.
 | `web/src/lib/instalacion.ts` | Si el despliegue ya tiene Firebase (si no, modo guía). |
 | `web/src/lib/guia/` | El catálogo de pasos por sección y qué ya está hecho. |
 | `web/src/lib/marca.ts` | La marca de quien usa el panel (`MARCA`, `SITE_URL`, `SITE_DOMINIO`, `ZONA_HORARIA`). Puro. |
+| `web/src/lib/identidad/` | La identidad del panel: nombre, logo y color (`tipos.ts` puro, `servidor.ts`). |
+| `web/src/app/iconos/[archivo]/route.tsx` | Los iconos del panel y de la app, pintados con la marca. |
 | `web/src/lib/env.ts` | `requireEnv()` y `appUrl()`. |
 | `web/src/components/flow/node-config.tsx` | Metadata de nodos: iconos y resúmenes. |
 | `web/src/lib/engine/puertos.ts` | `outputHandles()`: los puertos de salida de cada nodo (puro; lo usan el lienzo y las pruebas). |
@@ -148,7 +173,7 @@ Guía para programar pantallas: `docs/desarrollo/app-movil.md`. Lo imprescindibl
   ahí**, si no la barra se apaga al entrar.
 - `app/m/movil.css` redefine **los mismos tokens** de `globals.css` con valores de iOS, así
   `components/ui/*` se ve de iOS ahí sin cambiarlo (ojo: en iOS `--bg` es el gris y `--surface`
-  el blanco). El kit está en `components/movil/ui/`: si dudas, es una `Seccion` con `Fila`s.
+  el blanco). El acento no: sale de la marca, igual que en el escritorio. El kit está en `components/movil/ui/`: si dudas, es una `Seccion` con `Fila`s.
 - `app/page.tsx` manda el celular a `/m` y la computadora a `/inbox`; el service worker traduce
   las direcciones de los avisos según quién los toca.
 - Push: Web Push estándar, sin FCM. `lib/push/tipos.ts` (eventos y preferencias, puro),
@@ -173,7 +198,7 @@ El modelo completo está en `docs/datos.md`:
   /tags/{id}
   /assistantChats/{id}/messages/{n}   conversaciones del asistente — solo servidor
   /estadisticas*                      el tablero de /instagram — solo servidor
-/config/…, /pushSubscriptions, /notificacionesEnviadas   avisos push y latido del cron — solo servidor
+/config/…, /pushSubscriptions, /notificacionesEnviadas   avisos push, latido del cron y la marca — solo servidor
 ```
 
 Si agregas una colección: su regla en `firestore.rules` (o nada, si es solo del servidor: la
@@ -208,9 +233,10 @@ trabajo pesado dentro de `after()` de `next/server`.
 deja pasar esa. Otro nombre rompe el login en producción, no en local.
 
 **Nunca un hex literal en una pantalla.** Todo color de interfaz sale de los tokens de
-`globals.css`; el único parámetro de marca es el acento (el naranja `#fa4c03`, igual en claro y
-oscuro). Se escribe `text-accent`, `bg-accent/10`, `border-accent`, nunca `[#fa4c03]`. Los
-colores de estado son rojo (`neg`) y verde (`pos`).
+`globals.css`. El acento es la marca de quien lo instala (de fábrica, el naranja `#fa4c03`) y
+cambia en Ajustes › Marca. Se escribe `text-accent`, `bg-accent/10`, `border-accent`, nunca
+`[#fa4c03]`. **Lo que va encima del acento es `text-accent-fg`, nunca `text-white`**: con una
+marca clara, el blanco no se lee. Los colores de estado son rojo (`neg`) y verde (`pos`).
 
 **Nada de `setState` dentro de un efecto.** El ESLint de React lo marca como error.
 `firestore-hooks.ts` deriva el estado de carga comparando una `key` en el render, y el lienzo de
@@ -241,6 +267,11 @@ un efecto, llama a `setState` dentro del `.then`.
   copiar adjuntos a Storage.
 - **zsh aborta el comando entero si un glob no coincide** (`--include=*.ts` sin comillas): pon
   los globs entre comillas.
+- **Una variable de módulo no es la misma en todo el servidor.** Next empaqueta aparte las rutas
+  de API y las páginas: si una API tiene que borrar una memoria que leen las páginas, esa memoria
+  va en `globalThis` (así lo hace `lib/identidad/servidor.ts`).
+- **Con `app/manifest.ts`, Next ignora `manifest` en la metadata** y enlaza el suyo, sin query.
+  Para que el celular vea iconos nuevos, el `?v=` va en los iconos de adentro.
 
 ## Límites de Meta (no son bugs)
 
@@ -261,11 +292,10 @@ un efecto, llama a `setState` dentro del `.then`.
 ```bash
 cd web
 npm run dev         # servidor local (sin .env.local abre en modo guía)
-npm run test        # motor de flujos, matcher y estadísticas
+npm run test        # motor de flujos, matcher, estadísticas y la marca
 npm run typecheck   # si faltan tipos de Next: npx next typegen
 npm run lint
 npm run build
-node scripts/iconos.mjs   # rehace los iconos desde scripts/logo/marca.svg
 
 # desde la raíz
 firebase deploy --only firestore      # reglas e índices

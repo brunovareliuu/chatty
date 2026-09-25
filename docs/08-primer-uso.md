@@ -79,4 +79,11 @@ Con `CLAUDE_API_KEY` configurada, en **Asistente** le pides en español lo que q
 comenten GUÍA en mi último post, mándales este link, solo si me siguen»— y lo crea de verdad.
 Detalle: [asistente](modulos/asistente.md).
 
+## 8. Tu marca (opcional)
+
+En **Ajustes › Marca** le pones al panel tu nombre, tu logo y tu color. Mientras eliges, todo el
+panel se pinta; al guardar lo ven todos y el ícono del celular cambia. En iPhone, si ya habías
+agregado la app a inicio, vuelve a agregarla para ver el ícono nuevo. Detalle:
+[tu marca](modulos/marca.md).
+
 Si algo no funciona: [solución de problemas](solucion-de-problemas.md).

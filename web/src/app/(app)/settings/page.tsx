@@ -2,6 +2,7 @@ import { SettingsScreen } from '@/components/settings/settings-screen';
 import { firebaseListo } from '@/lib/instalacion';
 import { PantallaModulo } from '@/components/guia/pantalla-modulo';
 import { AvisoModulo } from '@/components/guia/aviso-modulo';
+import { MarcaSettings } from '@/components/settings/marca-settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,14 @@ export default async function SettingsPage({
 }: {
   searchParams: Promise<{ ig_connected?: string; ig_error?: string; tab?: string }>;
 }) {
-  if (!firebaseListo()) return <PantallaModulo id="ajustes" />;
+  // La marca ya se puede elegir sin Firebase: se guarda en el navegador.
+  if (!firebaseListo()) {
+    return (
+      <PantallaModulo id="ajustes">
+        <MarcaSettings />
+      </PantallaModulo>
+    );
+  }
   const params = await searchParams;
 
   const setup = {

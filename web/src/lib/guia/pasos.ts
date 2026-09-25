@@ -28,7 +28,8 @@ export type PasoId =
   | 'automatizacion'
   | 'prueba'
   | 'claude'
-  | 'celular';
+  | 'celular'
+  | 'marca';
 
 export type Paso = {
   id: PasoId;
@@ -286,6 +287,19 @@ export const PASOS: Record<PasoId, Paso> = {
     seMarca: 'En cuanto un dispositivo está suscrito a los avisos.',
     opcional: true,
   },
+  marca: {
+    id: 'marca',
+    titulo: 'Ponle tu marca',
+    resumen: 'El nombre, el logo y el color con los que se ve el panel y la app del celular.',
+    como: [
+      'Ajustes › Marca: escribe cómo se llama tu panel, sube tu logo y elige tu color. Mientras eliges, todo el panel se pinta.',
+      'Dale Guardar. Sin Firebase se queda en este navegador; ya conectado, lo ven todos y el ícono del celular cambia.',
+    ],
+    doc: 'docs/modulos/marca.md',
+    revisa: 'manual',
+    seMarca: 'Al guardarla en Ajustes › Marca se palomea sola.',
+    opcional: true,
+  },
 };
 
 export type ModuloId = 'bandeja' | 'automatizaciones' | 'contactos' | 'estadisticas' | 'asistente' | 'ajustes';
@@ -343,8 +357,8 @@ export const MODULOS: Modulo[] = [
     id: 'ajustes',
     titulo: 'Ajustes',
     ruta: '/settings',
-    que: 'Tu cuenta de Instagram, los avisos al celular y el estado del sistema.',
-    pasos: ['firebase', 'instagram', 'celular'],
+    que: 'Tu cuenta de Instagram, los avisos al celular, tu marca y el estado del sistema.',
+    pasos: ['firebase', 'instagram', 'celular', 'marca'],
   },
 ];
 
@@ -352,7 +366,7 @@ export const MODULOS: Modulo[] = [
 export const GRUPOS_DE_PASOS: { titulo: string; pasos: PasoId[] }[] = [
   { titulo: 'Instalar', pasos: ['cuentas', 'firebase', 'reglas', 'servidor', 'meta', 'llaves', 'desplegar', 'webhook', 'mensajes', 'cron'] },
   { titulo: 'Empezar a usarlo', pasos: ['instagram', 'dm', 'automatizacion', 'prueba', 'insights'] },
-  { titulo: 'Opcional', pasos: ['claude', 'celular'] },
+  { titulo: 'Opcional', pasos: ['claude', 'celular', 'marca'] },
 ];
 
 export function moduloPorId(id: ModuloId): Modulo {

@@ -453,7 +453,7 @@ function QuienTeVe({ r }: { r: Resumen }) {
           <p className="py-6 text-center text-[13px] text-muted">Instagram no dio el reparto de este periodo.</p>
         )}
         <p className="text-[12px] leading-relaxed text-muted">
-          Si la barra naranja domina, tu contenido está llegando a gente nueva.
+          Si domina «No te siguen», tu contenido está llegando a gente nueva.
         </p>
       </div>
     </Tarjeta>

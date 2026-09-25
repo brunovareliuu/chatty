@@ -61,3 +61,12 @@ de Firebase → App Hosting → tu backend → Registros (o `npm run dev` en loc
 | El asistente dice que falta la llave | `CLAUDE_API_KEY` no está en el entorno. |
 | Claude responde 400 pidiendo `anthropic-workspace-id` | Tu llave no es de un workspace: pon `CLAUDE_WORKSPACE_ID` o crea la llave dentro de uno. |
 | Los avisos no llegan al iPhone | Solo funcionan con el panel instalado en la pantalla de inicio (iOS 16.4+), y el permiso se pide con un toque. Si lo negaste, se arregla en Ajustes del iPhone → Notificaciones. |
+
+## Tu marca
+
+| Síntoma | Causa y arreglo |
+|---|---|
+| Cambié el nombre o el logo y el iPhone sigue con los de antes | iOS guarda el nombre y el ícono de cuando agregaste la app a inicio. Bórrala de la pantalla de inicio y vuelve a agregarla (Compartir → Agregar a inicio). |
+| Guardé la marca y otra computadora todavía la ve como antes | Cada instancia del servidor la recuerda hasta un minuto. Recarga en un minuto. |
+| No me deja subir el logo | Tiene que ser PNG, JPG, WebP o SVG de menos de 8 MB. Si es muy detallado y queda pesado, prueba con una versión más sencilla. |
+| Sin Firebase, mi marca se perdió | En el modo guía vive en el navegador: otro navegador, o una ventana de incógnito, no la ve. |

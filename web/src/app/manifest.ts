@@ -1,16 +1,24 @@
 import type { MetadataRoute } from 'next';
+import { leerIdentidad } from '@/lib/identidad/servidor';
+
+// El nombre y los iconos cambian cuando se guarda la marca, no al construir.
+export const dynamic = 'force-dynamic';
 
 /**
  * Lo que hace que el panel se instale como app en el celular (Compartir →
  * «Agregar a inicio» en iPhone; «Instalar» en Android). Next lo sirve en
- * /manifest.webmanifest. Los iconos salen de public/iconos.
+ * /manifest.webmanifest. Nombre e iconos salen de Ajustes › Marca; los iconos
+ * los pinta `app/iconos/[archivo]/route.tsx`.
  */
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const { nombre, actualizadoEn } = await leerIdentidad();
+  const v = actualizadoEn ? `?v=${actualizadoEn}` : '';
+  const icono = (archivo: string) => `/iconos/${archivo}${v}`;
   return {
     id: '/',
-    name: 'Chatty',
-    short_name: 'Chatty',
-    description: 'Tu propio ManyChat: la bandeja y las automatizaciones de tus DMs de Instagram.',
+    name: nombre,
+    short_name: nombre,
+    description: `${nombre}: la bandeja y las automatizaciones de tus DMs de Instagram.`,
     start_url: '/',
     scope: '/',
     display: 'standalone',
@@ -21,15 +29,15 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#f2f2f7',
     lang: 'es',
     icons: [
-      { src: '/iconos/icono-192.png', sizes: '192x192', type: 'image/png' },
-      { src: '/iconos/icono-512.png', sizes: '512x512', type: 'image/png' },
-      { src: '/iconos/icono-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+      { src: icono('icono-192.png'), sizes: '192x192', type: 'image/png' },
+      { src: icono('icono-512.png'), sizes: '512x512', type: 'image/png' },
+      { src: icono('icono-maskable-512.png'), sizes: '512x512', type: 'image/png', purpose: 'maskable' },
     ],
     // Mantener pulsado el icono abre estos atajos. Apuntan a la app del
     // celular: el manifest solo se instala desde un teléfono.
     shortcuts: [
-      { name: 'Bandeja', url: '/m/bandeja', icons: [{ src: '/iconos/icono-192.png', sizes: '192x192' }] },
-      { name: 'Automatizaciones', url: '/m/automatizaciones', icons: [{ src: '/iconos/icono-192.png', sizes: '192x192' }] },
+      { name: 'Bandeja', url: '/m/bandeja', icons: [{ src: icono('icono-192.png'), sizes: '192x192' }] },
+      { name: 'Automatizaciones', url: '/m/automatizaciones', icons: [{ src: icono('icono-192.png'), sizes: '192x192' }] },
     ],
   };
 }

@@ -8,7 +8,7 @@ sin reescribirlo.
 El lenguaje visual es el de las apps nativas de iOS: listas agrupadas como
 Ajustes, títulos grandes que se encogen al rodar, hojas que suben desde abajo.
 Lo único que cambia respecto a iOS es el acento: ahí es el azul del sistema,
-aquí el **naranja de Chatty**.
+aquí el **color de la marca** (Ajustes › Marca; de fábrica, el naranja de Chatty).
 
 ## Cómo llega el usuario
 

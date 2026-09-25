@@ -6,7 +6,7 @@ import type { Cambio } from '@/lib/estadisticas/calculos';
 import { NOMBRE_TIPO, type TipoPost } from '@/lib/estadisticas/tipos';
 
 /**
- * Las piezas del tablero de Instagram. Una sola tinta de datos, el naranja; el
+ * Las piezas del tablero de Instagram. Una sola tinta de datos, el acento; el
  * gris es contexto. Rojo y verde solo dicen «subió» o «bajó», siempre con
  * flecha y texto (nunca el color solo).
  */
@@ -188,7 +188,7 @@ export function Chispa({ valores, className }: { valores: (number | null)[]; cla
 
 /**
  * Una parte contra el todo (p. ej. vistas de quien no te sigue). El resto de
- * la barra es el mismo naranja, más claro: se lee como una sola cifra.
+ * la barra es el mismo acento, más claro: se lee como una sola cifra.
  */
 export function Medidor({
   label,

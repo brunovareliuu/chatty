@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { useIdentidad } from '@/components/identidad/proveedor';
 import {
   activarPush,
   desactivarPush,
@@ -330,6 +331,7 @@ function EsteDispositivo({
   onPrueba: () => void;
   haySuscritos: boolean;
 }) {
+  const { nombre } = useIdentidad();
   const tarjeta = 'rounded-card border border-border bg-surface px-4 py-4';
 
   if (estado === 'cargando') {
@@ -379,7 +381,7 @@ function EsteDispositivo({
           <p className="font-semibold">Las notificaciones están bloqueadas aquí</p>
           <p className="mt-1 text-[13px] text-muted">
             {esIos()
-              ? 'Ve a Ajustes del iPhone → Notificaciones → Chatty y permítelas.'
+              ? `Ve a Ajustes del iPhone → Notificaciones → ${nombre} y permítelas.`
               : 'Permítelas desde el candado de la barra de direcciones y recarga.'}
           </p>
         </div>

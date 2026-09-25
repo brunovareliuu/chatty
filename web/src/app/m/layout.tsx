@@ -21,8 +21,8 @@ import './movil.css';
 
 export const dynamic = 'force-dynamic';
 
+// Sin título propio: hereda el nombre del panel (Ajustes › Marca) del layout raíz.
 export const metadata: Metadata = {
-  title: 'Chatty',
   robots: { index: false, follow: false },
 };
 

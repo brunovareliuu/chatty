@@ -15,6 +15,7 @@
   directo, sin groserías.
 - Escribe como el código de alrededor: mismos nombres, misma densidad de comentarios.
 - **Nunca un hex en una pantalla**: los colores salen de los tokens de `web/src/app/globals.css`.
+  El acento es la marca de quien lo instala: lo que va encima es `text-accent-fg`, no `text-white`.
 - **Nada de datos reales** en pruebas o ejemplos: nombres, correos, teléfonos y cuentas de
   ficción (`tumarca.com`, `example.com`).
 - **Nada atado a un proyecto**: lo que dependa del despliegue va en una variable de entorno,

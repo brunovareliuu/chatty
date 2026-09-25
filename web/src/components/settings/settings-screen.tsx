@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Bell, Check, Copy, ExternalLink, ListChecks, Plug, Server, TriangleAlert, X } from 'lucide-react';
+import { Bell, Check, Copy, ExternalLink, ListChecks, Palette, Plug, Server, TriangleAlert, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAccounts } from '@/lib/client/accounts-context';
 import { Avatar } from '@/components/ui/avatar';
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { InstagramIcon } from '@/components/ui/instagram-icon';
 import { PageHeader } from '@/components/shell/page-header';
 import { NotificacionesSettings } from './notificaciones-settings';
+import { MarcaSettings } from './marca-settings';
 
 export type SetupStatus = {
   metaAppId: boolean;
@@ -33,6 +34,7 @@ const CHECKS: { key: keyof SetupStatus; label: string; hint: string }[] = [
 const PESTANAS = [
   { id: 'notificaciones', label: 'Notificaciones', icon: Bell },
   { id: 'instagram', label: 'Instagram', icon: InstagramIcon },
+  { id: 'marca', label: 'Marca', icon: Palette },
   { id: 'sistema', label: 'Sistema', icon: Server },
 ] as const;
 type Pestana = (typeof PESTANAS)[number]['id'];
@@ -104,7 +106,10 @@ export function SettingsScreen({
 
   return (
     <>
-      <PageHeader title="Ajustes" description="Avisos al celular, correo, conexión con Meta y estado del despliegue." />
+      <PageHeader
+        title="Ajustes"
+        description="Avisos al celular, conexión con Meta, tu marca y el estado del despliegue."
+      />
 
       <div className="border-b border-border px-4 md:px-6">
         <div className="flex gap-1 overflow-x-auto">
@@ -130,6 +135,8 @@ export function SettingsScreen({
 
       <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 py-5 md:px-6">
         {tab === 'notificaciones' && <NotificacionesSettings />}
+
+        {tab === 'marca' && <MarcaSettings />}
 
         {tab === 'instagram' && (
           <>

@@ -295,7 +295,7 @@ function FilaAncla({ href, titulo, ultima }: { href: string; titulo: string; ult
         ultima ? '' : 'sep-ios'
       }`}
     >
-      <IconoFila icon={Plug} tono="bg-accent" />
+      <IconoFila icon={Plug} tono="bg-accent text-accent-fg" />
       <span className="min-w-0 flex-1 truncate text-[17px] text-accent">{titulo}</span>
     </a>
   );

@@ -32,6 +32,7 @@ import {
 import { Seccion, Fila, FilaBoton, IconoFila } from '@/components/movil/ui/lista';
 import { HojaAcciones } from '@/components/movil/ui/hoja';
 import { Switch } from '@/components/ui/switch';
+import { useIdentidad } from '@/components/identidad/proveedor';
 
 type Datos = {
   clavePublica: string;
@@ -355,12 +356,13 @@ function EsteAparato({
   onDesactivar: () => void;
   onPrueba: () => void;
 }) {
+  const { nombre } = useIdentidad();
   if (estado === 'cargando') return <Fila titulo="Comprobando…" ultima />;
 
   if (estado === 'ios-sin-instalar') {
     return (
       <Fila
-        izquierda={<IconoFila icon={Share} tono="bg-accent" />}
+        izquierda={<IconoFila icon={Share} tono="bg-accent text-accent-fg" />}
         titulo="Agrega la app a tu pantalla de inicio"
         subtitulo={
           <span className="mt-0.5 block text-[13px] leading-[1.35] text-muted">
@@ -392,7 +394,7 @@ function EsteAparato({
         subtitulo={
           <span className="mt-0.5 block text-[13px] leading-[1.35] text-muted">
             {esIos()
-              ? 'Ajustes del iPhone › Notificaciones › Chatty, y permítelos.'
+              ? `Ajustes del iPhone › Notificaciones › ${nombre}, y permítelos.`
               : 'Permítelos desde el candado de la barra de direcciones y recarga.'}
           </span>
         }
@@ -412,7 +414,7 @@ function EsteAparato({
         <FilaBoton
           onClick={onPrueba}
           disabled={ocupado === 'prueba'}
-          izquierda={<IconoFila icon={Send} tono="bg-accent" />}
+          izquierda={<IconoFila icon={Send} tono="bg-accent text-accent-fg" />}
           titulo={ocupado === 'prueba' ? 'Enviando…' : 'Enviarme una prueba'}
         />
         <FilaBoton
@@ -432,7 +434,7 @@ function EsteAparato({
       <FilaBoton
         onClick={onActivar}
         disabled={ocupado === 'activar'}
-        izquierda={<IconoFila icon={Bell} tono="bg-accent" />}
+        izquierda={<IconoFila icon={Bell} tono="bg-accent text-accent-fg" />}
         titulo={ocupado === 'activar' ? 'Activando…' : 'Activar en este aparato'}
         subtitulo="Un toque y te llega uno de bienvenida"
         ultima={!haySuscritos}

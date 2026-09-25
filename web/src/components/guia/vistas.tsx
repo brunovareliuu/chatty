@@ -30,7 +30,7 @@ const Inicial = ({ nombre, tono }: { nombre: string; tono: string }) => (
 
 function VistaBandeja() {
   const hilos = [
-    { quien: 'lucia.fotos', texto: '¿Me mandas el link de la guía?', hace: '2 min', nuevos: 2, tono: 'bg-accent' },
+    { quien: 'lucia.fotos', texto: '¿Me mandas el link de la guía?', hace: '2 min', nuevos: 2, tono: 'bg-accent text-accent-fg' },
     { quien: 'cafe.norte', texto: 'Comentó: GUÍA', hace: '14 min', nuevos: 1, tono: 'bg-pos' },
     { quien: 'mau.diseña', texto: '¡Gracias! Ya lo vi', hace: '1 h', nuevos: 0, tono: 'bg-warn' },
   ];
@@ -48,7 +48,7 @@ function VistaBandeja() {
             <div className="flex flex-col items-end gap-1">
               <span className="text-[11px] text-faint">{h.hace}</span>
               {h.nuevos > 0 && (
-                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">
+                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-accent-fg">
                   {h.nuevos}
                 </span>
               )}
@@ -58,14 +58,14 @@ function VistaBandeja() {
       </div>
       <div className="hidden flex-col md:flex">
         <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
-          <Inicial nombre="lucia" tono="bg-accent" />
+          <Inicial nombre="lucia" tono="bg-accent text-accent-fg" />
           <p className="text-[13px] font-semibold">@lucia.fotos</p>
         </div>
         <div className="flex flex-1 flex-col justify-end gap-2 px-4 py-3">
           <p className="max-w-[70%] self-start rounded-2xl rounded-bl-md bg-surface-2 px-3 py-2 text-[13px]">
             Hola, vi tu reel. ¿Me mandas el link de la guía?
           </p>
-          <p className="max-w-[70%] self-end rounded-2xl rounded-br-md bg-accent px-3 py-2 text-[13px] text-white">
+          <p className="max-w-[70%] self-end rounded-2xl rounded-br-md bg-accent px-3 py-2 text-[13px] text-accent-fg">
             ¡Claro, Lucía! Aquí va: tumarca.com/guia 🙌
           </p>
           <p className="self-end text-[11px] text-faint">Lo mandó la automatización GUÍA</p>
@@ -117,7 +117,7 @@ function VistaAutomatizaciones() {
 
 function VistaContactos() {
   const gente = [
-    { quien: 'lucia.fotos', etiquetas: ['guía', 'te sigue'], cuando: 'hoy', tono: 'bg-accent' },
+    { quien: 'lucia.fotos', etiquetas: ['guía', 'te sigue'], cuando: 'hoy', tono: 'bg-accent text-accent-fg' },
     { quien: 'cafe.norte', etiquetas: ['precio', 'lead'], cuando: 'ayer', tono: 'bg-pos' },
     { quien: 'mau.diseña', etiquetas: ['anuncio'], cuando: 'hace 3 d', tono: 'bg-warn' },
   ];
@@ -194,7 +194,7 @@ function VistaEstadisticas() {
 function VistaAsistente() {
   return (
     <div className="space-y-3 p-5">
-      <p className="ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-accent px-3.5 py-2.5 text-[13px] text-white">
+      <p className="ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-accent px-3.5 py-2.5 text-[13px] text-accent-fg">
         Cuando comenten GUÍA en mi último post, mándales el link de mi guía, pero solo si me siguen
       </p>
       <div className="flex gap-2.5">
@@ -224,7 +224,7 @@ function VistaAjustes() {
   return (
     <div className="p-5">
       <div className="mb-4 flex gap-1 border-b border-border">
-        {['Notificaciones', 'Instagram', 'Sistema'].map((t, i) => (
+        {['Notificaciones', 'Instagram', 'Marca', 'Sistema'].map((t, i) => (
           <span
             key={t}
             className={cn(
@@ -237,7 +237,7 @@ function VistaAjustes() {
         ))}
       </div>
       <div className="flex items-center gap-3 rounded-card border border-border bg-surface p-3.5">
-        <Inicial nombre="tumarca" tono="bg-accent" />
+        <Inicial nombre="tumarca" tono="bg-accent text-accent-fg" />
         <div className="min-w-0 flex-1">
           <p className="text-[13.5px] font-semibold">@tumarca</p>
           <p className="text-[12px] text-muted">Token válido 58 días más · se renueva solo</p>

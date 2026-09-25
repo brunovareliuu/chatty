@@ -22,8 +22,9 @@ cuenta: se abre **el sistema en modo guía**. Tiene sus mismas secciones (Bandej
 Automatizaciones, Contactos, Estadísticas, Asistente, Ajustes); cada una enseña cómo se ve ya
 funcionando y el checklist de lo que le falta, y **Primeros pasos** junta todo con su avance. Lo
 que el panel puede revisar se palomea solo (las variables, tu cuenta conectada, tu primer DM, el
-cron); lo demás lo palomeas tú. Cuando pones las llaves de tu Firebase, aparece el login y el
-checklist sigue a la mano en la barra lateral.
+cron); lo demás lo palomeas tú. En Ajustes ya puedes ponerle tu nombre, tu logo y tu color.
+Cuando pones las llaves de tu Firebase, aparece el login y el checklist sigue a la mano en la
+barra lateral.
 
 ---
 
@@ -43,6 +44,8 @@ checklist sigue a la mano en la barra lateral.
   link, solo si me siguen»* y lo arma.
 - **App de celular** instalable, con **avisos push** propios: automatizaciones, comentarios,
   DMs sin contestar y cifras redondas.
+- **Tu marca** — el nombre, el logo y el color del panel se eligen en Ajustes, con vista previa en
+  claro y en oscuro. El ícono del celular sale de ahí.
 
 Todo en español.
 
@@ -126,7 +129,7 @@ Si encuentras una vulnerabilidad, repórtala en privado (ver
 ```bash
 cd web
 npm run dev         # servidor local
-npm run test        # motor de flujos, matcher y estadísticas
+npm run test        # motor de flujos, matcher, estadísticas y la marca
 npm run typecheck
 npm run lint
 npm run build

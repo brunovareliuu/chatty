@@ -22,6 +22,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Pantalla } from '@/components/movil/ui/pantalla';
 import { Seccion, Fila, FilaEnlace, IconoFila } from '@/components/movil/ui/lista';
 import { Cargando, Globo } from '@/components/movil/ui/controles';
+import { useIdentidad } from '@/components/identidad/proveedor';
 
 /**
  * Hoy — lo primero que ves al abrir la app. No es un panel de métricas: es lo
@@ -61,7 +62,7 @@ export function PantallaHoy() {
         <Cifra
           href="/m/bandeja"
           icon={MessageCircle}
-          tono="bg-accent"
+          tono="bg-accent text-accent-fg"
           n={sinLeer}
           label="Sin leer"
           detalle={`${conversaciones.length} abiertas`}
@@ -121,7 +122,7 @@ export function PantallaHoy() {
 
       <Seccion titulo="Hacer algo">
         <FilaEnlace href="/m/automatizaciones" izquierda={<IconoFila icon={Zap} tono="bg-warn" />} titulo="Automatizaciones" />
-        <FilaEnlace href="/m/asistente" izquierda={<IconoFila icon={Sparkles} tono="bg-accent" />} titulo="Pedírselo al asistente" ultima />
+        <FilaEnlace href="/m/asistente" izquierda={<IconoFila icon={Sparkles} tono="bg-accent text-accent-fg" />} titulo="Pedírselo al asistente" ultima />
       </Seccion>
     </Pantalla>
   );
@@ -169,6 +170,7 @@ function Cifra({
  * Ajustes.
  */
 function AvisoPush() {
+  const { nombre } = useIdentidad();
   const [estado, setEstado] = useState<EstadoPush>('cargando');
   const [activando, setActivando] = useState(false);
 
@@ -188,7 +190,7 @@ function AvisoPush() {
     return (
       <Seccion titulo="Avisos">
         <Fila
-          izquierda={<IconoFila icon={Share} tono="bg-accent" />}
+          izquierda={<IconoFila icon={Share} tono="bg-accent text-accent-fg" />}
           titulo="Agrega la app a tu pantalla de inicio"
           subtitulo="Compartir › Agregar a inicio. Desde ahí sí llegan los avisos."
           ultima
@@ -204,7 +206,7 @@ function AvisoPush() {
           href="/m/ajustes"
           izquierda={<IconoFila icon={Bell} tono="bg-neg" />}
           titulo="Los avisos están bloqueados"
-          subtitulo={esIos() ? 'Ajustes del iPhone › Notificaciones › Chatty' : 'Permítelos en el navegador'}
+          subtitulo={esIos() ? `Ajustes del iPhone › Notificaciones › ${nombre}` : 'Permítelos en el navegador'}
           ultima
         />
       </Seccion>
@@ -233,7 +235,7 @@ function AvisoPush() {
         disabled={activando}
         className="flex w-full items-center gap-3 px-4 py-3 text-left active:bg-surface-2 disabled:opacity-50"
       >
-        <IconoFila icon={BellRing} tono="bg-accent" />
+        <IconoFila icon={BellRing} tono="bg-accent text-accent-fg" />
         <span className="min-w-0 flex-1">
           <span className="block text-[17px] leading-tight">
             {activando ? 'Activando…' : 'Recibe los avisos aquí'}

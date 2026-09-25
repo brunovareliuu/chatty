@@ -17,8 +17,8 @@ import { HojaAcciones } from '@/components/movil/ui/hoja';
 
 /**
  * Bandeja — la app de Mensajes de iOS con los DMs de Instagram: avatar grande,
- * nombre, la última línea en gris y la hora a la derecha. El punto naranja de
- * la izquierda es el de Mensajes: marca lo que todavía no abres.
+ * nombre, la última línea en gris y la hora a la derecha. El punto del acento
+ * a la izquierda es el de Mensajes: marca lo que todavía no abres.
  *
  * Los datos son los mismos del panel grande (`useConversations`); aquí solo
  * cambia la pintura.
@@ -181,7 +181,7 @@ function FilaConversacion({
           >
             {c.lastMessagePreview}
           </span>
-          {/* En gris: el naranja de esta lista es del punto de sin leer. */}
+          {/* En gris: el acento de esta lista es del punto de sin leer. */}
           {!c.automationPaused && (
             <Bot className="h-[15px] w-[15px] shrink-0 text-muted" strokeWidth={2} />
           )}

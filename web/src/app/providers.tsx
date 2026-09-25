@@ -3,8 +3,18 @@
 import { usePathname } from 'next/navigation';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
+import type { Identidad } from '@/lib/identidad/tipos';
+import { IdentidadProvider } from '@/components/identidad/proveedor';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  identidad,
+  local,
+}: {
+  children: React.ReactNode;
+  identidad: Identidad;
+  local: boolean;
+}) {
   const pathname = usePathname();
   // En la app del celular los avisos van arriba: abajo los taparía la barra
   // de pestañas, que es lo que el dedo está a punto de tocar.
@@ -12,7 +22,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      {children}
+      <IdentidadProvider servidor={identidad} local={local}>
+        {children}
+      </IdentidadProvider>
       <Toaster
         position={enMovil ? 'top-center' : 'bottom-right'}
         toastOptions={{

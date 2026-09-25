@@ -4,10 +4,26 @@
 
 /*
   Capa 1 — VALORES CRUDOS.
-  Único lugar del proyecto con hex literales. Paleta de Chatty: naranja,
-  negro y blanco, con el acento en #fa4c03.
+  Único lugar del proyecto con hex literales (con `m/movil.css`). Los grises son
+  los de Chatty; el acento sale de la marca.
+*/
+
+/*
+  La marca. Estos cuatro son los de fábrica: el naranja #fa4c03 con texto
+  blanco, igual en claro y oscuro (contra el negro da 5.2:1, no hace falta
+  aclararlo). Ajustes › Marca los cambia y el servidor los pone en el <head>
+  (`lib/identidad`); de ellos sale el acento de cada modo, abajo.
 */
 :root {
+  --marca: #fa4c03;
+  --marca-fg: #ffffff;
+  --marca-oscuro: #fa4c03;
+  --marca-fg-oscuro: #ffffff;
+}
+
+/* `.claro` repite el modo claro dentro del oscuro: lo usa la vista previa de Ajustes › Marca. */
+:root,
+.claro {
   --bg: #ffffff;
   --surface: #f1f1f4;
   --surface-2: #e8e8ec;
@@ -20,11 +36,11 @@
   --neg: #ff453a;
   --warn: #f59e0b;
 
-  /* El naranja del acento. Mismo valor en claro y oscuro: contra el negro da
-     5.7:1, así que no hace falta una versión más clara para el modo oscuro. */
-  --accent: #fa4c03;
-  --accent-fg: #ffffff;
-  --accent-soft: #ffe9df;
+  /* El acento es la marca. El suave (el fondo de lo seleccionado) es la marca
+     mezclada con el fondo: con el naranja da el durazno de siempre. */
+  --accent: var(--marca);
+  --accent-fg: var(--marca-fg);
+  --accent-soft: color-mix(in srgb, var(--marca) 12.5%, var(--bg));
 
   --radius-card: 16px;
   --radius-panel: 22px;
@@ -44,9 +60,10 @@
   --neg: #ff453a;
   --warn: #fbbf24;
 
-  --accent: #fa4c03;
-  --accent-fg: #ffffff;
-  --accent-soft: #2b1206;
+  /* La versión oscura de la marca: la misma si ya se ve sobre negro, aclarada si no. */
+  --accent: var(--marca-oscuro);
+  --accent-fg: var(--marca-fg-oscuro);
+  --accent-soft: color-mix(in srgb, var(--marca-oscuro) 14%, var(--bg));
 }
 
 /* Capa 2 — NOMBRES SEMÁNTICOS. Las pantallas solo usan estos. */

@@ -8,7 +8,7 @@ import { resumen } from '@/components/guia/shell-guia';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = { title: 'Primeros pasos · Chatty' };
+export const metadata: Metadata = { title: 'Primeros pasos' };
 
 /**
  * El checklist de todo: lo que falta para instalarlo, para empezar a usarlo y
