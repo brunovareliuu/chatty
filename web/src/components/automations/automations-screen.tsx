@@ -380,7 +380,7 @@ export function AutomationsScreen() {
         {/* ESTADOS DE CARGA Y VACÍO                                                  */}
         {/* ========================================================================= */}
         {loading && (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
@@ -531,7 +531,7 @@ function AutomationCard({
       {/* --------------------------------------------------------------------- */}
       {/* CABECERA VISUAL: EL POST / POSTS ATACADOS EN LA IZQUIERDA             */}
       {/* --------------------------------------------------------------------- */}
-      <div className="w-full sm:w-[220px] xl:w-[260px] shrink-0 border-b border-border sm:border-b-0 sm:border-r">
+      <div className="w-full sm:w-[200px] shrink-0 border-b border-border sm:border-b-0 sm:border-r">
         {isCommentTrigger ? (
           <CommentPostHeader posts={posts} totalSelectedIds={postIdsCount} />
         ) : (
@@ -629,12 +629,12 @@ function AutomationCard({
         {/* PIE DE LA TARJETA: Estadísticas y Botones de Acción                 */}
         {/* ------------------------------------------------------------------- */}
         <div className="mt-4 border-t border-border pt-3">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             {/* Métricas de disparo */}
             <div className="min-w-0">
               <div className="flex items-baseline gap-1.5">
                 <span className="text-[16px] font-black tabular text-txt">
-                  {automation.stats.triggered ?? 0}
+                  {(automation.stats.triggered ?? 0).toLocaleString('es-MX')}
                 </span>
                 <span className="text-[11px] text-muted">disparos</span>
               </div>

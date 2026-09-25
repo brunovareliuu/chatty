@@ -21,8 +21,10 @@ function FlowNodeCard({ id, type, data, selected }: NodeProps<ChattyNode>) {
 
   return (
     <div
+      // Con muchas salidas (respuestas rápidas) la tarjeta crece: cada opción se lee y su punto se distingue.
+      style={{ width: Math.max(240, outputs.length * 78) }}
       className={cn(
-        'w-[240px] rounded-[15px] border bg-surface transition-shadow',
+        'rounded-[15px] border bg-surface transition-shadow',
         selected
           ? 'border-accent shadow-lg shadow-accent/15'
           : 'border-border hover:border-muted/50',
@@ -63,7 +65,10 @@ function FlowNodeCard({ id, type, data, selected }: NodeProps<ChattyNode>) {
             return (
               <div key={out.id} className="min-w-0 flex-1">
                 {!single && (
-                  <div className="line-clamp-2 rounded-md bg-surface-2 px-1.5 py-1 text-center text-[10px] leading-tight font-semibold break-words text-muted">
+                  <div
+                    title={out.label}
+                    className="line-clamp-2 rounded-md bg-surface-2 px-1.5 py-1 text-center text-[10px] leading-tight font-semibold break-words text-muted"
+                  >
                     {out.label}
                   </div>
                 )}
