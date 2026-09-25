@@ -64,6 +64,10 @@ del celular sale de ahí.
 </tr>
 </table>
 
+<p align="center">
+  <img alt="El logo de Vareliuu con cinturón de campeón en un ring de box, y el de ManyChat noqueado en la lona" src="docs/imagenes/chatty-ko.jpg" width="420">
+</p>
+
 ## Qué hace
 
 <table>
