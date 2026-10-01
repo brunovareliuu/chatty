@@ -5,6 +5,7 @@ import { Check, ChevronDown, ExternalLink } from 'lucide-react';
 import type { PasoResuelto } from '@/lib/guia/estado';
 import type { PasoId } from '@/lib/guia/pasos';
 import { cn } from '@/lib/utils';
+import { botonClases } from '@/components/ui/button';
 import { Codigo } from './codigo';
 import { cuenta, estadoVisible, marcar, useHechos } from './hechos';
 
@@ -32,18 +33,18 @@ export function Checklist({
   const abierto = elegido === null ? primeroQueFalta : elegido === 'ninguno' ? null : elegido;
 
   return (
-    <section className={cn('overflow-hidden rounded-panel border border-border bg-surface', className)}>
-      <header className="flex items-center gap-4 px-5 pt-4 pb-3">
+    <section className={cn('tarjeta overflow-hidden', className)}>
+      <header className="flex items-center gap-4 px-5 pt-4 pb-3.5">
         <div className="min-w-0 flex-1">
-          <h2 className="text-[16px] font-bold tracking-[-0.2px]">{titulo ?? 'Lo que falta'}</h2>
-          <p className="text-[13px] text-muted">
+          <h2 className="text-[17px] font-semibold tracking-[-0.015em]">{titulo ?? 'Lo que falta'}</h2>
+          <p className="mt-0.5 text-[13px] text-muted">
             {listos === total ? 'Todo listo.' : `${listos} de ${total} pasos listos`}
           </p>
         </div>
         <Anillo listos={listos} total={total} />
       </header>
 
-      <ol className="border-t border-border">
+      <ol className="border-t border-hairline">
         {pasos.map((paso, i) => (
           <FilaPaso
             key={paso.id}
@@ -80,7 +81,7 @@ function FilaPaso({
   const marcable = paso.estado === 'manual';
 
   return (
-    <li className="border-b border-border last:border-b-0">
+    <li className="border-b border-hairline last:border-b-0">
       <div className="flex items-start gap-3 px-5 py-3.5">
         <Marca
           visible={visible}
@@ -93,13 +94,13 @@ function FilaPaso({
           <span className="min-w-0 flex-1">
             <span
               className={cn(
-                'block text-[15px] leading-snug font-semibold',
+                'block text-[15px] leading-snug font-semibold tracking-[-0.01em]',
                 visible === 'hecho' && 'text-muted line-through decoration-faint',
               )}
             >
               {paso.titulo}
               {paso.opcional && (
-                <span className="ml-2 rounded-full bg-surface-2 px-2 py-0.5 align-middle text-[11px] font-medium text-muted no-underline">
+                <span className="ml-2 inline-block rounded-full bg-fill-soft px-2 py-px align-middle text-[11px] font-medium text-muted no-underline">
                   opcional
                 </span>
               )}
@@ -126,7 +127,7 @@ function FilaPaso({
           {paso.comandos?.map((c) => <Codigo key={c}>{conUrl(c)}</Codigo>)}
 
           {paso.variablesListas && (
-            <ul className="divide-y divide-border overflow-hidden rounded-card border border-border bg-bg">
+            <ul className="divide-y divide-hairline overflow-hidden rounded-[12px] bg-surface">
               {paso.variablesListas.map((v) => (
                 <li key={v.nombre} className="flex items-center gap-2.5 px-3.5 py-2">
                   {v.lista ? (
@@ -148,7 +149,7 @@ function FilaPaso({
                   href={e.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-[13px] font-medium transition-colors hover:bg-surface-2"
+                  className={botonClases({ variant: 'secondary', size: 'sm' })}
                 >
                   {e.texto}
                   <ExternalLink className="h-3.5 w-3.5 text-muted" />
@@ -186,7 +187,7 @@ function Marca({
   onMarcar: () => void;
   titulo: string;
 }) {
-  const circulo = 'grid h-7 w-7 shrink-0 place-items-center rounded-full text-[12.5px] font-bold';
+  const circulo = 'grid h-7 w-7 shrink-0 place-items-center rounded-full text-[12.5px] font-semibold tabular';
   const contenido =
     visible === 'hecho' ? (
       <span className={cn(circulo, 'bg-pos text-white')}>
@@ -196,7 +197,9 @@ function Marca({
       <span
         className={cn(
           circulo,
-          marcable ? 'border-2 border-border text-muted' : 'border-2 border-dashed border-accent/50 text-accent',
+          marcable
+            ? 'border-[1.5px] border-faint/60 text-muted transition-colors hover:border-accent hover:text-accent-ink'
+            : 'border-[1.5px] border-dashed border-accent/50 text-accent-ink',
         )}
       >
         {n}
@@ -231,7 +234,7 @@ export function Anillo({ listos, total, tam = 44 }: { listos: number; total: num
   return (
     <div className="relative shrink-0" style={{ width: tam, height: tam }}>
       <svg width={tam} height={tam} className="-rotate-90">
-        <circle cx={tam / 2} cy={tam / 2} r={r} fill="none" strokeWidth={4} className="stroke-border" />
+        <circle cx={tam / 2} cy={tam / 2} r={r} fill="none" strokeWidth={4} className="stroke-fill-strong" />
         <circle
           cx={tam / 2}
           cy={tam / 2}
@@ -244,7 +247,7 @@ export function Anillo({ listos, total, tam = 44 }: { listos: number; total: num
           className={cn('transition-[stroke-dashoffset] duration-500', frac === 1 ? 'stroke-pos' : 'stroke-accent')}
         />
       </svg>
-      <span className="absolute inset-0 grid place-items-center text-[11.5px] font-bold tabular-nums">
+      <span className="tabular absolute inset-0 grid place-items-center text-[11.5px] font-semibold">
         {frac === 1 ? <Check className="h-4 w-4 text-pos" strokeWidth={3} /> : `${listos}/${total}`}
       </span>
     </div>

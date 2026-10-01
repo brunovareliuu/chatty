@@ -37,6 +37,7 @@ import {
   type TableroIg,
 } from '@/lib/estadisticas/tipos';
 import { Avatar } from '@/components/ui/avatar';
+import { botonClases } from '@/components/ui/button';
 import { InstagramIcon } from '@/components/ui/instagram-icon';
 import { GraficaColumnas } from './graficas';
 import { Miniatura, Ranking, Segmentos, Tarjeta } from './piezas';
@@ -46,13 +47,13 @@ export const RECONECTAR = '/api/ig/connect?volver=/instagram';
 
 export function AvisoPermiso({ motivo }: { motivo: string | null }) {
   return (
-    <section className="rounded-[18px] border border-accent/40 bg-accent-soft/40 p-4 md:p-5">
+    <section className="tarjeta p-5 md:p-6">
       <div className="flex flex-wrap items-start gap-4">
-        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent text-accent-fg">
-          <Lock className="h-4 w-4" />
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-[11px] bg-accent text-accent-fg">
+          <Lock className="h-[18px] w-[18px]" strokeWidth={2} />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-semibold">Te falta el permiso de estadísticas de Instagram</p>
+          <p className="text-[16px] font-semibold tracking-[-0.014em]">Te falta el permiso de estadísticas de Instagram</p>
           <p className="mt-1 max-w-[680px] text-[13px] leading-relaxed text-muted">
             Sin él, Instagram solo deja ver likes y comentarios. Con él ves alcance, vistas,
             guardados y compartidos por día, quién te sigue y quién te deja, y de dónde es tu
@@ -66,16 +67,13 @@ export function AvisoPermiso({ motivo }: { motivo: string | null }) {
             <li>
               <span className="font-semibold">2.</span> Solo si Instagram contesta que el permiso no
               es válido: en developers.facebook.com abre tu app › Casos de uso › Instagram ›
-              Personalizar, agrega <code className="rounded bg-surface-2 px-1 py-0.5 text-[12px]">instagram_business_manage_insights</code> y vuelve a
+              Personalizar, agrega <code className="rounded-md bg-fill-soft px-1.5 py-0.5 text-[12px]">instagram_business_manage_insights</code> y vuelve a
               reconectar.
             </li>
           </ol>
           {motivo && <p className="mt-2 text-[12px] text-muted">{motivo}</p>}
         </div>
-        <a
-          href={RECONECTAR}
-          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-xl bg-accent px-4 text-[14px] font-semibold text-accent-fg transition-opacity hover:opacity-90"
-        >
+        <a href={RECONECTAR} className={cn(botonClases({ variant: 'primary', size: 'md' }), 'shrink-0')}>
           <InstagramIcon className="h-4 w-4" />
           Reconectar Instagram
         </a>
@@ -88,7 +86,7 @@ export function AvisoHistorial({ desde, hoy }: { desde: string | null; hoy: stri
   const hechos = desde ? Math.min(DIAS_DE_HISTORIAL, Math.max(0, diasEntre(desde, hoy))) : 0;
   const pct = Math.round((hechos / DIAS_DE_HISTORIAL) * 100);
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-[18px] border border-border bg-surface px-4 py-3">
+    <div className="tarjeta flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3.5">
       <Loader2 className="h-4 w-4 shrink-0 animate-spin text-accent" aria-hidden />
       <p className="min-w-0 flex-1 text-[13px]">
         <span className="font-semibold">Bajando tu historial de Instagram:</span>{' '}
@@ -97,7 +95,7 @@ export function AvisoHistorial({ desde, hoy }: { desde: string | null; hoy: stri
         </span>
       </p>
       <div
-        className="h-1.5 w-40 overflow-hidden rounded-full bg-accent-soft"
+        className="h-1.5 w-40 overflow-hidden rounded-full bg-fill"
         role="progressbar"
         aria-valuenow={pct}
         aria-valuemin={0}
@@ -111,7 +109,7 @@ export function AvisoHistorial({ desde, hoy }: { desde: string | null; hoy: stri
 
 export function AvisoError({ error }: { error: string }) {
   return (
-    <div className="flex items-start gap-2.5 rounded-[18px] border border-border bg-surface px-4 py-3 text-[13px]">
+    <div className="tarjeta flex items-start gap-2.5 px-5 py-3.5 text-[13px]">
       <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0 text-neg" aria-hidden />
       <p className="min-w-0">
         <span className="font-semibold">La última actualización falló.</span>{' '}
@@ -128,11 +126,11 @@ export function Identidad({ perfil }: { perfil: PerfilIg }) {
     ['seguidos', perfil.siguiendo],
   ];
   return (
-    <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-      <div className="flex min-w-0 items-center gap-3">
-        <Avatar src={perfil.foto} name={perfil.username} size={48} />
+    <div className="tarjeta flex flex-wrap items-center gap-x-6 gap-y-4 px-5 py-4 md:px-6">
+      <div className="flex min-w-0 items-center gap-3.5">
+        <Avatar src={perfil.foto} name={perfil.username} size={52} />
         <div className="min-w-0">
-          <p className="truncate text-[16px] font-semibold">{perfil.nombre ?? `@${perfil.username}`}</p>
+          <p className="truncate text-[17px] font-semibold tracking-[-0.014em]">{perfil.nombre ?? `@${perfil.username}`}</p>
           <a
             href={`https://www.instagram.com/${perfil.username}/`}
             target="_blank"
@@ -143,11 +141,12 @@ export function Identidad({ perfil }: { perfil: PerfilIg }) {
           </a>
         </div>
       </div>
-      <dl className="flex gap-6 sm:ml-auto">
+      {/* Como la cabecera de un perfil: tres cifras separadas por un filo. */}
+      <dl className="flex divide-x divide-hairline sm:ml-auto">
         {datos.map(([label, n]) => (
-          <div key={label} className="flex flex-col-reverse">
-            <dt className="text-[12px] text-muted">{label}</dt>
-            <dd className="text-[17px] font-bold">{entero(n)}</dd>
+          <div key={label} className="flex flex-col-reverse px-4 first:pl-0 last:pr-0 sm:px-6">
+            <dt className="text-[12.5px] text-muted">{label}</dt>
+            <dd className="tabular text-[20px] leading-tight font-bold tracking-[-0.02em]">{entero(n)}</dd>
           </div>
         ))}
       </dl>
@@ -168,9 +167,9 @@ export function LoImportante({ lecturas, className }: { lecturas: Lectura[]; cla
       {lecturas.length === 0 ? (
         <p className="text-[13px] text-muted">Todavía no hay suficiente para sacar conclusiones.</p>
       ) : (
-        <ul className="space-y-3.5">
+        <ul className="-my-3 divide-y divide-hairline">
           {lecturas.map((l) => (
-            <li key={l.id} className="flex gap-2.5 text-[14px] leading-snug">
+            <li key={l.id} className="flex gap-3 py-3 text-[14px] leading-snug">
               <IconoLectura tono={l.tono} />
               <span>{l.texto}</span>
             </li>
@@ -194,9 +193,9 @@ export function QueTeFunciona({ posts, ahora }: { posts: PostIg[]; ahora: number
 
   return (
     <section>
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h2 className="text-[17px] font-semibold tracking-[-0.2px]">Qué te funciona</h2>
-        <p className="text-[12px] text-muted">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h2 className="text-[20px] font-semibold tracking-[-0.018em]">Qué te funciona</h2>
+        <p className="max-w-[80ch] text-[12.5px] text-muted">
           Interacciones de un post típico (la mediana, para que un viral no infle todo), de todas tus
           publicaciones.{posts.length < 15 && ` Con ${posts.length} es una pista, no una regla.`}
         </p>
@@ -346,7 +345,7 @@ export function Audiencia({ audiencia }: { audiencia: AudienciaIg }) {
 function Bloque({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <div className="min-w-0">
-      <p className="mb-3 text-[13px] font-medium text-muted">{titulo}</p>
+      <p className="mb-3.5 text-[13px] font-semibold text-muted">{titulo}</p>
       {children}
     </div>
   );
@@ -366,10 +365,10 @@ export function Historias({ historias }: { historias: HistoriaIg[] }) {
               <Miniatura
                 src={h.miniatura}
                 tipo={h.esVideo ? 'video' : 'foto'}
-                className="aspect-[9/16] w-full rounded-xl"
+                className="aspect-[9/16] w-full rounded-[12px]"
               />
             </a>
-            <p className="mt-1.5 text-[11px] text-muted">{cuandoSePublico(h.fecha)}</p>
+            <p className="mt-2 text-[11.5px] text-muted">{cuandoSePublico(h.fecha)}</p>
             {h.metricas ? (
               <dl className="mt-0.5 space-y-0.5 text-[12px]">
                 <Par label="vistas" valor={h.metricas.vistas} />
@@ -414,16 +413,16 @@ export function Bandeja({ tablero, periodo, texto }: { tablero: TableroIg; perio
             <Link
               key={m.label}
               href={m.href}
-              className="rounded-2xl bg-bg p-3 ring-1 ring-border transition-colors hover:ring-accent/40"
+              className="rounded-[14px] bg-surface p-3.5 transition-colors hover:bg-surface-2"
             >
-              <p className="text-[22px] leading-none font-bold">{entero(m.valor)}</p>
+              <p className="tabular text-[24px] leading-none font-bold tracking-[-0.02em]">{entero(m.valor)}</p>
               <p className="mt-1.5 text-[12px] leading-snug text-muted">{m.label}</p>
               {m.detalle && <p className="mt-0.5 text-[11px] text-faint">{m.detalle}</p>}
             </Link>
           ))}
         </div>
         <div className="min-w-0">
-          <p className="mb-3 text-[13px] font-medium text-muted">Automatizaciones que más contestan</p>
+          <p className="mb-3.5 text-[13px] font-semibold text-muted">Automatizaciones que más contestan</p>
           <Ranking
             filas={tablero.automatizaciones.map((a) => ({
               clave: a.id,

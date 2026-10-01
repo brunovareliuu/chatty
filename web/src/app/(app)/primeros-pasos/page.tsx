@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { leerGuia } from '@/lib/guia/estado';
 import { GRUPOS_DE_PASOS, MODULOS } from '@/lib/guia/pasos';
+import { Sparkles } from 'lucide-react';
 import { PageHeader } from '@/components/shell/page-header';
 import { Checklist } from '@/components/guia/checklist';
 import { TarjetasModulos } from '@/components/guia/tarjetas-modulos';
@@ -34,20 +35,25 @@ export default async function PrimerosPasosPage() {
             : 'Tu propio ManyChat para Instagram. Todavía no está conectado a nada: aquí está todo lo que hay que hacer, en orden.'
         }
       />
-      <div className="mx-auto w-full max-w-[880px] space-y-6 px-4 py-5 md:px-6 md:py-6">
+      <div className="px-pagina max-w-[920px] space-y-8 pb-12 xl:max-w-[940px]">
         {!guia.conectado && (
-          <div className="rounded-panel border border-accent/30 bg-accent-soft p-5">
-            <p className="text-[15px] font-semibold">Esto ya es el sistema.</p>
-            <p className="mt-1 text-[14px] leading-relaxed text-txt/80">
-              A la izquierda están sus secciones: entra a cualquiera para ver cómo se ve funcionando y qué le falta.
-              Los pasos que el panel puede revisar se marcan solos en cuanto están; los demás los palomeas tú y se
-              quedan guardados en este navegador. Cuando pongas las llaves de tu Firebase, aparece el login.
-            </p>
+          <div className="tarjeta flex items-start gap-3.5 rounded-card p-4 md:p-5">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[11px] bg-accent text-accent-fg">
+              <Sparkles className="h-5 w-5" strokeWidth={1.9} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[15px] font-semibold tracking-[-0.012em]">Esto ya es el sistema.</p>
+              <p className="mt-1 text-[13.5px] leading-relaxed text-muted">
+                A la izquierda están sus secciones: entra a cualquiera para ver cómo se ve funcionando y qué le falta.
+                Los pasos que el panel puede revisar se marcan solos en cuanto están; los demás los palomeas tú y se
+                quedan guardados en este navegador. Cuando pongas las llaves de tu Firebase, aparece el login.
+              </p>
+            </div>
           </div>
         )}
 
-        <section className="space-y-3">
-          <h2 className="text-[13px] font-bold tracking-[0.4px] text-muted uppercase">Las secciones</h2>
+        <section className="space-y-2.5">
+          <h2 className="px-1 text-[15px] font-semibold tracking-[-0.012em]">Las secciones</h2>
           <TarjetasModulos modulos={tarjetas} />
         </section>
 
@@ -60,7 +66,7 @@ export default async function PrimerosPasosPage() {
           />
         ))}
 
-        <p className="pb-4 text-[13px] leading-relaxed text-muted">
+        <p className="px-1 text-[12.5px] leading-relaxed text-faint">
           Cada paso tiene su guía larga en la carpeta <code className="font-mono text-txt">docs/</code> del repo (empieza
           por <code className="font-mono text-txt">docs/README.md</code>), y si algo falla,{' '}
           <code className="font-mono text-txt">docs/solucion-de-problemas.md</code>.

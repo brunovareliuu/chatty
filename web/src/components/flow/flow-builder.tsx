@@ -16,12 +16,13 @@ import {
   type OnSelectionChangeParams,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ChevronLeft, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDoc } from '@/lib/client/firestore-hooks';
 import { saveFlow } from '@/lib/client/mutations';
 import type { Flow, FlowEdge, FlowNode, FlowNodeData, NodeType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
+import { Punto } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { NODE_META } from './node-config';
@@ -237,13 +238,13 @@ function Canvas({
         escritorio el envoltorio de abajo se disuelve (md:contents) y todo
         queda en una sola línea, en el orden de siempre.
       */}
-      <header className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border px-3 py-2.5 md:flex-nowrap md:px-4 md:py-3">
+      <header className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-hairline bg-card px-3 py-2.5 md:min-h-14 md:flex-nowrap md:gap-x-2.5 md:px-4 md:py-2.5">
         <Link
           href={backHref ?? '/automations'}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] text-muted transition-colors hover:bg-surface-2 hover:text-txt"
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-fill-soft hover:text-txt"
           aria-label="Volver"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ChevronLeft className="h-5 w-5" strokeWidth={2} />
         </Link>
 
         <Input
@@ -253,12 +254,12 @@ function Canvas({
             setDirty(true);
           }}
           aria-label="Nombre del flujo"
-          className="h-9 min-w-0 flex-1 border-transparent bg-transparent text-[16px] font-semibold hover:bg-surface-2 md:max-w-[320px] md:flex-initial md:text-[15px]"
+          className="h-9 min-w-0 flex-1 border-transparent bg-transparent px-2 text-[16px] font-semibold tracking-[-0.012em] hover:bg-fill-soft focus:bg-field md:max-w-[300px] md:flex-initial md:text-[15px]"
         />
 
-        <div className="ml-auto flex shrink-0 items-center gap-3 md:order-last">
+        <div className="ml-auto flex shrink-0 items-center gap-2 md:order-last md:gap-2.5">
           {!hideEnabled && (
-            <label className="flex items-center gap-2 text-[13px] font-medium text-muted">
+            <label className="mr-1 flex items-center gap-2 text-[13px] font-medium text-muted">
               Activo
               <Switch
                 checked={enabled}
@@ -275,16 +276,21 @@ function Canvas({
             onClick={persist}
             loading={saving}
             disabled={!dirty}
-            className="h-9 px-3 md:h-10 md:px-4"
+            className="max-md:px-3"
           >
-            <Save className="h-4 w-4" />
+            <Save className="h-4 w-4" strokeWidth={2} />
             Guardar
           </Button>
         </div>
 
         {(dirty || headerExtra) && (
           <div className="flex w-full min-w-0 items-center gap-2 md:contents">
-            {dirty && <span className="shrink-0 text-[12px] font-medium text-warn">Sin guardar</span>}
+            {dirty && (
+              <span className="flex shrink-0 items-center gap-1.5 text-[12px] font-medium text-muted">
+                <Punto tone="accent" />
+                Sin guardar
+              </span>
+            )}
             {headerExtra}
           </div>
         )}
@@ -317,11 +323,18 @@ function Canvas({
             proOptions={{ hideAttribution: true }}
             defaultEdgeOptions={{ animated: true }}
             deleteKeyCode={['Backspace', 'Delete']}
-            className="bg-bg"
+            className="bg-page"
           >
-            <Background variant={BackgroundVariant.Dots} gap={18} size={1} color="var(--border)" />
+            {/* Tarjetas blancas sobre la página gris, como el resto del panel. */}
+            <Background
+              variant={BackgroundVariant.Dots}
+              gap={20}
+              size={1.3}
+              color="color-mix(in srgb, var(--faint) 45%, transparent)"
+              bgColor="var(--page)"
+            />
             <Controls
-              className="!overflow-hidden !rounded-xl !border !border-border !bg-surface !shadow-none [&>button]:!border-border [&>button]:!bg-surface [&>button]:!fill-[var(--muted)]"
+              className="!overflow-hidden !rounded-[10px] !border-0 !shadow-control [&>button]:!border-hairline [&>button]:!bg-elevated [&>button]:!fill-[var(--txt)] [&>button:hover]:!bg-surface"
               showInteractive={false}
             />
           </ReactFlow>
@@ -373,10 +386,17 @@ function Loader({ accountId, flowId, ...chrome }: { accountId: string; flowId: s
   return <Canvas accountId={accountId} flowId={flowId} initialFlow={flow} {...chrome} />;
 }
 
-export function FlowBuilder(props: { accountId: string; flowId: string } & BuilderChrome) {
+/**
+ * `flujoInicial` monta el lienzo con un flujo que ya se tiene en la mano en vez
+ * de leerlo de Firestore (una vista con datos de ejemplo). Sin él, se lee como siempre.
+ */
+export function FlowBuilder({
+  flujoInicial,
+  ...props
+}: { accountId: string; flowId: string; flujoInicial?: Flow } & BuilderChrome) {
   return (
     <ReactFlowProvider>
-      <Loader {...props} />
+      {flujoInicial ? <Canvas {...props} initialFlow={flujoInicial} /> : <Loader {...props} />}
     </ReactFlowProvider>
   );
 }

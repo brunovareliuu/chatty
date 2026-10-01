@@ -248,7 +248,7 @@ export function AutomationDialog({
               </div>
             </Field>
 
-            <div className="space-y-3 rounded-xl bg-surface px-3 py-2.5">
+            <div className="space-y-3 rounded-[12px] bg-surface px-3.5 py-3">
               <label className="flex items-center justify-between gap-3">
                 <span>
                   <span className="block text-[13px] font-medium">Pedir que te siga antes</span>
@@ -287,7 +287,7 @@ export function AutomationDialog({
           </Field>
         )}
 
-        <label className="flex items-center justify-between gap-3 rounded-xl bg-surface px-3 py-2.5">
+        <label className="flex items-center justify-between gap-3 rounded-[12px] bg-surface px-3.5 py-3">
           <span className="min-w-0">
             <span className="block text-[13px] font-medium">Avisarme al celular cuando se dispare</span>
             <span className="block text-[12px] leading-snug text-muted">
@@ -298,7 +298,7 @@ export function AutomationDialog({
         </label>
 
         {trigger.matchType !== 'regex' && trigger.matchType !== 'any' && needsKeywords && (
-          <label className="flex items-center justify-between rounded-xl bg-surface px-3 py-2.5">
+          <label className="flex items-center justify-between rounded-[12px] bg-surface px-3.5 py-3">
             <span className="text-[13px] font-medium">Distinguir mayúsculas y acentos</span>
             <Switch
               checked={trigger.caseSensitive}
@@ -330,7 +330,7 @@ function PublicRepliesEditor({
           <button
             type="button"
             onClick={() => onChange(replies.filter((_, idx) => idx !== i))}
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-muted transition-colors hover:bg-neg/10 hover:text-neg"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-neg/10 hover:text-neg"
             aria-label="Quitar respuesta"
           >
             <Trash2 className="h-3.5 w-3.5" />

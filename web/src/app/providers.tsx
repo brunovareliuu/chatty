@@ -29,9 +29,10 @@ export function Providers({
         position={enMovil ? 'top-center' : 'bottom-right'}
         toastOptions={{
           style: {
-            background: 'var(--surface)',
+            background: 'var(--elevated)',
             color: 'var(--txt)',
-            border: '1px solid var(--border)',
+            border: 'none',
+            boxShadow: 'var(--shadow-float)',
             borderRadius: '14px',
           },
         }}

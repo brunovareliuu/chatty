@@ -8,8 +8,9 @@ import { toast } from 'sonner';
 import { useAccounts } from '@/lib/client/accounts-context';
 import { useDoc } from '@/lib/client/firestore-hooks';
 import { duplicateAutomation, setAutomationEnabled, updateAutomation } from '@/lib/client/mutations';
-import type { Automation } from '@/lib/types';
+import type { Automation, Flow, IgAccount } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { Empty } from '@/components/ui/empty';
 import { Switch } from '@/components/ui/switch';
 import { FlowBuilder } from '@/components/flow/flow-builder';
@@ -22,13 +23,10 @@ import { TRIGGER_LABELS, triggerSummary } from './trigger-meta';
  * separado, que es de donde salía la confusión.
  */
 export function AutomationEditor({ automationId }: { automationId: string }) {
-  const router = useRouter();
   const { account, loading: loadingAccount } = useAccounts();
   const { data: automation, loading } = useDoc<Automation>(
     account ? `accounts/${account.id}/automations/${automationId}` : null,
   );
-  const [editingTrigger, setEditingTrigger] = useState(false);
-  const [cloning, setCloning] = useState(false);
 
   if (loadingAccount || loading) {
     return (
@@ -53,17 +51,37 @@ export function AutomationEditor({ automationId }: { automationId: string }) {
     );
   }
 
+  return <EditorAutomatizacion account={account} automation={automation} />;
+}
+
+/**
+ * El editor con la automatización ya cargada. `flujoInicial` se le pasa al
+ * lienzo para no leerlo de Firestore (una vista con datos de ejemplo); sin él, lo lee.
+ */
+export function EditorAutomatizacion({
+  account,
+  automation,
+  flujoInicial,
+}: {
+  account: IgAccount;
+  automation: Automation;
+  flujoInicial?: Flow;
+}) {
+  const router = useRouter();
+  const [editingTrigger, setEditingTrigger] = useState(false);
+  const [cloning, setCloning] = useState(false);
+
   const Icon = TRIGGER_LABELS[automation.trigger.type].icon;
 
   async function toggle(enabled: boolean) {
-    await setAutomationEnabled(account!.id, automation!.id, automation!.flowId, enabled);
+    await setAutomationEnabled(account.id, automation.id, automation.flowId, enabled);
     toast.success(enabled ? 'Automatización activada' : 'Automatización pausada');
   }
 
   // «Avisarme»: un push al celular cada vez que esta regla se dispara.
   async function toggleAviso() {
-    const notificar = !automation!.notificar;
-    await updateAutomation(account!.id, automation!.id, { notificar });
+    const notificar = !automation.notificar;
+    await updateAutomation(account.id, automation.id, { notificar });
     toast.success(notificar ? 'Te avisamos al celular cuando se dispare' : 'Ya no te avisamos de esta');
   }
 
@@ -90,23 +108,29 @@ export function AutomationEditor({ automationId }: { automationId: string }) {
       <FlowBuilder
         accountId={account.id}
         flowId={automation.flowId}
+        flujoInicial={flujoInicial}
         backHref="/automations"
         hideEnabled
         headerExtra={
           <>
+            {/* El cuándo: una pastilla gris que abre el diálogo del disparador. */}
             <button
               onClick={() => setEditingTrigger(true)}
-              className="group flex min-w-0 items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-[13px] text-muted transition-colors hover:border-accent/40 hover:text-txt"
+              className="group flex h-8 min-w-0 items-center gap-2 rounded-full bg-fill-soft pr-3 pl-1.5 text-[13px] text-muted transition-colors hover:bg-fill hover:text-txt"
             >
-              <Icon className="h-3.5 w-3.5 shrink-0 text-accent" strokeWidth={2} />
+              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent-soft">
+                <Icon className="h-3 w-3 text-accent" strokeWidth={2.2} />
+              </span>
               <span className="truncate">{triggerSummary(automation.trigger, 3)}</span>
               <Pencil className="h-3 w-3 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
             </button>
 
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={handleClonar}
               disabled={cloning}
-              className="ml-auto flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-muted transition hover:border-accent/40 hover:text-txt disabled:opacity-50"
+              className="ml-auto px-3"
               title="Clonar esta automatización y su flujo"
             >
               {cloning ? (
@@ -115,15 +139,15 @@ export function AutomationEditor({ automationId }: { automationId: string }) {
                 <Copy className="h-3.5 w-3.5" />
               )}
               <span className="hidden sm:inline">Clonar</span>
-            </button>
+            </Button>
 
             <button
               onClick={toggleAviso}
               className={cn(
-                'grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-colors',
+                'grid h-8 w-8 shrink-0 place-items-center rounded-full transition-colors',
                 automation.notificar
-                  ? 'border-accent/40 bg-accent-soft text-accent'
-                  : 'border-border bg-surface text-muted hover:text-txt',
+                  ? 'bg-accent-soft text-accent-ink'
+                  : 'text-muted hover:bg-fill-soft hover:text-txt',
               )}
               aria-pressed={Boolean(automation.notificar)}
               aria-label="Avisarme al celular cuando se dispare"
@@ -136,7 +160,7 @@ export function AutomationEditor({ automationId }: { automationId: string }) {
               )}
             </button>
 
-            <label className="flex shrink-0 items-center gap-2 text-[13px] font-medium text-muted">
+            <label className="mr-1 flex shrink-0 items-center gap-2 text-[13px] font-medium text-muted">
               Activa
               <Switch checked={automation.enabled} onCheckedChange={toggle} />
             </label>

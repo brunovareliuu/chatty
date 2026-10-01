@@ -29,7 +29,7 @@ export function PostPicker({
     return (
       <div className="grid grid-cols-4 gap-2">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="aspect-square animate-pulse rounded-xl bg-surface" />
+          <div key={i} className="aspect-square animate-pulse rounded-[12px] bg-surface" />
         ))}
       </div>
     );
@@ -37,7 +37,7 @@ export function PostPicker({
 
   if (state.status === 'error') {
     return (
-      <p className="rounded-xl bg-neg/10 px-3 py-2 text-[13px] leading-snug text-neg">
+      <p className="rounded-[12px] bg-neg/10 px-3 py-2 text-[13px] leading-snug text-neg">
         {state.message}
       </p>
     );
@@ -73,8 +73,8 @@ export function PostPicker({
               onClick={() => toggle(m.id)}
               title={m.caption ?? ''}
               className={cn(
-                'group relative aspect-square overflow-hidden rounded-xl border bg-surface text-left transition',
-                selected ? 'border-accent ring-2 ring-accent/40' : 'border-border hover:border-muted',
+                'group relative aspect-square overflow-hidden rounded-[12px] border bg-surface text-left transition',
+                selected ? 'border-accent ring-[3px] ring-accent/25' : 'border-hairline hover:border-border',
               )}
             >
               {src ? (

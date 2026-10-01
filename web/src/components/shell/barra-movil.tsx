@@ -36,7 +36,7 @@ export function BarraMovil({ user }: { user: AppUser }) {
   return (
     <>
       <nav
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
+        className="vidrio fixed inset-x-0 bottom-0 z-40 border-t border-border pb-[env(safe-area-inset-bottom)] md:hidden"
         aria-label="Navegación principal"
       >
         <div className="grid h-[60px] grid-cols-5">
@@ -84,15 +84,15 @@ export function BarraMovil({ user }: { user: AppUser }) {
             onClick={() => setAbierta(false)}
             aria-label="Cerrar menú"
           />
-          <div className="absolute inset-x-0 bottom-[calc(60px+env(safe-area-inset-bottom))] max-h-[calc(100dvh-60px-env(safe-area-inset-bottom)-24px)] overflow-y-auto rounded-t-[28px] border-t border-border bg-surface shadow-2xl shadow-black/30 animate-rise">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-surface px-5 pt-4 pb-3">
+          <div className="absolute inset-x-0 bottom-[calc(60px+env(safe-area-inset-bottom))] max-h-[calc(100dvh-60px-env(safe-area-inset-bottom)-24px)] overflow-y-auto rounded-t-float bg-bg shadow-float animate-rise">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-hairline bg-bg px-5 pt-4 pb-3">
               <div className="flex min-w-0 items-center gap-2.5">
-                <LogoConNombre tam={26} claseNombre="truncate text-[17px] font-bold tracking-[-0.3px]" />
+                <LogoConNombre tam={26} claseNombre="truncate text-[17px] font-bold tracking-[-0.02em]" />
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-                  className="grid h-9 w-9 place-items-center rounded-xl text-muted transition-colors hover:bg-surface-2 hover:text-txt"
+                  className="grid h-9 w-9 place-items-center rounded-full text-muted transition-colors hover:bg-fill hover:text-txt"
                   aria-label="Cambiar tema"
                 >
                   {/* El tema lo sabe el CSS desde el primer pintado; el servidor no. Así no hay desajuste al hidratar. */}
@@ -101,7 +101,7 @@ export function BarraMovil({ user }: { user: AppUser }) {
                 </button>
                 <button
                   onClick={salir}
-                  className="grid h-9 w-9 place-items-center rounded-xl text-muted transition-colors hover:bg-surface-2 hover:text-neg"
+                  className="grid h-9 w-9 place-items-center rounded-full text-muted transition-colors hover:bg-fill hover:text-neg"
                   aria-label="Cerrar sesión"
                 >
                   <LogOut className="h-4 w-4" />
@@ -116,7 +116,7 @@ export function BarraMovil({ user }: { user: AppUser }) {
             <div className="space-y-5 px-4 py-4">
               {NAV.map(({ titulo, items }) => (
                 <div key={titulo}>
-                  <p className="mb-1.5 px-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-faint">
+                  <p className="mb-1.5 px-1 text-[11px] font-semibold text-faint">
                     {titulo}
                   </p>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -128,11 +128,11 @@ export function BarraMovil({ user }: { user: AppUser }) {
                           href={href}
                           onClick={() => setAbierta(false)}
                           className={cn(
-                            'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[14px] font-medium transition-colors',
-                            activo ? 'bg-surface-2 text-txt' : 'text-muted active:bg-surface-2',
+                            'flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-[14px] transition-colors',
+                            activo ? 'bg-accent font-semibold text-accent-fg' : 'font-medium text-txt active:bg-fill',
                           )}
                         >
-                          <Icon className="h-4.5 w-4.5 shrink-0" strokeWidth={activo ? 2.2 : 1.9} />
+                          <Icon className={cn('h-4.5 w-4.5 shrink-0', !activo && 'text-muted')} strokeWidth={1.7} />
                           <span className="truncate">{label}</span>
                         </Link>
                       );
@@ -142,7 +142,7 @@ export function BarraMovil({ user }: { user: AppUser }) {
               ))}
             </div>
 
-            <div className="flex items-center gap-2.5 border-t border-border px-5 py-3">
+            <div className="flex items-center gap-2.5 border-t border-hairline px-5 py-3">
               <Avatar src={user.photoURL} name={user.displayName ?? user.email} size={30} />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[13px] font-semibold leading-tight">

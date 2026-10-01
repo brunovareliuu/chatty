@@ -5,7 +5,28 @@
 /*
   Capa 1 — VALORES CRUDOS.
   Único lugar del proyecto con hex literales (con `m/movil.css`). Los grises son
-  los de Chatty; el acento sale de la marca.
+  los de Apple; el acento sale de la marca.
+
+  Look «Apple»: la página es gris y el contenido va en tarjetas blancas con un
+  filo casi invisible y una sombra muy suave. Qué es cada cosa:
+
+    --page        el fondo de la ventana (área principal y barra lateral)
+    --bg / --card la superficie principal: tarjetas, hojas, paneles. --card es
+                  el mismo valor con nombre explícito
+    --surface     relleno gris DENTRO de una tarjeta (celdas agrupadas estilo
+                  Ajustes de iOS, pozos, filas activas)
+    --surface-2   el gris siguiente: pulsado, riel de progreso, separaciones
+    --elevated    lo que flota encima de todo: menús, popovers, avisos
+    --fill…       rellenos translúcidos de control (botón secundario, riel del
+                  segmentado, pastillas): se ven igual sobre la página y sobre
+                  una tarjeta. Nunca como fondo de algo que tape contenido.
+    --control     la pieza blanca levantada: segmento activo, botón de contorno
+    --field       el fondo de un campo de texto
+    --hairline    el filo de las tarjetas (más tenue que --border)
+    --glass       el vidrio de la barra lateral y de lo que flota translúcido
+
+  El acento se usa poco: el elemento activo del menú, el botón primario y los
+  avisos. Rojo y verde solo como puntos de estado.
 */
 
 /*
@@ -24,67 +45,146 @@
 /* `.claro` repite el modo claro dentro del oscuro: lo usa la vista previa de Ajustes › Marca. */
 :root,
 .claro {
+  --page: #f5f5f7;
   --bg: #ffffff;
-  --surface: #f1f1f4;
-  --surface-2: #e8e8ec;
-  --border: #e2e2e8;
-  --txt: #0a0a0b;
-  --muted: #8a8a8e;
-  --faint: #b0b0b5;
+  --card: #ffffff;
+  --elevated: #ffffff;
+  --surface: #f0f0f3;
+  --surface-2: #e6e6eb;
+  --border: rgba(0, 0, 0, 0.09);
+  --hairline: rgba(0, 0, 0, 0.06);
+  --txt: #1d1d1f;
+  --muted: #6e6e73;
+  --faint: #a1a1a6;
 
-  --pos: #22c55e;
-  --neg: #ff453a;
+  --fill: rgba(118, 118, 128, 0.12);
+  --fill-soft: rgba(118, 118, 128, 0.08);
+  --fill-strong: rgba(118, 118, 128, 0.2);
+  --control: #ffffff;
+  --field: #ffffff;
+  --glass: rgba(250, 250, 252, 0.78);
+
+  --pos: #28a745;
+  /* Rojo carmín, no el de iOS: el #ff3b30 casi se confunde con una marca naranja. */
+  --neg: #e5383b;
   --warn: #f59e0b;
 
   /* El acento es la marca. El suave (el fondo de lo seleccionado) es la marca
-     mezclada con el fondo: con el naranja da el durazno de siempre. */
+     translúcida: se ve igual sobre la página gris y sobre una tarjeta. */
   --accent: var(--marca);
   --accent-fg: var(--marca-fg);
-  --accent-soft: color-mix(in srgb, var(--marca) 12.5%, var(--bg));
+  --accent-soft: color-mix(in srgb, var(--marca) 10%, transparent);
+  /* Texto en el color de la marca sobre --accent-soft: un punto más oscuro
+     para que se lea (abajo, con color relativo, se oscurece lo justo). */
+  --accent-ink: color-mix(in oklab, var(--marca) 85%, #000);
 
-  --radius-card: 16px;
-  --radius-panel: 22px;
-  --radius-float: 28px;
+  /* Iniciales sin foto, como Contactos: gris, nada de colores inventados. */
+  --monograma-1: #b4b4ba;
+  --monograma-2: #8e8e94;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04);
+  --shadow-float: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06), 0 20px 48px rgba(0, 0, 0, 0.12);
+  --shadow-control: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.07);
+
+  --radius-card: 14px;
+  --radius-panel: 18px;
+  --radius-float: 20px;
 }
 
+/*
+  Oscuro de Apple: la ventana negra, las tarjetas en el gris 1c1c1e y cada
+  capa un escalón más clara (2c2c2e, 3a3a3c). Las sombras casi no se ven sobre
+  negro, así que el filo claro hace el trabajo de separar.
+*/
 .dark {
-  --bg: #0a0a0b;
-  --surface: #161618;
-  --surface-2: #222226;
-  --border: #2a2a2e;
-  --txt: #ffffff;
-  --muted: #8a8a8e;
-  --faint: #5b5b60;
+  --page: #000000;
+  --bg: #1c1c1e;
+  --card: #1c1c1e;
+  --elevated: #2c2c2e;
+  --surface: #2c2c2e;
+  --surface-2: #3a3a3c;
+  --border: rgba(255, 255, 255, 0.1);
+  --hairline: rgba(255, 255, 255, 0.07);
+  --txt: #f5f5f7;
+  --muted: #98989d;
+  --faint: #636366;
 
-  --pos: #32d74b;
-  --neg: #ff453a;
+  --fill: rgba(118, 118, 128, 0.24);
+  --fill-soft: rgba(118, 118, 128, 0.16);
+  --fill-strong: rgba(118, 118, 128, 0.34);
+  --control: #4a4a4e;
+  --field: rgba(118, 118, 128, 0.14);
+  --glass: rgba(30, 30, 32, 0.72);
+
+  --pos: #30d158;
+  --neg: #ff5257;
   --warn: #fbbf24;
 
   /* La versión oscura de la marca: la misma si ya se ve sobre negro, aclarada si no. */
   --accent: var(--marca-oscuro);
   --accent-fg: var(--marca-fg-oscuro);
-  --accent-soft: color-mix(in srgb, var(--marca-oscuro) 14%, var(--bg));
+  --accent-soft: color-mix(in srgb, var(--marca-oscuro) 18%, transparent);
+  --accent-ink: color-mix(in oklab, var(--marca-oscuro) 78%, #fff);
+
+  --monograma-1: #6e6e73;
+  --monograma-2: #48484a;
+
+  --shadow-card: 0 0 0 0.5px rgba(255, 255, 255, 0.02), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-float: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0, 0, 0, 0.45), 0 24px 64px rgba(0, 0, 0, 0.55);
+  --shadow-control: 0 0 0 0.5px rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/*
+  La tinta del acento con color relativo: la marca con la luz justa para leerse
+  sobre su fondo suave (más oscura en claro, más clara en oscuro), sin cambiarle
+  el tono. Con el naranja de fábrica da #d93f00 y #ff7a3d. Un navegador que no
+  lo entiende se queda con la mezcla de arriba.
+*/
+@supports (color: oklch(from red l c h)) {
+  :root,
+  .claro {
+    --accent-ink: oklch(from var(--marca) min(l - 0.07, 0.59) c h);
+  }
+  .dark {
+    --accent-ink: oklch(from var(--marca-oscuro) max(l + 0.07, 0.72) c h);
+  }
 }
 
 /* Capa 2 — NOMBRES SEMÁNTICOS. Las pantallas solo usan estos. */
 @theme inline {
+  --color-page: var(--page);
   --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-elevated: var(--elevated);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-border: var(--border);
+  --color-hairline: var(--hairline);
   --color-txt: var(--txt);
   --color-muted: var(--muted);
   --color-faint: var(--faint);
+  --color-fill: var(--fill);
+  --color-fill-soft: var(--fill-soft);
+  --color-fill-strong: var(--fill-strong);
+  --color-control: var(--control);
+  --color-field: var(--field);
+  --color-glass: var(--glass);
   --color-pos: var(--pos);
   --color-neg: var(--neg);
   --color-warn: var(--warn);
   --color-accent: var(--accent);
   --color-accent-fg: var(--accent-fg);
   --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
 
   --radius-card: var(--radius-card);
   --radius-panel: var(--radius-panel);
   --radius-float: var(--radius-float);
+
+  /* shadow-card, shadow-float, shadow-control */
+  --shadow-card: var(--shadow-card);
+  --shadow-float: var(--shadow-float);
+  --shadow-control: var(--shadow-control);
 }
 
 /*
@@ -110,10 +210,101 @@ body {
   background: var(--bg);
   color: var(--txt);
   font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
   font-size: 15px;
+  letter-spacing: -0.006em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/*
+  Piezas del look Apple que comparten todas las pantallas. Van en
+  `@layer components` para que cualquier utilidad de Tailwind las pueda
+  corregir en el lugar (`tarjeta rounded-card`, `tarjeta p-0`…).
+*/
+@layer components {
+  /* Tarjeta blanca sobre la página gris: filo casi invisible y sombra suave. */
+  .tarjeta {
+    background: var(--card);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-panel);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Vidrio esmerilado: barra lateral, barras fijas, lo que flota encima del contenido. */
+  .vidrio {
+    background: var(--glass);
+    -webkit-backdrop-filter: saturate(180%) blur(30px);
+    backdrop-filter: saturate(180%) blur(30px);
+  }
+
+  /* Menús, popovers y listas desplegables: la capa de más arriba. */
+  .flotante {
+    background: var(--elevated);
+    border-radius: 14px;
+    box-shadow: var(--shadow-float);
+  }
+
+  /*
+    Control segmentado (Tablero | Lista, Abiertas | Cerradas…). El riel es
+    translúcido para verse igual en la página y dentro de una tarjeta. El
+    segmento activo lleva `data-activo`, `aria-pressed="true"` o
+    `aria-selected="true"`. Mejor usar <Segmentado> de components/ui.
+  */
+  .segmentado {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    border-radius: 9px;
+    background: var(--fill);
+  }
+  .segmentado > button,
+  .segmentado > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 14px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--txt);
+    white-space: nowrap;
+    transition: background-color 150ms, box-shadow 150ms;
+  }
+  .segmentado > :is(button, a):not([data-activo], [aria-pressed='true'], [aria-selected='true']):hover {
+    background: var(--fill-soft);
+  }
+  .segmentado > :is([data-activo], [aria-pressed='true'], [aria-selected='true']) {
+    background: var(--control);
+    box-shadow: var(--shadow-control);
+    font-weight: 600;
+  }
+  .segmentado > :is(button, a) svg {
+    width: 14px;
+    height: 14px;
+    color: var(--muted);
+  }
+
+  /* Iniciales de un contacto sin foto. */
+  .monograma {
+    background: linear-gradient(180deg, var(--monograma-1) 0%, var(--monograma-2) 100%);
+    color: #fff;
+  }
+}
+
+/* El margen lateral de una pantalla: el título, los filtros y el contenido se alinean en él. */
+@utility px-pagina {
+  padding-inline: 1rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 2.5rem;
+  }
 }
 
 /* Anillo de foco: siempre el acento, nunca el azul del navegador. */

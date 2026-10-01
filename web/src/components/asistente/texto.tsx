@@ -43,7 +43,7 @@ function Inline({ text }: { text: string }) {
         }
         if (part.length > 2 && part.startsWith('`') && part.endsWith('`')) {
           return (
-            <code key={i} className="rounded-md bg-surface-2 px-1 py-0.5 text-[13px]">
+            <code key={i} className="rounded-[6px] bg-fill-soft px-1.5 py-0.5 text-[13px]">
               {part.slice(1, -1)}
             </code>
           );
