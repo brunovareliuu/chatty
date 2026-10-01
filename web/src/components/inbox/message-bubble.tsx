@@ -1,8 +1,9 @@
 'use client';
 
-import { AlertCircle, Bot, Check, CheckCheck, Clock, User } from 'lucide-react';
-import type { Message } from '@/lib/types';
-import { cn, formatClock } from '@/lib/utils';
+import { AlertCircle, Bot, Check, CheckCheck, Clock, Link2, User } from 'lucide-react';
+import type { Attachment, Message } from '@/lib/types';
+import { cn } from '@/lib/utils';
+import { hora } from './fechas';
 
 function StatusIcon({ status }: { status: Message['status'] }) {
   if (status === 'pending') return <Clock className="h-3 w-3" />;
@@ -12,92 +13,130 @@ function StatusIcon({ status }: { status: Message['status'] }) {
   return <Check className="h-3 w-3 opacity-60" />;
 }
 
-export function MessageBubble({ message }: { message: Message }) {
+/** Fotos, videos y audios van sueltos, sin burbuja; lo demás es una tarjeta de enlace. */
+function esMedio(att: Attachment): boolean {
+  return att.type === 'image' || att.type === 'video' || att.type === 'audio';
+}
+
+function dominio(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return url;
+  }
+}
+
+export function MessageBubble({
+  message,
+  ultima = true,
+}: {
+  message: Message;
+  /** Último mensaje de su grupo: solo ese lleva la hora debajo (los fallidos, siempre). */
+  ultima?: boolean;
+}) {
   const outgoing = message.direction === 'out';
   const failed = message.status === 'failed';
+  const medios = message.attachments.filter(esMedio);
+  const enlaces = message.attachments.filter((att) => !esMedio(att));
+  const vacio = !message.text && message.attachments.length === 0;
+  const muestraMeta = ultima || failed || Boolean(message.reaction);
 
   return (
-    <div className={cn('flex w-full', outgoing ? 'justify-end' : 'justify-start')}>
-      <div className={cn('min-w-0 max-w-[85%] space-y-1 md:max-w-[min(68%,520px)]', outgoing && 'items-end')}>
+    <div className={cn('flex w-full min-w-0 flex-col', outgoing ? 'items-end' : 'items-start')}>
+      <div
+        className={cn(
+          'flex max-w-[85%] min-w-0 flex-col gap-1 md:max-w-[min(62%,520px)]',
+          outgoing ? 'items-end' : 'items-start',
+        )}
+        title={hora(message.timestamp)}
+      >
         {message.replyTo?.storyUrl && (
-          <div className="mb-1 flex items-center gap-2 rounded-xl bg-surface-2 p-1.5">
+          <div className="flex items-center gap-2 rounded-[14px] bg-fill-soft p-1.5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={message.replyTo.storyUrl}
-              alt="Historia"
-              className="h-10 w-10 rounded-lg object-cover"
-            />
-            <span className="pr-2 text-[11px] font-medium text-muted">Respondió a tu historia</span>
+            <img src={message.replyTo.storyUrl} alt="Historia" className="h-10 w-10 rounded-[9px] object-cover" />
+            <span className="pr-2 text-[11.5px] font-medium text-muted">Respondió a tu historia</span>
           </div>
         )}
 
-        <div
-          className={cn(
-            'rounded-[18px] px-3.5 py-2.5 text-[14px] leading-[1.45] break-words',
-            outgoing
-              ? failed
-                ? 'bg-neg/10 text-txt ring-1 ring-neg/30'
-                : 'bg-accent text-accent-fg'
-              : 'bg-surface-2 text-txt',
-          )}
-        >
-          {message.attachments.map((att, i) =>
-            att.type === 'image' ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={i}
-                src={att.url}
-                alt=""
-                className="mb-1.5 max-h-72 max-w-full rounded-xl object-cover"
-                loading="lazy"
-              />
-            ) : att.type === 'video' ? (
-              <video key={i} src={att.url} controls className="mb-1.5 max-h-72 max-w-full rounded-xl" />
-            ) : att.type === 'audio' ? (
-              <audio key={i} src={att.url} controls className="mb-1.5 w-56 max-w-full" />
+        {medios.map((att, i) =>
+          att.type === 'image' ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={i}
+              src={att.url}
+              alt=""
+              className="max-h-72 max-w-full rounded-[18px] object-cover"
+              loading="lazy"
+            />
+          ) : att.type === 'video' ? (
+            <video key={i} src={att.url} controls className="max-h-72 max-w-full rounded-[18px]" />
+          ) : (
+            <audio key={i} src={att.url} controls className="w-56 max-w-full" />
+          ),
+        )}
+
+        {(message.text || vacio) && (
+          <div
+            className={cn(
+              'rounded-[19px] px-3.5 pt-[9px] pb-2.5 text-[14px] leading-[1.42] tracking-[-0.008em] break-words',
+              outgoing
+                ? failed
+                  ? 'bg-neg/10 text-txt ring-1 ring-neg/30'
+                  : 'bg-accent text-accent-fg'
+                : 'bg-surface-2 text-txt',
+            )}
+          >
+            {message.text ? (
+              <p className="whitespace-pre-wrap">{message.text}</p>
             ) : (
-              <a
-                key={i}
-                href={att.url}
-                target="_blank"
-                rel="noreferrer"
-                className="mb-1.5 block underline underline-offset-2"
-              >
-                Ver adjunto
-              </a>
-            ),
-          )}
+              <p className="italic opacity-60">
+                {message.type === 'deleted' ? 'Mensaje eliminado' : 'Mensaje sin texto'}
+              </p>
+            )}
+          </div>
+        )}
 
-          {message.text && <p className="whitespace-pre-wrap">{message.text}</p>}
+        {enlaces.map((att, i) => (
+          <a
+            key={i}
+            href={att.url}
+            target="_blank"
+            rel="noreferrer"
+            className="flex w-[300px] max-w-full items-center gap-3 rounded-2xl bg-card py-2.5 pr-3.5 pl-2.5 ring-1 ring-border transition-colors hover:bg-fill-soft"
+          >
+            <span className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-[10px] bg-fill-soft text-muted">
+              <Link2 className="h-5 w-5" strokeWidth={1.8} />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[13px] font-semibold">Ver adjunto</span>
+              <span className="block truncate text-[12px] text-faint">{dominio(att.url)}</span>
+            </span>
+          </a>
+        ))}
+      </div>
 
-          {!message.text && message.attachments.length === 0 && (
-            <p className="italic opacity-60">
-              {message.type === 'deleted' ? 'Mensaje eliminado' : 'Mensaje sin texto'}
-            </p>
-          )}
-        </div>
-
+      {muestraMeta && (
         <div
           className={cn(
-            'flex items-center gap-1.5 px-1 text-[11px] text-faint',
+            'tabular mt-1 flex items-center gap-[5px] px-1.5 text-[11px] text-faint',
             outgoing ? 'justify-end' : 'justify-start',
           )}
         >
           {outgoing && message.sentBy === 'automation' && (
-            <span className="flex items-center gap-1 text-accent">
-              <Bot className="h-3 w-3" /> bot
+            <span className="flex items-center gap-[3px] font-medium text-accent-ink">
+              <Bot className="h-3 w-3" strokeWidth={2} /> bot
             </span>
           )}
-          {outgoing && message.sentBy === 'human' && <User className="h-3 w-3" />}
-          <span className="tabular">{formatClock(message.timestamp)}</span>
+          {outgoing && message.sentBy === 'human' && <User className="h-3 w-3" strokeWidth={2} />}
+          <span>{hora(message.timestamp)}</span>
           {outgoing && <StatusIcon status={message.status} />}
           {message.reaction && <span>{message.reaction.emoji}</span>}
         </div>
+      )}
 
-        {failed && message.error && (
-          <p className={cn('px-1 text-[11px] text-neg', outgoing && 'text-right')}>{message.error}</p>
-        )}
-      </div>
+      {failed && message.error && (
+        <p className={cn('mt-0.5 px-1.5 text-[11px] text-neg', outgoing && 'text-right')}>{message.error}</p>
+      )}
     </div>
   );
 }

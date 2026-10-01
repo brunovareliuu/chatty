@@ -32,9 +32,10 @@ import {
 import { cifrasPrincipales, desgloseInteracciones, metricasDisponibles } from '@/lib/estadisticas/cifras';
 import { lecturas } from '@/lib/estadisticas/lecturas';
 import { NOMBRE_TIPO_PLURAL, RANGOS, type Rango, type TableroIg, type TipoPost } from '@/lib/estadisticas/tipos';
-import { Button } from '@/components/ui/button';
+import { Button, botonClases } from '@/components/ui/button';
 import { Empty } from '@/components/ui/empty';
 import { InstagramIcon } from '@/components/ui/instagram-icon';
+import { Select } from '@/components/ui/select';
 import { PageHeader } from '@/components/shell/page-header';
 import { GraficaAltasBajas, GraficaDia, GraficaPosts } from './graficas';
 import { Cifra, Delta, Medidor, Segmentos, Tarjeta } from './piezas';
@@ -90,10 +91,7 @@ export function PantallaInstagram({
           title="Conecta tu cuenta primero"
           description="El tablero lee la cuenta de Instagram conectada al panel."
           action={
-            <a
-              href={RECONECTAR}
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-accent px-4 text-[14px] font-semibold text-accent-fg hover:opacity-90"
-            >
+            <a href={RECONECTAR} className={botonClases({ variant: 'primary', size: 'md' })}>
               Conectar Instagram
             </a>
           }
@@ -144,28 +142,29 @@ export function VistaInstagram({
             ? `Cómo va @${tablero.perfil.username}: seguidores, alcance, tus posts y quién te ve.`
             : 'Cómo va tu cuenta: seguidores, alcance, tus posts y quién te ve.'
         }
+        // Un solo renglón de filtros, arriba de todo lo que filtran.
+        toolbar={
+          <>
+            <Segmentos
+              etiqueta="Periodo"
+              valor={rango}
+              opciones={RANGOS.map((r) => ({ valor: r.valor, label: r.label }))}
+              onChange={setRango}
+            />
+            <div className="flex items-center gap-3">
+              {tablero && (
+                <span className="text-[12.5px] text-muted" title="La foto del perfil se toma cada hora">
+                  Actualizado {hace(tablero.estado.perfilEn, tablero.generadoEn)}
+                </span>
+              )}
+              <Button size="sm" variant="outline" onClick={onActualizar} loading={actualizando}>
+                {!actualizando && <RefreshCw className="h-3.5 w-3.5" strokeWidth={2} />}
+                Actualizar
+              </Button>
+            </div>
+          </>
+        }
       />
-
-      {/* Un solo renglón de filtros, arriba de todo lo que filtran. */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3 md:px-6">
-        <Segmentos
-          etiqueta="Periodo"
-          valor={rango}
-          opciones={RANGOS.map((r) => ({ valor: r.valor, label: r.label }))}
-          onChange={setRango}
-        />
-        <div className="flex items-center gap-3">
-          {tablero && (
-            <span className="text-[12px] text-muted" title="La foto del perfil se toma cada hora">
-              Actualizado {hace(tablero.estado.perfilEn, tablero.generadoEn)}
-            </span>
-          )}
-          <Button size="sm" variant="secondary" onClick={onActualizar} loading={actualizando}>
-            {!actualizando && <RefreshCw className="h-3.5 w-3.5" />}
-            Actualizar
-          </Button>
-        </div>
-      </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto">
         {!tablero && cargando && (
@@ -201,7 +200,7 @@ function Tablero({ tablero: t, rango, className }: { tablero: TableroIg; rango: 
   );
 
   return (
-    <div className={cn('mx-auto max-w-[1200px] space-y-5 px-4 py-5 transition-opacity md:px-6 md:py-6', className)}>
+    <div className={cn('px-pagina space-y-5 pb-10 transition-opacity', className)}>
       {!t.estado.conPermiso && <AvisoPermiso motivo={t.estado.motivoSinPermiso} />}
       {t.estado.conPermiso && !t.estado.historialCompleto && (
         <AvisoHistorial desde={t.estado.historialDesde} hoy={t.hoy} />
@@ -210,13 +209,13 @@ function Tablero({ tablero: t, rango, className }: { tablero: TableroIg; rango: 
 
       {t.perfil && <Identidad perfil={t.perfil} />}
 
-      <div className="space-y-3">
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="space-y-3 md:space-y-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
           {principales.map((c) => (
             <Cifra key={c.id} {...c} />
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
           {secundarias.map((c) => (
             <Cifra key={c.id} {...c} chica />
           ))}
@@ -302,18 +301,13 @@ function DiaPorDia({
       detalle={`${METRICAS_DIA[metrica].ayuda}${esUnDia(r.rango) ? ' Los últimos 14 días.' : ''}`}
       accion={
         disponibles.length > 4 ? (
-          <select
-            value={metrica}
-            onChange={(e) => setElegida(e.target.value as ClaveSerie)}
-            aria-label="Qué ver"
-            className="h-9 rounded-xl border border-border bg-bg px-3 text-[13px] font-semibold text-txt focus:border-accent focus:outline-none"
-          >
-            {disponibles.map((m) => (
-              <option key={m} value={m}>
-                {METRICAS_DIA[m].label}
-              </option>
-            ))}
-          </select>
+          <div aria-label="Qué ver" role="group" className="w-44">
+            <Select
+              value={metrica}
+              onChange={(v) => setElegida(v)}
+              options={disponibles.map((m) => ({ value: m, label: METRICAS_DIA[m].label }))}
+            />
+          </div>
         ) : disponibles.length > 1 ? (
           <Segmentos
             etiqueta="Qué ver"
@@ -325,7 +319,7 @@ function DiaPorDia({
       }
     >
       {conValor.length < 2 ? (
-        <div className="grid h-[240px] place-items-center rounded-2xl border border-dashed border-border px-6 text-center">
+        <div className="grid h-[240px] place-items-center rounded-[14px] bg-surface px-6 text-center">
           <div className="max-w-[440px]">
             <p className="text-[14px] font-semibold">
               {metrica === 'seguidores' ? 'Tu historial de seguidores empieza hoy' : 'Todavía no hay días guardados'}
@@ -379,11 +373,11 @@ function AltasBajas({
         hay ? (
           <div className="flex gap-4 text-[12px] text-muted">
             <span className="inline-flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-sm bg-accent" aria-hidden />
+              <span className="h-2 w-2 rounded-full bg-accent" aria-hidden />
               Te siguieron
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-sm bg-faint" aria-hidden />
+              <span className="h-2 w-2 rounded-full bg-faint" aria-hidden />
               Se fueron
             </span>
           </div>
@@ -393,7 +387,7 @@ function AltasBajas({
       {hay ? (
         <>
           <GraficaAltasBajas datos={datos} alto={200} />
-          <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-4 sm:grid-cols-4">
+          <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-hairline pt-4 sm:grid-cols-4">
             <Dato label={`${prefijo}te siguieron`} valor={entero(altas)} />
             <Dato label={`${prefijo}dejaron de seguirte`} valor={entero(bajas)} />
             <Dato
@@ -420,7 +414,7 @@ function Dato({ label, valor, tono }: { label: string; valor: string; tono?: str
   return (
     <div className="flex flex-col-reverse">
       <dt className="text-[12px] text-muted">{label}</dt>
-      <dd className={cn('text-[20px] font-bold tracking-[-0.02em]', tono)}>{valor}</dd>
+      <dd className={cn('tabular text-[22px] font-bold tracking-[-0.02em]', tono)}>{valor}</dd>
     </div>
   );
 }
@@ -480,7 +474,7 @@ function Desglose({ r }: { r: Resumen }) {
           <div key={d.id} className="min-w-0">
             <dt className="truncate text-[12px] text-muted">{d.label}</dt>
             <dd className="mt-1 flex flex-wrap items-baseline gap-x-2">
-              <span className="text-[20px] font-bold tracking-[-0.02em]">{compacto(d.actual)}</span>
+              <span className="tabular text-[22px] font-bold tracking-[-0.02em]">{compacto(d.actual)}</span>
               <Delta cambio={d.cambio} />
             </dd>
           </div>
@@ -559,7 +553,7 @@ function Publicaciones({ tablero: t, r, conInsights }: { tablero: TableroIg; r: 
       }
     >
       <GraficaPosts filas={filas} nombre={nombreCifra} />
-      <div className="mt-5 border-t border-border pt-2">
+      <div className="mt-5 border-t border-hairline pt-2">
         <TablaPosts
           posts={enTabla}
           conInsights={conInsights}
@@ -570,7 +564,7 @@ function Publicaciones({ tablero: t, r, conInsights }: { tablero: TableroIg; r: 
         {ordenados.length > 12 && (
           <button
             onClick={() => setTodas((v) => !v)}
-            className="mt-3 text-[13px] font-semibold text-accent hover:underline"
+            className="mt-3 text-[13px] font-medium text-accent hover:underline"
           >
             {todas ? 'Ver menos' : `Ver las ${ordenados.length}`}
           </button>

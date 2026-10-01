@@ -1,7 +1,7 @@
 'use client';
 
 import { useLayoutEffect, useRef, useState } from 'react';
-import { SendHorizonal } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Conversation } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -66,8 +66,9 @@ export function Composer({
   }
 
   return (
-    <div className="shrink-0 border-t border-border p-2 md:p-3">
-      <div className="flex items-end gap-2 rounded-[18px] bg-surface-2 p-1.5 focus-within:ring-1 focus-within:ring-accent md:p-2">
+    <div className="shrink-0 px-2 pt-2 pb-2 md:px-5 md:pt-3 md:pb-4">
+      {/* La caja de Mensajes: una píldora con filo y el botón de enviar adentro, a la derecha. */}
+      <div className="flex items-end gap-2 rounded-[21px] border border-border bg-field pr-1 pl-4 transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:ring-[3px] focus-within:ring-accent/15 md:rounded-[19px]">
         {/* 16 px en celular: con menos, iOS hace zoom al enfocar el campo. */}
         <textarea
           ref={ref}
@@ -76,8 +77,10 @@ export function Composer({
           onKeyDown={onKeyDown}
           rows={1}
           placeholder="Escribe un mensaje…"
-          className="max-h-40 min-w-0 flex-1 resize-none bg-transparent px-2 py-2 text-[16px] leading-[1.45] outline-none placeholder:text-faint md:px-1.5 md:py-1.5 md:text-[14px]"
+          aria-label="Escribe un mensaje"
+          className="max-h-40 min-w-0 flex-1 resize-none bg-transparent py-[9px] text-[16px] leading-[22px] outline-none placeholder:text-faint md:py-2 md:text-[14px] md:leading-5"
         />
+        {/* Vacío, el botón se apaga a gris como en Mensajes (no al acento lavado). */}
         <Button
           variant="primary"
           size="icon"
@@ -85,12 +88,12 @@ export function Composer({
           disabled={!text.trim()}
           loading={sending}
           aria-label="Enviar"
-          className="h-11 w-11 shrink-0 rounded-[14px] md:h-9 md:w-9 md:rounded-[10px]"
+          className="mb-1 h-8 w-8 disabled:bg-fill-strong disabled:text-muted disabled:opacity-100 md:h-7 md:w-7"
         >
-          {!sending && <SendHorizonal className="h-4 w-4" />}
+          {!sending && <ArrowUp className="h-4 w-4" strokeWidth={2.4} />}
         </Button>
       </div>
-      <p className="mt-1.5 hidden px-1 text-[11px] text-faint md:block">
+      <p className="mt-1.5 hidden pl-4 text-[11px] text-faint md:block">
         Enter para enviar · Shift + Enter para salto de línea
       </p>
     </div>

@@ -24,7 +24,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <AuthGuard>
       <AccountsProvider>
-        <div className="flex h-dvh overflow-hidden bg-bg">
+        {/* La ventana es gris (--page): el contenido de cada pantalla va en tarjetas blancas encima. */}
+        <div className="flex h-dvh overflow-hidden bg-page text-txt">
           <Sidebar user={user} pasos={pasos} />
           {/* En celular la barra inferior es fija: el contenido le deja su alto y el área segura del iPhone. */}
           <main className="flex min-w-0 flex-1 flex-col overflow-hidden pt-[env(safe-area-inset-top)] pb-[calc(60px+env(safe-area-inset-bottom))] md:pt-0 md:pb-0">

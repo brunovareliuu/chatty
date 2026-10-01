@@ -55,11 +55,11 @@ export function TablaPosts({
   const columnas = [...(conInsights ? COLUMNAS_INSIGHTS : COLUMNAS_BASICAS), TASA];
 
   return (
-    <div className="-mx-4 overflow-x-auto md:-mx-5">
+    <div className="-mx-5 overflow-x-auto md:-mx-6">
       <table className="w-full min-w-[720px] border-collapse text-[13px]">
         <thead>
           <tr className="border-b border-border text-left text-[12px] text-muted">
-            <th className="py-2 pr-3 pl-4 font-medium md:pl-5">
+            <th className="py-2 pr-3 pl-5 font-medium md:pl-6">
               <BotonOrden activo={orden === 'fecha'} onClick={() => onOrden('fecha')} titulo="Ordenar por fecha">
                 Publicación
               </BotonOrden>
@@ -80,15 +80,15 @@ export function TablaPosts({
                 </BotonOrden>
               </th>
             ))}
-            <th className="w-10 pr-4 md:pr-5" aria-label="Abrir en Instagram" />
+            <th className="w-10 pr-5 md:pr-6" aria-label="Abrir en Instagram" />
           </tr>
         </thead>
         <tbody>
           {posts.map((p) => (
-            <tr key={p.id} className="group border-b border-border last:border-b-0 hover:bg-surface-2/60">
-              <td className="py-2.5 pr-3 pl-4 md:pl-5">
+            <tr key={p.id} className="group border-b border-hairline transition-colors last:border-b-0 hover:bg-fill-soft">
+              <td className="py-3 pr-3 pl-5 md:pl-6">
                 <div className="flex min-w-0 items-center gap-3">
-                  <Miniatura src={p.miniatura} tipo={p.tipo} className="h-12 w-10 rounded-md" />
+                  <Miniatura src={p.miniatura} tipo={p.tipo} className="h-12 w-10 rounded-[8px]" />
                   <div className="min-w-0">
                     <p className="line-clamp-1 max-w-[300px] font-medium">{p.caption || 'Sin texto'}</p>
                     <div className="mt-1 flex items-center gap-2">
@@ -107,20 +107,20 @@ export function TablaPosts({
                 <td
                   key={c.clave}
                   className={cn(
-                    'px-3 py-2.5 text-right tabular-nums',
+                    'px-3 py-3 text-right tabular-nums',
                     orden === c.clave ? 'font-semibold text-txt' : 'text-muted',
                   )}
                 >
                   {c.formato(valorPost(p, c.clave, seguidores))}
                 </td>
               ))}
-              <td className="pr-4 text-right md:pr-5">
+              <td className="pr-5 text-right md:pr-6">
                 {p.permalink && (
                   <a
                     href={p.permalink}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-txt"
+                    className="inline-grid h-8 w-8 place-items-center rounded-full text-muted transition-colors hover:bg-fill hover:text-txt"
                     aria-label="Abrir en Instagram"
                     title="Abrir en Instagram"
                   >

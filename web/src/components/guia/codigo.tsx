@@ -19,14 +19,14 @@ export function Codigo({ children }: { children: string }) {
 
   return (
     <div className="group relative">
-      <pre className="overflow-x-auto rounded-card border border-border bg-bg px-4 py-3 pr-12 font-mono text-[12.5px] leading-relaxed text-txt">
+      <pre className="overflow-x-auto rounded-[12px] bg-surface px-4 py-3 pr-12 font-mono text-[12.5px] leading-relaxed text-txt">
         {children}
       </pre>
       <button
         type="button"
         onClick={copiar}
         aria-label={copiado ? 'Copiado' : 'Copiar'}
-        className="absolute top-2 right-2 grid h-8 w-8 place-items-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-txt"
+        className="absolute top-2 right-2 grid h-8 w-8 place-items-center rounded-full text-muted transition-colors hover:bg-fill hover:text-txt"
       >
         {copiado ? <Check className="h-4 w-4 text-pos" /> : <Copy className="h-4 w-4" />}
       </button>

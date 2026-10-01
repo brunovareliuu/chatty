@@ -57,21 +57,21 @@ export function NodeInspector({
   const Icon = meta.icon;
 
   return (
-    <aside className="flex w-[320px] shrink-0 flex-col border-l border-border bg-surface">
-      <header className="flex items-start gap-2.5 border-b border-border px-4 py-3.5">
-        <div className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-[10px] bg-accent-soft">
+    <aside className="flex w-[320px] shrink-0 flex-col border-l border-hairline bg-card">
+      <header className="flex items-start gap-3 border-b border-hairline px-4 py-3.5">
+        <div className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-[9px] bg-accent-soft">
           <Icon className="h-4 w-4 text-accent" strokeWidth={2} />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-semibold leading-tight">{meta.label}</p>
-          <p className="mt-0.5 text-[12px] leading-snug text-muted">{meta.description}</p>
+          <p className="text-[15px] leading-tight font-semibold tracking-[-0.012em]">{meta.label}</p>
+          <p className="mt-0.5 text-[12.5px] leading-snug text-muted">{meta.description}</p>
         </div>
         <button
           onClick={onClose}
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-txt"
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-fill text-muted transition-colors hover:bg-fill-strong hover:text-txt"
           aria-label="Cerrar"
         >
-          <X className="h-4 w-4" />
+          <X className="h-3.5 w-3.5" strokeWidth={2.4} />
         </button>
       </header>
 
@@ -80,7 +80,7 @@ export function NodeInspector({
       </div>
 
       {onDelete && (
-        <div className="border-t border-border p-3">
+        <div className="border-t border-hairline p-3">
           <Button
             variant="ghost"
             className="w-full text-neg hover:bg-neg/10 hover:text-neg"
@@ -197,7 +197,7 @@ function Body({
               placeholder="Abrir enlace"
             />
           </Field>
-          <p className="rounded-xl bg-surface-2 px-3 py-2 text-[12px] leading-relaxed text-muted">
+          <p className="rounded-[12px] bg-surface px-3 py-2.5 text-[12.5px] leading-relaxed text-muted">
             Si el flujo arrancó por un comentario, el primer mensaje solo puede ser texto: el
             enlace se manda escrito y Instagram lo vuelve clicable.
           </p>
@@ -254,7 +254,7 @@ function Body({
     case 'follow_gate':
       return (
         <>
-          <p className="rounded-xl bg-surface-2 px-3 py-2 text-[12px] leading-relaxed text-muted">
+          <p className="rounded-[12px] bg-surface px-3 py-2.5 text-[12.5px] leading-relaxed text-muted">
             Manda este mensaje con un botón y solo sigue por «Te sigue» cuando Instagram confirma
             que la persona ya sigue tu cuenta. Si el flujo arrancó por un comentario, el primer
             mensaje llega sin botón y le pide contestar con su texto.
@@ -395,7 +395,7 @@ function Body({
               />
             </Field>
           )}
-          <p className="rounded-xl bg-surface-2 px-3 py-2 text-[12px] leading-relaxed text-muted">
+          <p className="rounded-[12px] bg-surface px-3 py-2.5 text-[12.5px] leading-relaxed text-muted">
             Los campos planos de la respuesta JSON quedan disponibles como variables en los
             nodos siguientes.
           </p>
@@ -430,33 +430,31 @@ function ButtonsEditor({
   return (
     <div>
       <div className="mb-1.5 flex items-baseline justify-between">
-        <span className="text-[12px] font-semibold tracking-[0.4px] text-muted uppercase">
-          Botones
-        </span>
-        <span className="text-[11px] text-faint">máximo 3</span>
+        <span className="text-[13px] font-medium text-muted">Botones</span>
+        <span className="text-[12px] text-faint">máximo 3</span>
       </div>
 
       <div className="space-y-2">
         {buttons.map((b, i) => (
-          <div key={i} className="space-y-1.5 rounded-xl bg-surface-2 p-2">
+          <div key={i} className="space-y-2 rounded-[12px] bg-surface p-2">
             <div className="flex gap-1.5">
               <Input
                 value={b.title}
                 onChange={(e) => update(i, { title: e.target.value.slice(0, 20) })}
                 placeholder="Texto del botón"
-                className="h-8 bg-bg text-[13px]"
+                className="h-8 text-[13px]"
               />
               <button
                 onClick={() => onChange(buttons.filter((_, idx) => idx !== i))}
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-neg/10 hover:text-neg"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-neg/10 hover:text-neg"
                 aria-label="Quitar botón"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
             </div>
 
-            <div className="flex items-center gap-2 px-0.5">
-              <span className="text-[12px] text-muted">Abre un enlace</span>
+            <div className="flex items-center gap-2 px-1">
+              <span className="text-[12.5px] text-muted">Abre un enlace</span>
               <Switch
                 checked={b.kind === 'url'}
                 onCheckedChange={(isUrl) =>
@@ -479,7 +477,7 @@ function ButtonsEditor({
                 value={b.url}
                 onChange={(e) => update(i, { url: e.target.value } as Partial<ButtonSpec>)}
                 placeholder="https://…"
-                className="h-8 bg-bg text-[13px]"
+                className="h-8 text-[13px]"
               />
             )}
           </div>
@@ -516,10 +514,8 @@ function QuickRepliesEditor({
   return (
     <div>
       <div className="mb-1.5 flex items-baseline justify-between">
-        <span className="text-[12px] font-semibold tracking-[0.4px] text-muted uppercase">
-          Opciones
-        </span>
-        <span className="text-[11px] text-faint">máximo 13</span>
+        <span className="text-[13px] font-medium text-muted">Opciones</span>
+        <span className="text-[12px] text-faint">máximo 13</span>
       </div>
 
       <div className="space-y-1.5">
@@ -538,7 +534,7 @@ function QuickRepliesEditor({
             />
             <button
               onClick={() => onChange(replies.filter((_, idx) => idx !== i))}
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-neg/10 hover:text-neg"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-neg/10 hover:text-neg"
               aria-label="Quitar opción"
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -591,7 +587,7 @@ function ConditionEditor({
       )}
 
       {rules.map((rule, i) => (
-        <div key={i} className="space-y-1.5 rounded-xl bg-surface-2 p-2">
+        <div key={i} className="space-y-1.5 rounded-[12px] bg-surface p-2">
           <div className="flex gap-1.5">
             <Select
               value={rule.subject}
@@ -601,7 +597,7 @@ function ConditionEditor({
             />
             <button
               onClick={() => onChange({ rules: rules.filter((_, idx) => idx !== i) })}
-              className="grid h-10 w-9 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-neg/10 hover:text-neg"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-neg/10 hover:text-neg"
               aria-label="Quitar regla"
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -613,7 +609,7 @@ function ConditionEditor({
               value={rule.key ?? ''}
               onChange={(e) => update(i, { key: e.target.value })}
               placeholder={rule.subject === 'tag' ? 'nombre de la etiqueta' : 'nombre del campo'}
-              className="h-9 bg-bg text-[13px]"
+              className="h-9 text-[13px]"
             />
           )}
 
@@ -630,7 +626,7 @@ function ConditionEditor({
               value={rule.value ?? ''}
               onChange={(e) => update(i, { value: e.target.value })}
               placeholder="valor a comparar"
-              className="h-9 bg-bg text-[13px]"
+              className="h-9 text-[13px]"
             />
           )}
 

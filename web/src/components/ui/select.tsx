@@ -1,7 +1,8 @@
 'use client';
 
-import { ChevronDown } from 'lucide-react';
+import { ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { campoClases } from './input';
 
 /**
  * Select nativo con la piel del sistema. Para listas cortas de opciones el
@@ -23,7 +24,7 @@ export function Select<T extends string>({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
-        className="h-10 w-full appearance-none rounded-xl border border-transparent bg-surface-2 pr-9 pl-3 text-[14px] font-medium text-txt outline-none transition-colors focus:border-accent focus:bg-surface"
+        className={cn(campoClases, 'h-9 cursor-pointer appearance-none pr-8 font-medium')}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -31,7 +32,8 @@ export function Select<T extends string>({
           </option>
         ))}
       </select>
-      <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-faint" />
+      {/* Las dos flechitas de los menús emergentes de macOS. */}
+      <ChevronsUpDown className="pointer-events-none absolute top-1/2 right-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted" />
     </div>
   );
 }

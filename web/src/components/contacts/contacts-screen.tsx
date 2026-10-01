@@ -1,15 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { AtSign, Search, Users } from 'lucide-react';
+import { Search, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAccounts } from '@/lib/client/accounts-context';
 import { useContacts } from '@/lib/client/firestore-hooks';
 import { setContactNotes, setContactTags } from '@/lib/client/mutations';
 import type { Contact } from '@/lib/types';
-import { relativeTime } from '@/lib/utils';
+import { cn, relativeTime } from '@/lib/utils';
 import { Avatar } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { Badge, Punto } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Empty } from '@/components/ui/empty';
 import { Input, Field, Textarea } from '@/components/ui/input';
 import { TagInput } from '@/components/ui/tag-input';
@@ -19,6 +20,43 @@ import { Dialog } from '@/components/ui/dialog';
 export function ContactsScreen() {
   const { account } = useAccounts();
   const { data: contacts, loading } = useContacts(account?.id ?? null);
+
+  if (!account) {
+    return (
+      <Empty
+        icon={Users}
+        title="Conecta una cuenta primero"
+        description="Aquí aparecerá todo el que te haya escrito, con sus etiquetas y datos capturados."
+      />
+    );
+  }
+
+  return <VistaContactos accountId={account.id} contacts={contacts} loading={loading} />;
+}
+
+/** «Te sigue» con su punto verde: el verde solo como estado, chico. */
+function TeSigue() {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-[12px] whitespace-nowrap text-muted">
+      <Punto tone="pos" />
+      Te sigue
+    </span>
+  );
+}
+
+/**
+ * Contactos sin datos propios: la lista en una tarjeta y la hoja de cada
+ * persona. La usan `ContactsScreen` y cualquier vista con contactos de ejemplo.
+ */
+export function VistaContactos({
+  accountId,
+  contacts,
+  loading,
+}: {
+  accountId: string;
+  contacts: Contact[];
+  loading: boolean;
+}) {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Contact | null>(null);
 
@@ -33,41 +71,38 @@ export function ContactsScreen() {
     );
   }, [contacts, search]);
 
-  if (!account) {
-    return (
-      <Empty
-        icon={Users}
-        title="Conecta una cuenta primero"
-        description="Aquí aparecerá todo el que te haya escrito, con sus etiquetas y datos capturados."
-      />
-    );
-  }
-
   return (
     <>
       <PageHeader
         title="Contactos"
         description={`${contacts.length} ${contacts.length === 1 ? 'persona' : 'personas'} te han escrito.`}
         action={
-          <div className="relative w-full md:w-[260px]">
-            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-faint" />
+          // En celular, todo el ancho de la columna (la pantalla menos el margen de px-pagina).
+          <div className="relative w-[calc(100vw-2rem)] md:w-[290px]">
+            <Search className="pointer-events-none absolute top-1/2 left-3 h-[15px] w-[15px] -translate-y-1/2 text-faint" />
             <Input
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por nombre o etiqueta"
               aria-label="Buscar contactos"
-              className="pl-9 text-[16px] md:text-[14px]"
+              className="h-10 pl-9 text-[16px] md:h-9 md:text-[13.5px]"
             />
           </div>
         }
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-6 md:py-5">
+      <div className="px-pagina min-h-0 flex-1 overflow-y-auto pb-6 md:pb-10">
         {loading && (
-          <div className="space-y-1.5">
+          <div className="tarjeta p-1.5">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-14 animate-pulse rounded-card bg-surface-2/60" />
+              <div key={i} className="flex h-[60px] items-center gap-3 px-2.5">
+                <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-fill-soft" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-1/4 animate-pulse rounded-full bg-fill-soft" />
+                  <div className="h-3 w-1/6 animate-pulse rounded-full bg-fill-soft" />
+                </div>
+              </div>
             ))}
           </div>
         )}
@@ -84,60 +119,64 @@ export function ContactsScreen() {
           />
         )}
 
-        <div className="space-y-1">
-          {filtered.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setSelected(c)}
-              className="flex w-full items-center gap-3 rounded-card px-3 py-2.5 text-left transition-colors hover:bg-surface"
-            >
-              <Avatar src={c.profilePic} name={c.name ?? c.username} size={36} />
+        {filtered.length > 0 && (
+          <div className="tarjeta p-1.5">
+            {filtered.map((c, i) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setSelected(c)}
+                className={cn(
+                  'relative flex min-h-[60px] w-full items-center gap-3 rounded-[12px] px-2.5 py-2.5 text-left transition-colors hover:bg-fill-soft/70 active:bg-fill-soft',
+                  // Filo entre filas desde el texto (10 + 40 + 12 px), como en Contactos de iOS.
+                  i > 0 &&
+                    'before:absolute before:top-0 before:right-2.5 before:left-[62px] before:h-px before:bg-hairline hover:before:opacity-0 [&:hover+button]:before:opacity-0',
+                )}
+              >
+                <Avatar src={c.profilePic} name={c.name ?? c.username} size={40} />
 
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[14px] font-semibold leading-tight">
-                  {c.name ?? (c.username ? `@${c.username}` : 'Sin nombre')}
-                </p>
-                {c.username && c.name && (
-                  <p className="flex items-center gap-0.5 text-[12px] text-muted">
-                    <AtSign className="h-3 w-3" />
-                    {c.username}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[14px] leading-tight font-semibold tracking-[-0.012em]">
+                    {c.name ?? (c.username ? `@${c.username}` : 'Sin nombre')}
                   </p>
-                )}
-                {c.tags.length > 0 && (
-                  <div className="mt-1 flex flex-wrap gap-1 md:hidden">
-                    {c.tags.slice(0, 2).map((t) => (
-                      <Badge key={t} tone="accent">
-                        {t}
-                      </Badge>
-                    ))}
-                    {c.tags.length > 2 && <Badge>+{c.tags.length - 2}</Badge>}
-                  </div>
-                )}
-              </div>
+                  {c.username && c.name && (
+                    <p className="mt-0.5 truncate text-[12.5px] text-faint">@{c.username}</p>
+                  )}
+                  {c.tags.length > 0 && (
+                    <div className="mt-1.5 flex flex-wrap gap-1 md:hidden">
+                      {c.tags.slice(0, 2).map((t) => (
+                        <Badge key={t}>{t}</Badge>
+                      ))}
+                      {c.tags.length > 2 && <Badge>+{c.tags.length - 2}</Badge>}
+                    </div>
+                  )}
+                </div>
 
-              <div className="hidden max-w-[280px] flex-wrap justify-end gap-1 md:flex">
-                {c.tags.slice(0, 3).map((t) => (
-                  <Badge key={t} tone="accent">
-                    {t}
-                  </Badge>
-                ))}
-                {c.tags.length > 3 && <Badge>+{c.tags.length - 3}</Badge>}
-              </div>
+                <div className="hidden max-w-[300px] flex-wrap justify-end gap-1 md:flex">
+                  {c.tags.slice(0, 3).map((t) => (
+                    <Badge key={t}>{t}</Badge>
+                  ))}
+                  {c.tags.length > 3 && <Badge>+{c.tags.length - 3}</Badge>}
+                </div>
 
-              <div className="flex shrink-0 flex-col items-end gap-1 md:flex-row md:items-center md:gap-3">
-                {c.followsBusiness && <Badge tone="pos">Te sigue</Badge>}
-                <span className="text-right text-[11px] text-faint tabular md:w-14">
-                  {relativeTime(c.lastMessageAt)}
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
+                <div className="flex shrink-0 flex-col items-end gap-1 md:flex-row md:items-center md:gap-0">
+                  {/* En escritorio el hueco se queda aunque no te siga: así las horas quedan en columna. */}
+                  <span className={cn('flex md:w-[92px] md:justify-end', !c.followsBusiness && 'hidden md:flex')}>
+                    {c.followsBusiness && <TeSigue />}
+                  </span>
+                  <span className="tabular text-right text-[12px] text-faint md:w-16">
+                    {relativeTime(c.lastMessageAt)}
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {selected && (
         <ContactDialog
-          accountId={account.id}
+          accountId={accountId}
           contact={contacts.find((c) => c.id === selected.id) ?? selected}
           onClose={() => setSelected(null)}
         />
@@ -180,31 +219,30 @@ function ContactDialog({
       description={contact.username && contact.name ? `@${contact.username}` : undefined}
       footer={
         <>
-          <button
-            onClick={onClose}
-            className="h-10 rounded-xl px-4 text-[14px] font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-txt"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={persist}
-            className="h-10 rounded-xl bg-accent px-4 text-[14px] font-semibold text-accent-fg transition-opacity hover:opacity-90"
-          >
+          <Button onClick={onClose}>Cancelar</Button>
+          <Button variant="primary" onClick={persist}>
             Guardar
-          </button>
+          </Button>
         </>
       }
     >
-      <div className="space-y-4">
-        <div className="flex items-center gap-3 rounded-card bg-surface p-3">
+      <div className="space-y-5">
+        <div className="flex items-center gap-3.5 rounded-card bg-surface p-3.5">
           <Avatar src={contact.profilePic} name={contact.name ?? contact.username} size={48} />
-          <div className="min-w-0 flex-1 space-y-1">
-            <div className="flex flex-wrap gap-1.5">
-              {contact.followsBusiness && <Badge tone="pos">Te sigue</Badge>}
-              {contact.businessFollows && <Badge>Lo sigues</Badge>}
-              {contact.isVerifiedUser && <Badge tone="accent">Verificado</Badge>}
-            </div>
-            <p className="text-[12px] text-faint">
+          <div className="min-w-0 flex-1 space-y-1.5">
+            {(contact.followsBusiness || contact.businessFollows || contact.isVerifiedUser) && (
+              <div className="flex flex-wrap gap-1.5">
+                {contact.followsBusiness && (
+                  <Badge>
+                    <Punto tone="pos" />
+                    Te sigue
+                  </Badge>
+                )}
+                {contact.businessFollows && <Badge>Lo sigues</Badge>}
+                {contact.isVerifiedUser && <Badge tone="accent">Verificado</Badge>}
+              </div>
+            )}
+            <p className="text-[12.5px] leading-snug text-muted">
               Primer mensaje {relativeTime(contact.firstSeenAt)} · último{' '}
               {relativeTime(contact.lastMessageAt)}
             </p>
@@ -217,12 +255,12 @@ function ContactDialog({
 
         {fields.length > 0 && (
           <div>
-            <p className="mb-1.5 text-[12px] font-semibold tracking-[0.4px] text-muted uppercase">
+            <p className="mb-1.5 px-1 text-[12px] font-medium tracking-[0.02em] text-muted uppercase">
               Datos capturados
             </p>
-            <div className="divide-y divide-border overflow-hidden rounded-xl bg-surface">
+            <div className="divide-y divide-hairline overflow-hidden rounded-card bg-surface">
               {fields.map(([k, v]) => (
-                <div key={k} className="flex items-baseline justify-between gap-3 px-3 py-2">
+                <div key={k} className="flex items-baseline justify-between gap-3 px-3.5 py-2.5">
                   <span className="text-[13px] text-muted">{k}</span>
                   <span className="min-w-0 truncate text-[13px] font-medium">{typeof v === 'boolean' ? (v ? 'Sí' : 'No') : String(v)}</span>
                 </div>

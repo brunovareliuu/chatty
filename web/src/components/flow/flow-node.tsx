@@ -9,8 +9,9 @@ import { NODE_META, nodeSummary, outputHandles } from './node-config';
 export type ChattyNodeData = FlowNodeData & Record<string, unknown>;
 export type ChattyNode = Node<ChattyNodeData, NodeType>;
 
+// El aro es del color de la tarjeta: el punto parece salir de su orilla.
 const handleClass =
-  '!h-2.5 !w-2.5 !rounded-full !border-2 !border-bg !bg-muted transition-colors';
+  '!h-2.5 !w-2.5 !rounded-full !border-2 !border-card !bg-faint transition-colors hover:!bg-accent';
 
 function FlowNodeCard({ id, type, data, selected }: NodeProps<ChattyNode>) {
   const nodeType = (type ?? 'send_text') as NodeType;
@@ -24,29 +25,30 @@ function FlowNodeCard({ id, type, data, selected }: NodeProps<ChattyNode>) {
       // Con muchas salidas (respuestas rápidas) la tarjeta crece: cada opción se lee y su punto se distingue.
       style={{ width: Math.max(240, outputs.length * 78) }}
       className={cn(
-        'rounded-[15px] border bg-surface transition-shadow',
-        selected
-          ? 'border-accent shadow-lg shadow-accent/15'
-          : 'border-border hover:border-muted/50',
-        isTrigger && 'border-accent/50 bg-accent-soft',
+        // Una tarjeta blanca sobre la página gris; elegida, el filo del acento con su halo (como un campo enfocado).
+        'relative rounded-[16px] border bg-card shadow-card transition-[border-color,box-shadow]',
+        selected ? 'border-accent ring-[3px] ring-accent/15' : 'border-hairline hover:border-border',
       )}
     >
       {!isTrigger && (
         <Handle type="target" position={Position.Top} className={handleClass} id="in" />
       )}
 
-      <div className="flex items-center gap-2 border-b border-border/60 px-3 py-2">
-        <Icon
-          className={cn('h-3.5 w-3.5 shrink-0', isTrigger ? 'text-accent' : 'text-muted')}
-          strokeWidth={2.1}
-        />
-        <span className="truncate text-[11px] font-bold tracking-[0.4px] text-muted uppercase">
-          {meta.label}
+      <div className="flex items-center gap-2 px-3 pt-2.5">
+        {/* El disparador es el único en el color sólido de la marca: por ahí entra todo. */}
+        <span
+          className={cn(
+            'grid h-[22px] w-[22px] shrink-0 place-items-center rounded-[7px]',
+            isTrigger ? 'bg-accent text-accent-fg' : 'bg-fill-soft text-muted',
+          )}
+        >
+          <Icon className="h-3 w-3" strokeWidth={2.2} />
         </span>
+        <span className="truncate text-[12px] font-semibold text-muted">{meta.label}</span>
       </div>
 
-      <div className="px-3 py-2.5">
-        <p className="line-clamp-3 text-[13px] leading-[1.4] break-words">
+      <div className="px-3 pt-1.5 pb-3">
+        <p className="line-clamp-3 text-[13px] leading-[1.4] break-words text-txt">
           {nodeSummary(nodeType, data)}
         </p>
       </div>
@@ -55,7 +57,7 @@ function FlowNodeCard({ id, type, data, selected }: NodeProps<ChattyNode>) {
         <div
           className={cn(
             'relative flex',
-            outputs.length === 1 && !outputs[0].label ? 'h-0' : 'gap-1 px-2 pt-1 pb-2.5',
+            outputs.length === 1 && !outputs[0].label ? 'h-0' : '-mt-0.5 gap-1 px-2.5 pb-2.5',
           )}
         >
           {outputs.map((out, i) => {
@@ -67,7 +69,7 @@ function FlowNodeCard({ id, type, data, selected }: NodeProps<ChattyNode>) {
                 {!single && (
                   <div
                     title={out.label}
-                    className="line-clamp-2 rounded-md bg-surface-2 px-1.5 py-1 text-center text-[10px] leading-tight font-semibold break-words text-muted"
+                    className="line-clamp-2 rounded-[8px] bg-surface px-1.5 py-[3px] text-center text-[10.5px] leading-tight font-semibold break-words text-muted"
                   >
                     {out.label}
                   </div>

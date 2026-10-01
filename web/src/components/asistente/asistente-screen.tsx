@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { useAccounts } from '@/lib/client/accounts-context';
 import type { AssistantEvent, ChatSummary, ViewBlock, ViewMessage } from '@/lib/asistente/eventos';
 import { cn, relativeTime } from '@/lib/utils';
+import { botonClases } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Empty } from '@/components/ui/empty';
 import { PageHeader } from '@/components/shell/page-header';
@@ -237,197 +238,220 @@ function Conversation({ accountId, username }: { accountId: string; username: st
         description={`Claude trabaja sobre @${username}: automatizaciones, posts y pantallas de App Store.`}
       />
 
-      <div className="flex min-h-0 flex-1">
-        <aside className="hidden w-[260px] shrink-0 flex-col border-r border-border md:flex">
-          <div className="p-3">
-            <button
-              type="button"
-              onClick={newChat}
-              disabled={streaming}
-              className="flex w-full items-center gap-2 rounded-xl border border-border px-3 py-2 text-[13.5px] font-medium transition-colors hover:bg-surface-2 disabled:opacity-40"
-            >
-              <MessageSquarePlus className="h-4 w-4 text-muted" />
-              Nueva conversación
-            </button>
-          </div>
-
-          <div className="min-h-0 flex-1 space-y-0.5 overflow-y-auto px-2 pb-3">
-            <ListaChats chats={chats} chatId={chatId} onOpen={openChat} onRemove={removeChat} />
-          </div>
-        </aside>
-
-        {listaAbierta && (
-          <Dialog
-            open
-            onOpenChange={(o) => !o && setListaAbierta(false)}
-            title="Conversaciones"
-            description="Lo que ya le pediste al asistente."
-          >
-            <button
-              type="button"
-              onClick={() => {
-                setListaAbierta(false);
-                newChat();
-              }}
-              disabled={streaming}
-              className="mb-3 flex w-full items-center gap-2 rounded-xl border border-border px-3 py-2.5 text-[14px] font-medium transition-colors hover:bg-surface-2 disabled:opacity-40"
-            >
-              <MessageSquarePlus className="h-4 w-4 text-muted" />
-              Nueva conversación
-            </button>
-            <div className="space-y-0.5">
-              <ListaChats
-                chats={chats}
-                chatId={chatId}
-                onOpen={(id) => {
-                  setListaAbierta(false);
-                  void openChat(id);
-                }}
-                onRemove={removeChat}
-              />
+      {/* Una sola tarjeta, como la bandeja: la lista a la izquierda y el chat a la derecha. */}
+      <div className="px-pagina flex min-h-0 flex-1 pb-3 md:pb-8">
+        <div className="tarjeta flex min-h-0 min-w-0 flex-1 overflow-hidden">
+          <aside className="hidden w-[264px] shrink-0 flex-col border-r border-hairline md:flex">
+            <div className="p-3">
+              <button
+                type="button"
+                onClick={newChat}
+                disabled={streaming}
+                className={cn(botonClases({ variant: 'secondary' }), 'w-full')}
+              >
+                <MessageSquarePlus className="h-4 w-4" strokeWidth={1.9} />
+                Nueva conversación
+              </button>
             </div>
-          </Dialog>
-        )}
 
-        <section className="flex min-w-0 flex-1 flex-col">
-          <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
-            {opening && (
-              <div className="flex h-full items-center justify-center">
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-accent" />
-              </div>
-            )}
+            <div className="min-h-0 flex-1 space-y-0.5 overflow-y-auto px-2 pb-3">
+              <ListaChats chats={chats} chatId={chatId} onOpen={openChat} onRemove={removeChat} />
+            </div>
+          </aside>
 
-            {empty && (
-              <div className="mx-auto flex w-full max-w-[640px] flex-col items-center px-4 pt-10 pb-8 text-center md:px-6 md:pt-14">
-                <div className="grid h-12 w-12 place-items-center rounded-[14px] bg-accent-soft">
-                  <Sparkles className="h-5 w-5 text-accent" />
-                </div>
-                <h2 className="mt-4 text-[22px] font-bold tracking-[-0.3px]">¿Qué armamos hoy?</h2>
-                <p className="mt-1.5 max-w-md text-[14px] leading-snug text-muted">
-                  Pídelo como se lo pedirías a alguien del equipo. Lo que crea queda en Automatizaciones.
-                </p>
-                <div className="mt-6 grid w-full gap-2 sm:grid-cols-2">
-                  {SUGGESTIONS.map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      type="button"
-                      onClick={() => {
-                        setDraft(suggestion);
-                        inputRef.current?.focus();
-                      }}
-                      className="rounded-card border border-border bg-surface px-3.5 py-3 text-left text-[13.5px] leading-snug transition-colors hover:border-accent/50"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {!opening && messages.length > 0 && (
-              <div className="mx-auto w-full max-w-[780px] space-y-6 px-4 py-5 md:space-y-7 md:px-6 md:py-6">
-                {messages.map((message, i) =>
-                  message.role === 'user' ? (
-                    <div key={message.id} className="flex justify-end">
-                      <p className="max-w-[85%] whitespace-pre-wrap [overflow-wrap:anywhere] rounded-[18px] rounded-br-md bg-surface-2 px-4 py-2.5 text-[14.5px] leading-relaxed">
-                        {message.text}
-                      </p>
-                    </div>
-                  ) : (
-                    <AssistantTurn
-                      key={message.id}
-                      blocks={message.blocks}
-                      working={streaming && i === messages.length - 1}
-                    />
-                  ),
-                )}
-                {error && (
-                  <p className="rounded-xl bg-neg/10 px-3 py-2 text-[13px] leading-snug text-neg">{error}</p>
-                )}
-              </div>
-            )}
-          </div>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void send(draft);
-            }}
-            className="border-t border-border px-3 pt-2.5 pb-3 md:px-6 md:pt-3 md:pb-4"
-          >
-            <div className="mx-auto w-full max-w-[780px]">
-              <div className="flex items-end gap-2 rounded-[18px] border border-border bg-surface py-1.5 pr-1.5 pl-1.5 transition-colors focus-within:border-accent md:pl-4">
-                <button
-                  type="button"
-                  onClick={() => setListaAbierta(true)}
-                  aria-label="Conversaciones anteriores"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-muted transition-colors hover:bg-surface-2 hover:text-txt md:hidden"
-                >
-                  <History className="h-4 w-4" />
-                </button>
-                <textarea
-                  ref={inputRef}
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
-                      e.preventDefault();
-                      void send(draft);
-                    }
+          {listaAbierta && (
+            <Dialog
+              open
+              onOpenChange={(o) => !o && setListaAbierta(false)}
+              title="Conversaciones"
+              description="Lo que ya le pediste al asistente."
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setListaAbierta(false);
+                  newChat();
+                }}
+                disabled={streaming}
+                className={cn(botonClases({ variant: 'secondary' }), 'mb-3 w-full')}
+              >
+                <MessageSquarePlus className="h-4 w-4" strokeWidth={1.9} />
+                Nueva conversación
+              </button>
+              <div className="space-y-0.5">
+                <ListaChats
+                  chats={chats}
+                  chatId={chatId}
+                  onOpen={(id) => {
+                    setListaAbierta(false);
+                    void openChat(id);
                   }}
-                  rows={1}
-                  placeholder="Pídeme una automatización, un post o tus pantallas de App Store…"
-                  className="field-sizing-content max-h-44 min-h-[38px] min-w-0 flex-1 resize-none bg-transparent py-2 text-[16px] leading-snug outline-none placeholder:text-faint md:text-[14.5px]"
+                  onRemove={removeChat}
                 />
-                {streaming ? (
+              </div>
+            </Dialog>
+          )}
+
+          <section className="flex min-w-0 flex-1 flex-col">
+            <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
+              {opening && (
+                <div className="flex h-full items-center justify-center">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-border border-t-accent" />
+                </div>
+              )}
+
+              {empty && (
+                <div className="mx-auto flex min-h-full w-full max-w-[660px] flex-col items-center justify-center px-4 py-10 text-center md:px-8">
+                  <div className="grid h-14 w-14 place-items-center rounded-[16px] bg-accent-soft">
+                    <Sparkles className="h-6 w-6 text-accent" strokeWidth={1.8} />
+                  </div>
+                  <h2 className="mt-5 text-[24px] leading-tight font-bold tracking-[-0.022em]">¿Qué armamos hoy?</h2>
+                  <p className="mt-2 max-w-md text-[14px] leading-snug text-muted">
+                    Pídelo como se lo pedirías a alguien del equipo. Lo que crea queda en Automatizaciones.
+                  </p>
+                  <div className="mt-7 grid w-full gap-2 sm:grid-cols-2">
+                    {SUGGESTIONS.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => {
+                          setDraft(suggestion);
+                          inputRef.current?.focus();
+                        }}
+                        className="rounded-[14px] bg-surface px-4 py-3 text-left text-[13.5px] leading-snug text-txt transition-colors hover:bg-surface-2"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {!opening && messages.length > 0 && (
+                <div className="mx-auto w-full max-w-[760px] space-y-6 px-4 py-5 md:space-y-7 md:px-8 md:py-7">
+                  {messages.map((message, i) =>
+                    message.role === 'user' ? (
+                      <div key={message.id} className="flex justify-end">
+                        <p className="max-w-[80%] rounded-[18px] bg-accent px-4 py-2.5 text-[14.5px] leading-[1.45] whitespace-pre-wrap text-accent-fg [overflow-wrap:anywhere]">
+                          {message.text}
+                        </p>
+                      </div>
+                    ) : (
+                      <AssistantTurn
+                        key={message.id}
+                        blocks={message.blocks}
+                        working={streaming && i === messages.length - 1}
+                      />
+                    ),
+                  )}
+                  {error && (
+                    <p className="rounded-[12px] bg-neg/10 px-3.5 py-2.5 text-[13px] leading-snug text-neg">{error}</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void send(draft);
+              }}
+              className="relative px-3 pt-2 pb-3 md:px-8 md:pb-5"
+            >
+              {/* Lo que sube por detrás se desvanece en vez de cortarse contra el campo. */}
+              <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-6 h-6 bg-linear-to-t from-card to-transparent" />
+              <div className="mx-auto w-full max-w-[760px]">
+                <div className="flex items-end gap-2">
                   <button
                     type="button"
-                    onClick={() => abortRef.current?.abort()}
-                    aria-label="Detener la respuesta"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-surface-2 text-txt transition-colors hover:bg-border"
+                    onClick={() => setListaAbierta(true)}
+                    aria-label="Conversaciones anteriores"
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-fill-soft text-muted transition-colors hover:bg-fill hover:text-txt md:hidden"
                   >
-                    <Square className="h-3.5 w-3.5 fill-current" />
+                    <History className="h-[18px] w-[18px]" />
                   </button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={!draft.trim()}
-                    aria-label="Enviar"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent text-accent-fg transition-opacity hover:opacity-90 disabled:opacity-40"
-                  >
-                    <ArrowUp className="h-4 w-4" strokeWidth={2.4} />
-                  </button>
-                )}
+                  {/* El campo en píldora de Mensajes, con el botón de enviar adentro. */}
+                  <div className="flex min-w-0 flex-1 items-end gap-2 rounded-[20px] border border-border bg-field pl-4 transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:ring-[3px] focus-within:ring-accent/15">
+                    <textarea
+                      ref={inputRef}
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+                          e.preventDefault();
+                          void send(draft);
+                        }
+                      }}
+                      rows={1}
+                      placeholder="Pídeme una automatización, un post o tus pantallas de App Store…"
+                      className="field-sizing-content max-h-44 min-h-[38px] min-w-0 flex-1 resize-none bg-transparent py-[9px] text-[16px] leading-snug outline-none placeholder:truncate placeholder:text-faint md:text-[14.5px]"
+                    />
+                    {streaming ? (
+                      <button
+                        type="button"
+                        onClick={() => abortRef.current?.abort()}
+                        aria-label="Detener la respuesta"
+                        className="m-[3px] grid h-8 w-8 shrink-0 place-items-center rounded-full bg-txt text-bg transition-opacity hover:opacity-85"
+                      >
+                        <Square className="h-3 w-3 fill-current" />
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={!draft.trim()}
+                        aria-label="Enviar"
+                        className="m-[3px] grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-accent-fg transition-[opacity,background-color,color] hover:opacity-90 disabled:bg-fill disabled:text-faint"
+                      >
+                        <ArrowUp className="h-4 w-4" strokeWidth={2.4} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <p className="mt-2 hidden text-center text-[11px] text-faint md:block">
+                  Lo que crea es real: una automatización activa contesta en tu Instagram en cuanto se crea.
+                </p>
               </div>
-              <p className="mt-2 hidden text-center text-[11px] text-faint md:block">
-                Lo que crea es real: una automatización activa contesta en tu Instagram en cuanto se crea.
-              </p>
-            </div>
-          </form>
-        </section>
+            </form>
+          </section>
+        </div>
       </div>
     </div>
   );
 }
 
 function AssistantTurn({ blocks, working }: { blocks: ViewBlock[]; working: boolean }) {
+  // Las herramientas seguidas se apilan juntas, como una sola nota al margen.
+  const groups: (ViewBlock | ViewBlock[])[] = [];
+  for (const block of blocks) {
+    const last = groups[groups.length - 1];
+    if (block.type === 'tool' && Array.isArray(last)) last.push(block);
+    else groups.push(block.type === 'tool' ? [block] : block);
+  }
+
   const last = blocks[blocks.length - 1];
   const thinking =
     working && last?.type !== 'text' && !blocks.some((b) => b.type === 'tool' && b.status === 'working');
 
   return (
-    <div className="flex gap-2.5 md:gap-3">
+    <div className="flex gap-3">
       <div className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent-soft">
-        <Sparkles className="h-3.5 w-3.5 text-accent" />
+        <Sparkles className="h-3.5 w-3.5 text-accent" strokeWidth={2} />
       </div>
       <div className="min-w-0 flex-1 space-y-3 pt-0.5">
-        {blocks.map((block, i) => {
-          if (block.type === 'text') return <RichText key={i} text={block.text} />;
-          if (block.type === 'tool') return <ToolRow key={i} block={block} />;
-          return <AssistantCardView key={i} card={block.card} />;
+        {groups.map((group, i) => {
+          if (Array.isArray(group)) {
+            return (
+              <div key={i} className="flex flex-col items-start gap-1.5">
+                {group.map((block, j) => (block.type === 'tool' ? <ToolRow key={j} block={block} /> : null))}
+              </div>
+            );
+          }
+          if (group.type === 'text') return <RichText key={i} text={group.text} />;
+          if (group.type === 'card') return <AssistantCardView key={i} card={group.card} />;
+          return null;
         })}
         {thinking && (
-          <p className="flex items-center gap-2 text-[13px] text-muted">
+          <p className="inline-flex h-7 items-center gap-2 rounded-full bg-fill-soft px-3 text-[12.5px] text-muted">
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
             Pensando…
           </p>
@@ -453,34 +477,39 @@ function ListaChats({
     <>
       {chats === null &&
         Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="mx-1 h-11 animate-pulse rounded-xl bg-surface-2/60" />
+          <div key={i} className="mx-1 h-12 animate-pulse rounded-[10px] bg-fill-soft" />
         ))}
       {chats?.length === 0 && (
         <p className="px-3 py-1 text-[12.5px] leading-snug text-faint">Aquí aparecen tus conversaciones.</p>
       )}
-      {chats?.map((chat) => (
-        <div
-          key={chat.id}
-          className={cn(
-            'group flex items-center rounded-xl transition-colors',
-            chat.id === chatId ? 'bg-surface-2' : 'hover:bg-surface-2/60',
-          )}
-        >
-          <button type="button" onClick={() => onOpen(chat.id)} className="min-w-0 flex-1 px-3 py-2 text-left">
-            <p className="truncate text-[13.5px] font-medium">{chat.title}</p>
-            <p className="text-[11px] text-faint">{relativeTime(chat.updatedAt)}</p>
-          </button>
-          {/* En celular no hay hover: el botón de borrar se ve siempre. */}
-          <button
-            type="button"
-            onClick={() => onRemove(chat.id)}
-            aria-label={`Borrar «${chat.title}»`}
-            className="mr-1 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted transition-opacity hover:text-neg md:h-7 md:w-7 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+      {chats?.map((chat) => {
+        const activa = chat.id === chatId;
+        return (
+          <div
+            key={chat.id}
+            className={cn(
+              'group flex items-center rounded-[10px] transition-colors',
+              activa ? 'bg-surface' : 'hover:bg-fill-soft',
+            )}
           >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      ))}
+            <button type="button" onClick={() => onOpen(chat.id)} className="min-w-0 flex-1 px-3 py-2 text-left">
+              <p className={cn('truncate text-[13.5px] tracking-[-0.006em]', activa ? 'font-semibold' : 'font-medium')}>
+                {chat.title}
+              </p>
+              <p className="mt-px text-[11.5px] text-faint">{relativeTime(chat.updatedAt)}</p>
+            </button>
+            {/* En celular no hay hover: el botón de borrar se ve siempre. */}
+            <button
+              type="button"
+              onClick={() => onRemove(chat.id)}
+              aria-label={`Borrar «${chat.title}»`}
+              className="mr-1.5 grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted transition-[opacity,color,background-color] hover:bg-fill-soft hover:text-neg md:h-7 md:w-7 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        );
+      })}
     </>
   );
 }

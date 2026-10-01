@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft, Eye } from 'lucide-react';
 import { leerGuia } from '@/lib/guia/estado';
 import { moduloPorId, type ModuloId } from '@/lib/guia/pasos';
 import { PageHeader } from '@/components/shell/page-header';
+import { botonClases } from '@/components/ui/button';
 import { Checklist } from './checklist';
 import { VistaPrevia } from './vistas';
 
@@ -34,23 +35,25 @@ export async function PantallaModulo({
         description={modulo.que}
         action={
           volver ? (
-            <Link
-              href={modulo.ruta}
-              className="inline-flex h-9 items-center gap-1.5 rounded-xl bg-surface-2 px-3.5 text-[13.5px] font-semibold transition-colors hover:bg-border"
-            >
-              <ArrowLeft className="h-4 w-4" />
+            <Link href={modulo.ruta} className={botonClases({ variant: 'secondary' })}>
+              <ChevronLeft className="h-4 w-4" strokeWidth={2} />
               Ir a {modulo.titulo}
             </Link>
           ) : undefined
         }
       />
-      <div className="mx-auto w-full max-w-[880px] space-y-5 px-4 py-5 md:px-6 md:py-6">
+      <div className="px-pagina max-w-[920px] space-y-6 pb-12 xl:max-w-[940px]">
         {!guia.conectado && (
-          <p className="rounded-card border border-accent/30 bg-accent-soft px-4 py-3 text-[13.5px] leading-relaxed">
-            <span className="font-semibold">Así se ve {modulo.titulo} cuando ya funciona.</span> Este panel todavía no
-            está conectado a tu Firebase: abajo están los pasos, en orden. Los que el sistema puede revisar se marcan
-            solos; los demás los palomeas tú.
-          </p>
+          <div className="tarjeta flex items-start gap-3 rounded-card px-4 py-3.5">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-accent-soft text-accent">
+              <Eye className="h-[18px] w-[18px]" strokeWidth={1.9} />
+            </span>
+            <p className="min-w-0 flex-1 text-[13.5px] leading-snug text-muted">
+              <span className="block font-semibold text-txt">Así se ve {modulo.titulo} cuando ya funciona.</span>
+              Este panel todavía no está conectado a tu Firebase: abajo están los pasos, en orden. Los que el sistema
+              puede revisar se marcan solos; los demás los palomeas tú.
+            </p>
+          </div>
         )}
         {children}
         <VistaPrevia modulo={id} />

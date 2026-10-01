@@ -22,7 +22,7 @@ export async function ShellGuia({ children }: { children: React.ReactNode }) {
   const todos = GRUPOS_DE_PASOS.flatMap((g) => g.pasos).map((p) => resumen(guia.pasos[p]));
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-bg md:flex-row">
+    <div className="flex h-dvh flex-col overflow-hidden bg-page text-txt md:flex-row">
       <BarraGuia entradas={entradas} todos={todos} />
       <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{children}</main>
     </div>

@@ -43,13 +43,13 @@ export function TablaDias({ filas, marcado }: { filas: FilaDia[]; marcado?: Peri
 
   return (
     <div>
-      <div className="-mx-4 overflow-x-auto md:-mx-5">
+      <div className="-mx-5 overflow-x-auto md:-mx-6">
         <table className="w-full min-w-[640px] border-collapse text-[13px]">
           <thead>
             <tr className="border-b border-border text-[12px] text-muted">
-              <th className="py-2 pr-3 pl-4 text-left font-medium md:pl-5">Día</th>
+              <th className="py-2 pr-3 pl-5 text-left font-medium md:pl-6">Día</th>
               {columnas.map((c) => (
-                <th key={c.id} className="px-3 py-2 text-right font-medium" title={c.ayuda}>
+                <th key={c.id} className="px-3 py-2 text-right font-medium last:pr-5 md:last:pr-6" title={c.ayuda}>
                   {c.label}
                 </th>
               ))}
@@ -61,9 +61,9 @@ export function TablaDias({ filas, marcado }: { filas: FilaDia[]; marcado?: Peri
               return (
                 <tr
                   key={f.fecha}
-                  className={cn('border-b border-border last:border-b-0', elegido && 'bg-accent-soft/50')}
+                  className={cn('border-b border-hairline last:border-b-0', elegido && 'bg-accent-soft')}
                 >
-                  <td className="py-2 pr-3 pl-4 whitespace-nowrap md:pl-5">
+                  <td className="py-2.5 pr-3 pl-5 whitespace-nowrap md:pl-6">
                     <span className="font-medium">{fechaCorta(f.fecha)}</span>{' '}
                     <span className="text-muted">{f.parcial ? 'hoy, va a medias' : diaSemana(f.fecha)}</span>
                   </td>
@@ -73,7 +73,7 @@ export function TablaDias({ filas, marcado }: { filas: FilaDia[]; marcado?: Peri
                       <td
                         key={c.id}
                         className={cn(
-                          'px-3 py-2 text-right tabular-nums',
+                          'px-3 py-2.5 text-right tabular-nums last:pr-5 md:last:pr-6',
                           v == null && 'text-faint',
                           c.conSigno && v != null && v > 0 && 'text-pos',
                           c.conSigno && v != null && v < 0 && 'text-neg',
@@ -97,7 +97,7 @@ export function TablaDias({ filas, marcado }: { filas: FilaDia[]; marcado?: Peri
       </div>
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
         {filas.length > 14 ? (
-          <button onClick={() => setTodas((v) => !v)} className="text-[13px] font-semibold text-accent hover:underline">
+          <button onClick={() => setTodas((v) => !v)} className="text-[13px] font-medium text-accent hover:underline">
             {todas ? 'Ver menos' : `Ver los ${filas.length} días`}
           </button>
         ) : (

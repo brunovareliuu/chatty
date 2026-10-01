@@ -21,7 +21,8 @@ export function Avatar({
   return (
     <div
       className={cn(
-        'relative shrink-0 overflow-hidden rounded-full bg-surface-2 flex items-center justify-center',
+        // Sin foto quedan las iniciales en blanco sobre el gris de Contactos.
+        'monograma relative flex shrink-0 items-center justify-center overflow-hidden rounded-full',
         className,
       )}
       style={{ width: size, height: size }}
@@ -31,7 +32,7 @@ export function Avatar({
         Meta caducan en horas: cuando eso pasa, la imagen se esconde sola y
         aparecen las iniciales, en vez del icono de imagen rota del navegador.
       */}
-      <span className="font-semibold text-muted" style={{ fontSize: Math.max(10, size * 0.36) }}>
+      <span className="font-semibold tracking-normal" style={{ fontSize: Math.max(10, size * 0.38) }}>
         {initials(name)}
       </span>
       {src && (

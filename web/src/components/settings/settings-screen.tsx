@@ -5,11 +5,14 @@ import Link from 'next/link';
 import { Bell, Check, Copy, ExternalLink, ListChecks, Palette, Plug, Server, TriangleAlert, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAccounts } from '@/lib/client/accounts-context';
+import { cn } from '@/lib/utils';
 import { Avatar } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge, Punto } from '@/components/ui/badge';
+import { Button, botonClases } from '@/components/ui/button';
 import { InstagramIcon } from '@/components/ui/instagram-icon';
+import { Segmentado } from '@/components/ui/segmented';
 import { PageHeader } from '@/components/shell/page-header';
+import { Grupo, Seccion } from './grupo';
 import { NotificacionesSettings } from './notificaciones-settings';
 import { MarcaSettings } from './marca-settings';
 
@@ -109,209 +112,180 @@ export function SettingsScreen({
       <PageHeader
         title="Ajustes"
         description="Avisos al celular, conexión con Meta, tu marca y el estado del despliegue."
+        toolbar={
+          // En celular los segmentos no caben: el riel se desliza de lado.
+          <div className="-mx-4 max-w-[calc(100%+2rem)] overflow-x-auto px-4 md:mx-0 md:max-w-full md:px-0">
+            <Segmentado
+              value={tab}
+              onChange={setTab}
+              opciones={PESTANAS.map((p) => ({ value: p.id, label: p.label, icon: p.icon }))}
+            />
+          </div>
+        }
       />
 
-      <div className="border-b border-border px-4 md:px-6">
-        <div className="flex gap-1 overflow-x-auto">
-          {PESTANAS.map((p) => {
-            const activa = tab === p.id;
-            return (
-              <button
-                key={p.id}
-                onClick={() => setTab(p.id)}
-                className={`-mb-px flex shrink-0 items-center gap-2 border-b-2 px-3 py-2.5 text-[14px] font-semibold whitespace-nowrap transition-colors ${
-                  activa
-                    ? 'border-accent text-txt'
-                    : 'border-transparent text-muted hover:text-txt'
-                }`}
-              >
-                <p.icon className="h-4 w-4" />
-                {p.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="px-pagina max-w-[820px] space-y-8 pb-10 xl:max-w-[860px]">
+          {tab === 'notificaciones' && <NotificacionesSettings />}
+          {tab === 'marca' && <MarcaSettings />}
 
-      <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 py-5 md:px-6">
-        {tab === 'notificaciones' && <NotificacionesSettings />}
-
-        {tab === 'marca' && <MarcaSettings />}
-
-        {tab === 'instagram' && (
-          <>
-        {/* --- Cuentas conectadas --- */}
-        <section className="space-y-3">
-          <h2 className="text-[13px] font-bold tracking-[0.4px] text-muted uppercase">
-            Cuentas de Instagram
-          </h2>
-
-          {accounts.length === 0 && (
-            <div className="rounded-card border border-dashed border-border px-5 py-8 text-center">
-              <InstagramIcon className="mx-auto h-8 w-8 text-faint" />
-              <p className="mt-3 text-[15px] font-semibold">Ninguna cuenta conectada</p>
-              <p className="mx-auto mt-1 max-w-sm text-[13px] leading-relaxed text-muted">
-                Necesitas una cuenta profesional (Empresa o Creador) con los mensajes habilitados
-                para herramientas externas.
-              </p>
-              <a
-                href="/api/ig/connect"
-                className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl bg-accent px-4 text-[14px] font-semibold text-accent-fg transition-opacity hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-40"
-                aria-disabled={!ready}
-              >
-                <Plug className="h-4 w-4" />
-                Conectar Instagram
-              </a>
-              {!ready && (
-                <p className="mt-2 text-[12px] text-warn">
-                  Completa primero la configuración de abajo.
-                </p>
-              )}
-            </div>
-          )}
-
-          {accounts.map((a) => {
-            const daysLeft = Math.floor((a.tokenExpiresAt - now) / 86400000);
-            return (
-              <div
-                key={a.id}
-                className="flex items-center gap-3 rounded-card border border-border bg-surface px-4 py-3"
-              >
-                <Avatar src={a.profilePictureUrl} name={a.username} size={42} />
-
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="truncate text-[15px] font-semibold">@{a.username}</p>
-                    {a.needsReconnect ? (
-                      <Badge tone="neg">
-                        <TriangleAlert className="h-3 w-3" />
-                        Reconectar
-                      </Badge>
-                    ) : (
-                      <Badge tone="pos">Activa</Badge>
+          {tab === 'instagram' && (
+            <>
+              {/* --- Cuentas conectadas --- */}
+              <Seccion titulo="Cuentas de Instagram">
+                {accounts.length === 0 && (
+                  <div className="tarjeta rounded-card px-5 py-10 text-center">
+                    <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-fill-soft">
+                      <InstagramIcon className="h-6 w-6 text-muted" />
+                    </div>
+                    <p className="mt-3.5 text-[17px] font-semibold tracking-[-0.012em]">Ninguna cuenta conectada</p>
+                    <p className="mx-auto mt-1 max-w-sm text-[13.5px] leading-snug text-muted">
+                      Necesitas una cuenta profesional (Empresa o Creador) con los mensajes habilitados
+                      para herramientas externas.
+                    </p>
+                    <a
+                      href="/api/ig/connect"
+                      className={cn(
+                        botonClases({ variant: 'primary' }),
+                        'mt-5 aria-disabled:pointer-events-none aria-disabled:opacity-40',
+                      )}
+                      aria-disabled={!ready}
+                    >
+                      <Plug className="h-4 w-4" />
+                      Conectar Instagram
+                    </a>
+                    {!ready && (
+                      <p className="mt-2.5 text-[12px] text-accent-ink">Completa primero la configuración de abajo.</p>
                     )}
                   </div>
-                  <p className="mt-0.5 text-[12px] text-muted">
-                    Token válido {daysLeft > 0 ? `${daysLeft} días más` : 'vencido'} · se renueva solo
-                  </p>
-                  {a.lastError && (
-                    <p className="mt-1 text-[12px] leading-snug text-warn">{a.lastError}</p>
-                  )}
-                </div>
+                )}
+
+                {accounts.length > 0 && (
+                  <Grupo>
+                    {accounts.map((a) => {
+                      const daysLeft = Math.floor((a.tokenExpiresAt - now) / 86400000);
+                      return (
+                        <div key={a.id} className="flex flex-wrap items-center gap-3 py-3.5">
+                          <Avatar src={a.profilePictureUrl} name={a.username} size={40} />
+
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="truncate text-[15px] font-semibold tracking-[-0.012em]">@{a.username}</p>
+                              {a.needsReconnect ? (
+                                <Badge tone="neg">
+                                  <TriangleAlert className="h-3 w-3" />
+                                  Reconectar
+                                </Badge>
+                              ) : (
+                                <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-muted">
+                                  <Punto tone="pos" />
+                                  Activa
+                                </span>
+                              )}
+                            </div>
+                            <p className="mt-0.5 text-[12.5px] text-muted">
+                              Token válido {daysLeft > 0 ? `${daysLeft} días más` : 'vencido'} · se renueva solo
+                            </p>
+                            {a.lastError && (
+                              <p className="mt-1 text-[12px] leading-snug text-accent-ink">{a.lastError}</p>
+                            )}
+                          </div>
+
+                          <div className="flex shrink-0 items-center gap-1.5">
+                            <a href="/api/ig/connect" className={botonClases({ variant: 'secondary', size: 'sm' })}>
+                              Reconectar
+                            </a>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-neg hover:bg-neg/10 hover:text-neg"
+                              loading={disconnecting === a.id}
+                              onClick={() => disconnect(a.id, a.username)}
+                            >
+                              Desconectar
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* El «Agregar cuenta» de Ajustes: un renglón más, en el color de la marca. */}
+                    <a
+                      href="/api/ig/connect"
+                      className="-mx-4 flex items-center gap-3 px-4 py-3 text-[14px] font-medium text-accent transition-colors hover:bg-fill-soft"
+                    >
+                      <span className="grid h-10 w-10 shrink-0 place-items-center">
+                        <Plug className="h-[18px] w-[18px]" />
+                      </span>
+                      Conectar otra cuenta
+                    </a>
+                  </Grupo>
+                )}
+              </Seccion>
+
+              {/* --- Datos para el panel de Meta --- */}
+              <Seccion titulo="Datos para el panel de Meta">
+                <Grupo>
+                  <CopyRow label="URL de devolución de llamada (webhook)" value={webhookUrl} onCopy={copy} />
+                  <CopyRow label="URI de redireccionamiento OAuth" value={redirectUri} onCopy={copy} />
+                </Grupo>
 
                 <a
-                  href="/api/ig/connect"
-                  className="rounded-xl px-3 py-2 text-[13px] font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-txt"
+                  href="https://developers.facebook.com/apps"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 px-1 text-[13px] font-medium text-accent hover:underline"
                 >
-                  Reconectar
+                  Abrir Meta for Developers
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </a>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-neg hover:bg-neg/10 hover:text-neg"
-                  loading={disconnecting === a.id}
-                  onClick={() => disconnect(a.id, a.username)}
-                >
-                  Desconectar
-                </Button>
-              </div>
-            );
-          })}
-
-          {accounts.length > 0 && (
-            <a
-              href="/api/ig/connect"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-surface-2 px-4 text-[14px] font-semibold transition-colors hover:bg-border"
-            >
-              <Plug className="h-4 w-4" />
-              Conectar otra cuenta
-            </a>
+              </Seccion>
+            </>
           )}
-        </section>
 
-        {/* --- Datos para el panel de Meta --- */}
-        <section className="space-y-3">
-          <h2 className="text-[13px] font-bold tracking-[0.4px] text-muted uppercase">
-            Datos para el panel de Meta
-          </h2>
+          {/* --- Estado de la configuración --- */}
+          {tab === 'sistema' && (
+            <Seccion titulo="Variables de entorno">
+              <Grupo>
+                {CHECKS.map((check) => (
+                  <EstadoVariable key={check.key} ok={Boolean(setup[check.key])} nombre={check.label}>
+                    {check.hint}
+                  </EstadoVariable>
+                ))}
+                <EstadoVariable ok={Boolean(setup.appUrl)} nombre="APP_URL">
+                  <span className="block truncate">{setup.appUrl ?? 'La URL pública del despliegue'}</span>
+                </EstadoVariable>
+              </Grupo>
 
-          <div className="divide-y divide-border overflow-hidden rounded-card border border-border bg-surface">
-            <CopyRow
-              label="URL de devolución de llamada (webhook)"
-              value={webhookUrl}
-              onCopy={copy}
-            />
-            <CopyRow label="URI de redireccionamiento OAuth" value={redirectUri} onCopy={copy} />
-          </div>
-
-          <a
-            href="https://developers.facebook.com/apps"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-accent hover:underline"
-          >
-            Abrir Meta for Developers
-            <ExternalLink className="h-3.5 w-3.5" />
-          </a>
-        </section>
-          </>
-        )}
-
-        {/* --- Estado de la configuración --- */}
-        {tab === 'sistema' && (
-        <section className="space-y-3 pb-6">
-          <h2 className="text-[13px] font-bold tracking-[0.4px] text-muted uppercase">
-            Variables de entorno
-          </h2>
-
-          <div className="divide-y divide-border overflow-hidden rounded-card border border-border bg-surface">
-            {CHECKS.map((check) => {
-              const ok = Boolean(setup[check.key]);
-              return (
-                <div key={check.key} className="flex items-center gap-3 px-4 py-2.5">
-                  <div
-                    className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${
-                      ok ? 'bg-pos/15 text-pos' : 'bg-neg/15 text-neg'
-                    }`}
-                  >
-                    {ok ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-mono text-[13px] font-medium">{check.label}</p>
-                    <p className="text-[12px] text-muted">{check.hint}</p>
-                  </div>
-                </div>
-              );
-            })}
-
-            <div className="flex items-center gap-3 px-4 py-2.5">
-              <div
-                className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${
-                  setup.appUrl ? 'bg-pos/15 text-pos' : 'bg-neg/15 text-neg'
-                }`}
-              >
-                {setup.appUrl ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="font-mono text-[13px] font-medium">APP_URL</p>
-                <p className="truncate text-[12px] text-muted">
-                  {setup.appUrl ?? 'La URL pública del despliegue'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <Link
-            href="/primeros-pasos"
-            className="inline-flex h-10 items-center gap-2 rounded-xl bg-surface-2 px-4 text-[14px] font-semibold transition-colors hover:bg-border"
-          >
-            <ListChecks className="h-4 w-4" />
-            Ver los primeros pasos
-          </Link>
-        </section>
-        )}
+              <Link href="/primeros-pasos" className={cn(botonClases({ variant: 'secondary' }), 'mt-1')}>
+                <ListChecks className="h-4 w-4" />
+                Ver los primeros pasos
+              </Link>
+            </Seccion>
+          )}
+        </div>
       </div>
     </>
+  );
+}
+
+/** Un renglón de Sistema: la palomita verde o la tacha roja, el nombre de la variable y para qué sirve. */
+function EstadoVariable({ ok, nombre, children }: { ok: boolean; nombre: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3 py-3">
+      <div
+        className={cn(
+          'grid h-6 w-6 shrink-0 place-items-center rounded-full',
+          ok ? 'bg-pos/15 text-pos' : 'bg-neg/15 text-neg',
+        )}
+      >
+        {ok ? <Check className="h-3.5 w-3.5" strokeWidth={2.6} /> : <X className="h-3.5 w-3.5" strokeWidth={2.6} />}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="font-mono text-[13px] font-medium">{nombre}</p>
+        <div className="mt-0.5 text-[12.5px] text-muted">{children}</div>
+      </div>
+    </div>
   );
 }
 
@@ -325,9 +299,9 @@ function CopyRow({
   onCopy: (text: string, label: string) => void;
 }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3">
+    <div className="flex items-center gap-3 py-3">
       <div className="min-w-0 flex-1">
-        <p className="text-[12px] font-semibold text-muted">{label}</p>
+        <p className="text-[12.5px] font-medium text-muted">{label}</p>
         <p className="mt-0.5 truncate font-mono text-[13px]">
           {value ?? <span className="text-faint">Define APP_URL para verla</span>}
         </p>
@@ -335,7 +309,7 @@ function CopyRow({
       {value && (
         <button
           onClick={() => onCopy(value, label)}
-          className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-txt"
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-fill-soft text-muted transition-colors hover:bg-fill hover:text-txt"
           aria-label={`Copiar ${label}`}
         >
           <Copy className="h-3.5 w-3.5" />

@@ -26,17 +26,17 @@ export function TagInput({
   }
 
   return (
-    <div className="flex min-h-10 flex-wrap items-center gap-1.5 rounded-xl border border-transparent bg-surface-2 px-2 py-1.5 transition-colors focus-within:border-accent focus-within:bg-surface">
+    <div className="flex min-h-9 flex-wrap items-center gap-1.5 rounded-[10px] border border-border bg-field px-1.5 py-1 transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:ring-[3px] focus-within:ring-accent/15">
       {values.map((v) => (
         <span
           key={v}
-          className="inline-flex items-center gap-1 rounded-lg bg-accent-soft px-2 py-1 text-[13px] font-medium text-accent"
+          className="inline-flex h-6 items-center gap-1 rounded-full bg-accent-soft pr-1.5 pl-2.5 text-[13px] font-medium text-accent-ink"
         >
           {v}
           <button
             type="button"
             onClick={() => onChange(values.filter((x) => x !== v))}
-            className="opacity-60 transition-opacity hover:opacity-100"
+            className="grid h-4 w-4 place-items-center rounded-full opacity-60 transition-opacity hover:bg-accent/15 hover:opacity-100"
             aria-label={`Quitar ${v}`}
           >
             <X className="h-3 w-3" />

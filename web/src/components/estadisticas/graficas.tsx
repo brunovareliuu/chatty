@@ -1,11 +1,13 @@
 'use client';
 
+import { useId } from 'react';
 import {
   Area,
   AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   LabelList,
   Line,
   LineChart,
@@ -27,14 +29,22 @@ import type { PostIg } from '@/lib/estadisticas/tipos';
 import { ChipTipo, GloboGrafica, Miniatura, type EntradaTooltip } from './piezas';
 
 /**
- * Las gráficas del tablero. Reglas: una sola tinta de datos (el acento),
- * líneas de 2 px, relleno al 10 %, barras de 24 px como máximo con la punta
- * redondeada y la base recta, rejilla de un pelo y sin punteado. Los colores
- * salen de los tokens, así el modo oscuro no necesita nada aparte.
+ * Las gráficas del tablero, con la calma de Salud: una sola tinta de datos (el
+ * acento), el gris para lo secundario, líneas de 2 px, relleno que se
+ * desvanece hacia abajo, barras de 24 px como máximo con la punta redondeada,
+ * rejilla de un pelo y sin punteado. Los colores salen de los tokens, así el
+ * modo oscuro no necesita nada aparte.
  */
 
 const EJE = { fontSize: 11, fill: 'var(--muted)' };
-const PUNTO_ACTIVO = { r: 4, fill: 'var(--accent)', stroke: 'var(--surface)', strokeWidth: 2 };
+const REJILLA = 'var(--hairline)';
+// El aro del punto es del color de la tarjeta: parece recortado sobre la línea.
+const PUNTO_ACTIVO = { r: 4.5, fill: 'var(--accent)', stroke: 'var(--card)', strokeWidth: 2.5 };
+const CURSOR_BARRA = { fill: 'var(--fill-soft)', radius: 6 };
+// Como la batería o Tiempo en pantalla del iPhone: la barra que importa en el
+// acento y las demás en gris. Un acento tenue se ensucia sobre el oscuro.
+const DESTACADA = { fill: 'var(--accent)', fillOpacity: 1 };
+const APAGADA = { fill: 'var(--faint)', fillOpacity: 0.55 };
 
 type ConPayload = { active?: boolean; payload?: readonly (EntradaTooltip & { payload?: unknown })[] };
 
@@ -51,6 +61,7 @@ export function GraficaDia({
   alto?: number;
 }) {
   const datos = puntos.map((p) => ({ ...p, dia: fechaCorta(p.fecha) }));
+  const degradado = `dia-${useId().replace(/:/g, '')}`;
   const globo = (p: ConPayload) => {
     const punto = p.payload?.[0]?.payload as (PuntoSerie & { dia: string }) | undefined;
     return (
@@ -65,8 +76,8 @@ export function GraficaDia({
   };
   const comunes = (
     <>
-      <CartesianGrid vertical={false} stroke="var(--border)" />
-      <XAxis dataKey="dia" tick={EJE} tickLine={false} axisLine={false} minTickGap={28} />
+      <CartesianGrid vertical={false} stroke={REJILLA} />
+      <XAxis dataKey="dia" tick={EJE} tickLine={false} axisLine={false} minTickGap={28} dy={4} />
       <Tooltip cursor={{ stroke: 'var(--faint)', strokeWidth: 1 }} content={globo} />
     </>
   );
@@ -76,6 +87,12 @@ export function GraficaDia({
       <ResponsiveContainer width="100%" height="100%">
         {desdeCero ? (
           <AreaChart data={datos} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id={degradado} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.24} />
+                <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
             {comunes}
             <YAxis
               tick={EJE}
@@ -91,8 +108,8 @@ export function GraficaDia({
               name={nombre}
               stroke="var(--accent)"
               strokeWidth={2}
-              fill="var(--accent)"
-              fillOpacity={0.1}
+              fill={`url(#${degradado})`}
+              fillOpacity={1}
               dot={false}
               activeDot={PUNTO_ACTIVO}
               isAnimationActive={false}
@@ -151,8 +168,8 @@ export function GraficaAltasBajas({
     <div style={{ height: alto }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={filas} stackOffset="sign" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-          <CartesianGrid vertical={false} stroke="var(--border)" />
-          <XAxis dataKey="dia" tick={EJE} tickLine={false} axisLine={false} minTickGap={28} />
+          <CartesianGrid vertical={false} stroke={REJILLA} />
+          <XAxis dataKey="dia" tick={EJE} tickLine={false} axisLine={false} minTickGap={28} dy={4} />
           <YAxis
             tick={EJE}
             tickLine={false}
@@ -161,8 +178,8 @@ export function GraficaAltasBajas({
             allowDecimals={false}
             tickFormatter={(v: number) => entero(Math.abs(v))}
           />
-          <ReferenceLine y={0} stroke="var(--faint)" />
-          <Tooltip cursor={{ fill: 'var(--surface-2)' }} content={globo} />
+          <ReferenceLine y={0} stroke="var(--border)" />
+          <Tooltip cursor={CURSOR_BARRA} content={globo} />
           <Bar
             dataKey="altas"
             name="Te siguieron"
@@ -187,11 +204,46 @@ export function GraficaAltasBajas({
   );
 }
 
+/**
+ * El número encima de la barra más alta. Se busca por su clave y no por el
+ * índice que da recharts, que se salta las barras vacías (con un lunes sin
+ * posts, la etiqueta caía en la barra de al lado).
+ */
+function soloLaMejor<T extends { valor: number | null }>(
+  clave: string | undefined,
+  claveDe: (f: T) => string,
+  formato: (v: number) => string,
+) {
+  return (entrada: { payload?: unknown }) => {
+    const f = entrada.payload as T | undefined;
+    if (!f || clave === undefined || claveDe(f) !== clave || f.valor == null || f.valor <= 0) return null;
+    return formato(f.valor);
+  };
+}
+
+function Etiqueta(props: { x?: number | string; y?: number | string; width?: number | string; value?: unknown }) {
+  if (props.value == null) return null;
+  return (
+    <text
+      x={Number(props.x) + Number(props.width) / 2}
+      y={Number(props.y) - 7}
+      textAnchor="middle"
+      fontSize={11}
+      fontWeight={600}
+      fill="var(--txt)"
+      style={{ fontVariantNumeric: 'tabular-nums' }}
+    >
+      {String(props.value)}
+    </text>
+  );
+}
+
 type FilaPost = { id: string; valor: number | null; post: PostIg };
 
 /**
- * Cada publicación, en orden de fecha, con la cifra elegida. Solo la mejor
- * lleva el número encima; las demás lo enseñan al pasar el cursor.
+ * Cada publicación, en orden de fecha, con la cifra elegida. Solo la mejor va
+ * en el acento y lleva el número encima; las demás, en gris, lo enseñan al pasar
+ * el cursor.
  */
 export function GraficaPosts({
   filas,
@@ -213,7 +265,7 @@ export function GraficaPosts({
     const f = p.payload?.[0]?.payload as FilaPost | undefined;
     if (!p.active || !f) return null;
     return (
-      <div className="w-[240px] rounded-xl border border-border bg-bg p-2.5 shadow-lg">
+      <div className="flotante w-[240px] rounded-[12px] p-2.5">
         <div className="flex gap-2.5">
           <Miniatura src={f.post.miniatura} tipo={f.post.tipo} className="h-14 w-11 rounded-md" />
           <div className="min-w-0">
@@ -238,13 +290,14 @@ export function GraficaPosts({
     <div style={{ height: alto }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={filas} margin={{ top: 22, right: 8, left: 0, bottom: 0 }}>
-          <CartesianGrid vertical={false} stroke="var(--border)" />
+          <CartesianGrid vertical={false} stroke={REJILLA} />
           <XAxis
             dataKey="id"
             tick={EJE}
             tickLine={false}
             axisLine={false}
             minTickGap={20}
+            dy={4}
             tickFormatter={(id: string) => fechaDe.get(id) ?? ''}
           />
           <YAxis
@@ -255,7 +308,7 @@ export function GraficaPosts({
             allowDecimals={false}
             tickFormatter={(v: number) => compacto(v)}
           />
-          <Tooltip cursor={{ fill: 'var(--surface-2)' }} content={globo} />
+          <Tooltip cursor={CURSOR_BARRA} content={globo} />
           <Bar
             dataKey="valor"
             name={nombre}
@@ -264,31 +317,10 @@ export function GraficaPosts({
             maxBarSize={24}
             isAnimationActive={false}
           >
-            <LabelList
-              dataKey="valor"
-              content={(props) => {
-                const { x, y, width, value, index } = props as {
-                  x?: number | string;
-                  y?: number | string;
-                  width?: number | string;
-                  value?: number | string;
-                  index?: number;
-                };
-                if (index !== mejor || value == null) return null;
-                return (
-                  <text
-                    x={Number(x) + Number(width) / 2}
-                    y={Number(y) - 6}
-                    textAnchor="middle"
-                    fontSize={11}
-                    fontWeight={600}
-                    fill="var(--txt)"
-                  >
-                    {formato(Number(value))}
-                  </text>
-                );
-              }}
-            />
+            {filas.map((f, i) => (
+              <Cell key={f.id} {...(i === mejor ? DESTACADA : APAGADA)} />
+            ))}
+            <LabelList valueAccessor={soloLaMejor(filas[mejor]?.id, (f: FilaPost) => f.id, formato)} content={Etiqueta} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -300,7 +332,8 @@ export type Columna = { clave: string; label: string; valor: number | null; titu
 
 /**
  * Columnas cortas con etiqueta abajo: días de la semana, semanas. Una casilla
- * sin datos queda vacía, no en cero. Solo la más alta lleva su número encima.
+ * sin datos queda vacía, no en cero. Como en Tiempo en pantalla, la más alta
+ * va en el acento y con su número encima; las demás, en gris.
  */
 export function GraficaColumnas({
   filas,
@@ -334,35 +367,14 @@ export function GraficaColumnas({
     <div style={{ height: alto }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={filas} margin={{ top: 22, right: 4, left: 4, bottom: 0 }}>
-          <XAxis dataKey="label" tick={EJE} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={4} />
+          <XAxis dataKey="label" tick={EJE} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={4} dy={4} />
           <YAxis hide />
-          <Tooltip cursor={{ fill: 'var(--surface-2)' }} content={globo} />
+          <Tooltip cursor={CURSOR_BARRA} content={globo} />
           <Bar dataKey="valor" fill="var(--accent)" radius={[4, 4, 0, 0]} maxBarSize={24} isAnimationActive={false}>
-            <LabelList
-              dataKey="valor"
-              content={(props) => {
-                const { x, y, width, value, index } = props as {
-                  x?: number | string;
-                  y?: number | string;
-                  width?: number | string;
-                  value?: number | string;
-                  index?: number;
-                };
-                if (index !== mejor || value == null || Number(value) <= 0) return null;
-                return (
-                  <text
-                    x={Number(x) + Number(width) / 2}
-                    y={Number(y) - 6}
-                    textAnchor="middle"
-                    fontSize={11}
-                    fontWeight={600}
-                    fill="var(--txt)"
-                  >
-                    {formato(Number(value))}
-                  </text>
-                );
-              }}
-            />
+            {filas.map((f, i) => (
+              <Cell key={f.clave} {...(i === mejor ? DESTACADA : APAGADA)} />
+            ))}
+            <LabelList valueAccessor={soloLaMejor(filas[mejor]?.clave, (f: Columna) => f.clave, formato)} content={Etiqueta} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
