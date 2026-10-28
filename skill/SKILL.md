@@ -16,6 +16,10 @@ Next.js 16 project in `web/`, Firestore rules at the root, guides in `docs/`) pl
 which tells you, the agent, how to take the user from nothing to a live panel that answers
 Instagram DMs and comments by itself.
 
+Get it free from github.com/brunovareliuu/chatty (MIT). In the repo this file lives at
+`skill/SKILL.md`; every path below is relative to the repo root (in the zip, this file sits at
+the root).
+
 You do the terminal work. The user does anything that needs their identity: signing in to
 Google, Firebase, GCP and Meta, adding a card for billing, clicking through Meta's app
 dashboard and approving consent screens. Never type their passwords or card numbers for them.
@@ -90,9 +94,15 @@ Ask in one message, then go:
 3. **Do they want the assistant?** It needs a Claude API key (pay per use). Everything else
    works without it.
 
-Then copy this folder to their chosen location (without `SKILL.md` if they prefer), run
-`git init`, make a first commit, and create the GitHub repo with them (`gh repo create
-<name> --private --source . --push` if they use the GitHub CLI and are signed in).
+Then give them their own repo. How depends on where this folder came from (`git remote -v`):
+
+- **Their own repo** (made with **Use this template** on GitHub and cloned): nothing to do.
+- **A clone of `brunovareliuu/chatty`:** they can't push there. Easiest is **Use this template**
+  on github.com/brunovareliuu/chatty and clone that. Or keep this folder: `git remote remove
+  origin`, then `gh repo create <name> --private --source . --push`.
+- **No `.git` folder** (a downloaded zip): copy the folder to their chosen location, run
+  `git init`, make a first commit, and create the repo with `gh repo create <name> --private
+  --source . --push` if they use the GitHub CLI and are signed in.
 
 ## 3. Step 0: guided mode
 
